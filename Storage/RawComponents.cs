@@ -1,44 +1,29 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Storage
-{
+namespace Storage {
     [CreateAssetMenu(fileName = "RawComponents", menuName = "SO/Raw", order = 51)]
     public class RawComponents : ScriptableObject {
-        public List<Component> rawComponents = new List<Component>();
-        
-        
-        
+        public List<RawIngredient> rawComponents = new List<RawIngredient>();
+
+        public RawIngredient GetIngredient(string ingredientName) {
+            foreach(RawIngredient ingredient in rawComponents) {
+                if (ingredient.ingredientName.Equals(ingredientName)) {
+                    return ingredient;
+                }
+            }
+
+            throw new Exception("Ingredient not found");
+        }
+
         [Serializable]
-        public class Component {
-            [SerializeField]
-            private string Name
-            {
-                get
-                {
-                    return Name;
-                }
-            }
-
-            [SerializeField]
-            private Sprite Icon
-            {
-                get
-                {
-                    return Icon;
-                }
-            }
-
-            [SerializeField]
-            private float Price
-            {
-                get
-                {
-                    return Price;
-                }
-            }
+        public class RawIngredient : IIngredient {
+            public string ingredientName;
+            public Sprite icon;
+            public float price;
         }
     }
 }
