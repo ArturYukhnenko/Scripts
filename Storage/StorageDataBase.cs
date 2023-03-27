@@ -100,6 +100,8 @@ namespace Storage {
             }else {
                 StoredItems.Remove(item);
             }
+            
+            StorageController.Instance.DestroyCell();
         }
         
     }
