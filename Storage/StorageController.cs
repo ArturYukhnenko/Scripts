@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,7 +41,7 @@ namespace Storage {
 
         public void Start() {
             _currentStorage ??= new StorageDataBase(maxCapacity, startIncome);
-            if (_cellsInStorage.Count == 0 && _currentStorage.StoredItems.Count > 0) {
+            if (_cellsInStorage.Count == 0) {
                 SpawnCells();
             }
         }
@@ -53,7 +54,8 @@ namespace Storage {
                cell.name = i.ToString();
 
                StorageCell storageCell = new StorageCell {
-                   itemGameObject = cell
+                   ID = i,
+                   ItemGameObject = cell
                };
 
                RectTransform rt = cell.GetComponent<RectTransform>();
@@ -71,7 +73,8 @@ namespace Storage {
             cell.name = _cellsInStorage.Count+1.ToString();
 
             StorageCell storageCell = new StorageCell {
-                itemGameObject = cell
+                ID = _cellsInStorage.Count+1,
+                ItemGameObject = cell
             };
 
             RectTransform rt = cell.GetComponent<RectTransform>();
@@ -82,31 +85,32 @@ namespace Storage {
             _cellsInStorage.Add(storageCell);
         }
 
-        //Destroy Cell when Items less then cells in storage
-        public void DestroyCell() {
-            if (_cellsInStorage.Count > _currentStorage.StoredItems.Count) {
-                for (int i = _currentStorage.StoredItems.Count; i < _cellsInStorage.Count; i++) {
-                    Destroy(_cellsInStorage[i].itemGameObject);
-                    _cellsInStorage.Remove(_cellsInStorage[i]);
-                }
-            }
-        }
-
         public void SetItemsInCells() {
             int i = 0;
             foreach (KeyValuePair<RawComponents.RawIngredient, int> ingredient in _currentStorage.StoredItems) {
-                _cellsInStorage[i].itemGameObject.GetComponent<Image>().sprite = ingredient.Key.icon;
-                _cellsInStorage[i].itemGameObject.GetComponentInChildren<TMP_Text>().text = ingredient.Value.ToString();
+                _cellsInStorage[i].ItemGameObject.GetComponent<Image>().sprite = ingredient.Key.icon;
+                _cellsInStorage[i].ItemName = ingredient.Key.ingredientName;
+                _cellsInStorage[i].ItemGameObject.GetComponentInChildren<TMP_Text>().text = ingredient.Value.ToString();
                 i++;
             }
+        }
+        
+        public void ClearCellFromItems(string itemName) {
+                    StorageCell cell = _cellsInStorage.First(i => i.ItemName == itemName);
+                    cell.ItemGameObject.GetComponent<Image>().sprite = cell.DefaultImg;
         }
         
         //StorageControl
         public void BuyItem(String itemName, int amount, int price) {
             RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
-            Debug.Log(_currentStorage);
             _currentStorage.AddItems(ingredient,amount);
             _currentStorage.Coins = -price;
+            SetItemsInCells();
+        }
+
+        public void TestAddItem(String itemName) {
+            RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
+            _currentStorage.AddItems(ingredient,20);
             SetItemsInCells();
         }
         
@@ -117,10 +121,4 @@ namespace Storage {
     
     }
 
-    [Serializable]
-    public class StorageCell {
-        public int id;
-        public GameObject itemGameObject;
-    }
-    
 }

@@ -92,14 +92,14 @@ namespace Storage {
                 throw new Exception("Item not found");
             }
 
+            StorageController.Instance.ClearCellFromItems(item.ingredientName);
+            
             if (StoredItems[item] != 0) {
                 _currentFilled -= StoredItems[item];
                 StoredItems.Remove(item);
             }else {
                 StoredItems.Remove(item);
             }
-            
-            StorageController.Instance.DestroyCell();
         }
         
     }
