@@ -1,23 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Storage {
-    public class StorageDataBase {
+    [Serializable]
+    public class Storage {
         public readonly Dictionary<RawComponents.RawIngredient, int> StoredItems;
-    
+
         private int _maxCapacity;
         private int _currentFilled;
+        
         private int _coins;
     
-        public StorageDataBase(int maxCapacity, int coins) {
+        public Storage(int maxCapacity, int coins) {
             _maxCapacity = maxCapacity;
             _coins = coins;
             StoredItems = new Dictionary<RawComponents.RawIngredient, int>();
             _currentFilled = 0;
         }
-    
+        
+        public Storage(int maxCapacity, int coins, Dictionary<RawComponents.RawIngredient,int> storedItems) {
+            _maxCapacity = maxCapacity;
+            _coins = coins;
+            StoredItems = storedItems;
+            foreach (KeyValuePair<RawComponents.RawIngredient,int> item in StoredItems) {
+                _currentFilled += storedItems[item.Key];
+            }
+        }
+
         //Getters|Setters area
         public int MaxCapacity {
             get => _maxCapacity;
@@ -25,8 +35,8 @@ namespace Storage {
         }
     
         public int CurrentFilled {
-            get => _currentFilled / _maxCapacity * 100;
-            private set => _currentFilled = value;
+            get => _currentFilled;
+            set => _currentFilled = value;
         }
     
         public int Coins {
@@ -49,9 +59,6 @@ namespace Storage {
             }
 
             _currentFilled += amount;
-            
-            StorageController.Instance.SpawnAdditionalCell();
-
         }
 
         public void GetItem(String itemName, int amount) {

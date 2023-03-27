@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace Storage {
     public class StorageController : MonoBehaviour {
+        //SaveFiles
+        private readonly string _dirPath = "Assets/Resourses/SavedData/Storage";
+        private readonly string _fileName = "StorageData";
+        
         //Cells
-        private List<StorageCell> _cellsInStorage = new List<StorageCell>();
+        private readonly List<StorageCell> _cellsInStorage = new List<StorageCell>();
         [SerializeField] 
         private GameObject cellPreset;
         [SerializeField] 
@@ -18,11 +23,9 @@ namespace Storage {
         private int amountOfCells;
 
         //StorageItems
-        private StorageDataBase _currentStorage;
-        [SerializeField]
-        private int maxCapacity;
         [SerializeField] 
-        private int startIncome;
+        private DataBase storageData;
+        private Storage _currentStorage;
         [SerializeField]
         private RawComponents componentsList;
 
@@ -40,10 +43,24 @@ namespace Storage {
         }
 
         public void Start() {
-            _currentStorage ??= new StorageDataBase(maxCapacity, startIncome);
+            if (_currentStorage == null) {
+                if (storageData.Storage.StoredItems == null || storageData.Storage == null) {
+                    Debug.Log(storageData.Storage.StoredItems);
+                    Load(SaveAndLoad.SaveAndLoad.Load(_dirPath, _fileName));
+                    _currentStorage = storageData.Storage;
+                    Debug.Log(storageData.Storage.StoredItems);
+                }else {
+                    _currentStorage = storageData.Storage;
+                }
+            }
             if (_cellsInStorage.Count == 0) {
                 SpawnCells();
             }
+            SetItemsInCells();
+        }
+
+        private void OnDisable() {
+            Save();
         }
 
         //Spawn and display cells in storage
@@ -67,26 +84,9 @@ namespace Storage {
             }
         }
 
-        public void SpawnAdditionalCell() {
-            GameObject cell = Instantiate(cellPreset, placeForCells.transform) as GameObject;
-
-            cell.name = _cellsInStorage.Count+1.ToString();
-
-            StorageCell storageCell = new StorageCell {
-                ID = _cellsInStorage.Count+1,
-                ItemGameObject = cell
-            };
-
-            RectTransform rt = cell.GetComponent<RectTransform>();
-            rt.localPosition = new Vector3(0, 0, 0);
-            rt.localScale = new Vector3(1, 1, 1);
-            cell.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
-
-            _cellsInStorage.Add(storageCell);
-        }
-
         public void SetItemsInCells() {
             int i = 0;
+            Debug.Log(_currentStorage.StoredItems);
             foreach (KeyValuePair<RawComponents.RawIngredient, int> ingredient in _currentStorage.StoredItems) {
                 _cellsInStorage[i].ItemGameObject.GetComponent<Image>().sprite = ingredient.Key.icon;
                 _cellsInStorage[i].ItemName = ingredient.Key.ingredientName;
@@ -108,16 +108,51 @@ namespace Storage {
             SetItemsInCells();
         }
 
-        public void TestAddItem(String itemName) {
-            RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
-            _currentStorage.AddItems(ingredient,20);
-            SetItemsInCells();
-        }
-        
         public void Sell(RawComponents.RawIngredient ingredient) {
             _currentStorage.RemoveItems(ingredient);
             SetItemsInCells();
         }
+        
+        public void TestAddItem(String itemName) {
+                    RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
+                    _currentStorage.AddItems(ingredient,20);
+                    Debug.Log(_currentStorage.StoredItems[ingredient]);
+                    SetItemsInCells();
+        }
+        
+        
+        //Save and load Data
+        private void Load(StorageDataSaver data) {
+            Debug.Log(data);
+            if (data != null) {
+                Dictionary<RawComponents.RawIngredient, int> ingredients =
+                    new Dictionary<RawComponents.RawIngredient, int>();
+                foreach (string key in data.Keys) {
+                    ingredients.Add(componentsList.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
+                }
+                storageData.AssignStorage(data.maxCapacity,data.coins,ingredients);
+            }else {
+                storageData.CreateStorage();   
+            }
+        }
+
+        private void Save() {
+            List<string> keys = new List<string>();
+            List<int> values = new List<int>();
+            foreach (RawComponents.RawIngredient key in _currentStorage.StoredItems.Keys) {
+                keys.Add(key.ingredientName);
+                values.Add(_currentStorage.StoredItems[key]);
+            }
+            StorageDataSaver data = new StorageDataSaver {
+                Keys = keys,
+                Values = values,
+                maxCapacity = _currentStorage.MaxCapacity,
+                coins = _currentStorage.Coins
+            };
+
+            SaveAndLoad.SaveAndLoad.Save(data,_dirPath,_fileName);
+        }
+        
     
     }
 
