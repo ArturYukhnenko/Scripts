@@ -100,7 +100,6 @@ namespace Storage {
             }else {
                 StoredItems.Remove(item);
             }
-
         }
         
     }
