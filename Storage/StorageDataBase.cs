@@ -49,6 +49,8 @@ namespace Storage {
             }
 
             _currentFilled += amount;
+            
+            StorageController.Instance.SpawnAdditionalCell();
 
         }
 
@@ -96,6 +98,8 @@ namespace Storage {
             }else {
                 StoredItems.Remove(item);
             }
+            
+            StorageController.Instance.DestroyCell();
         }
         
     }

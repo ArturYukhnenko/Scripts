@@ -13,6 +13,8 @@ namespace Storage {
         private GameObject cellPreset;
         [SerializeField] 
         private GameObject placeForCells;
+        [SerializeField]
+        private int amountOfCells;
 
         //StorageItems
         private StorageDataBase _currentStorage;
@@ -37,18 +39,15 @@ namespace Storage {
         }
 
         public void Start() {
-            if (_currentStorage == null) {
-                _currentStorage = new StorageDataBase(maxCapacity, startIncome);
-                Debug.Log(_currentStorage.Coins);
-            }
-            if (_cellsInStorage.Count == 0) {
+            _currentStorage ??= new StorageDataBase(maxCapacity, startIncome);
+            if (_cellsInStorage.Count == 0 && _currentStorage.StoredItems.Count > 0) {
                 SpawnCells();
             }
         }
 
         //Spawn and display cells in storage
         private void SpawnCells() {
-            for (int i = 0; i < 27; i++) {
+            for (int i = 0; i < amountOfCells; i++) {
                GameObject cell = Instantiate(cellPreset, placeForCells.transform) as GameObject;
 
                cell.name = i.ToString();
@@ -62,17 +61,37 @@ namespace Storage {
                rt.localScale = new Vector3(1, 1, 1);
                cell.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
 
-               Button tempButton = cell.GetComponent<Button>();
-               
                _cellsInStorage.Add(storageCell);
             }
         }
 
-        public void TestBuy() {
-            BuyItem("Milk",20,20);
-            SetItemsInCells();
+        public void SpawnAdditionalCell() {
+            GameObject cell = Instantiate(cellPreset, placeForCells.transform) as GameObject;
+
+            cell.name = _cellsInStorage.Count+1.ToString();
+
+            StorageCell storageCell = new StorageCell {
+                itemGameObject = cell
+            };
+
+            RectTransform rt = cell.GetComponent<RectTransform>();
+            rt.localPosition = new Vector3(0, 0, 0);
+            rt.localScale = new Vector3(1, 1, 1);
+            cell.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
+
+            _cellsInStorage.Add(storageCell);
         }
-        
+
+        //Destroy Cell when Items less then cells in storage
+        public void DestroyCell() {
+            if (_cellsInStorage.Count > _currentStorage.StoredItems.Count) {
+                for (int i = _currentStorage.StoredItems.Count; i < _cellsInStorage.Count; i++) {
+                    Destroy(_cellsInStorage[i].itemGameObject);
+                    _cellsInStorage.Remove(_cellsInStorage[i]);
+                }
+            }
+        }
+
         public void SetItemsInCells() {
             int i = 0;
             foreach (KeyValuePair<RawComponents.RawIngredient, int> ingredient in _currentStorage.StoredItems) {
@@ -88,10 +107,12 @@ namespace Storage {
             Debug.Log(_currentStorage);
             _currentStorage.AddItems(ingredient,amount);
             _currentStorage.Coins = -price;
+            SetItemsInCells();
         }
         
         public void Sell(RawComponents.RawIngredient ingredient) {
             _currentStorage.RemoveItems(ingredient);
+            SetItemsInCells();
         }
     
     }
