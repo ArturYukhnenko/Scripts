@@ -49,9 +49,6 @@ namespace Storage {
             }
 
             _currentFilled += amount;
-            
-            StorageController.Instance.SpawnAdditionalCell();
-
         }
 
         public void GetItem(String itemName, int amount) {

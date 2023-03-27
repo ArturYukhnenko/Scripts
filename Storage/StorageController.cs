@@ -67,24 +67,6 @@ namespace Storage {
             }
         }
 
-        public void SpawnAdditionalCell() {
-            GameObject cell = Instantiate(cellPreset, placeForCells.transform) as GameObject;
-
-            cell.name = _cellsInStorage.Count+1.ToString();
-
-            StorageCell storageCell = new StorageCell {
-                ID = _cellsInStorage.Count+1,
-                ItemGameObject = cell
-            };
-
-            RectTransform rt = cell.GetComponent<RectTransform>();
-            rt.localPosition = new Vector3(0, 0, 0);
-            rt.localScale = new Vector3(1, 1, 1);
-            cell.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
-
-            _cellsInStorage.Add(storageCell);
-        }
-
         public void SetItemsInCells() {
             int i = 0;
             foreach (KeyValuePair<RawComponents.RawIngredient, int> ingredient in _currentStorage.StoredItems) {

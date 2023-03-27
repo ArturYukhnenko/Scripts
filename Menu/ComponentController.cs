@@ -9,6 +9,7 @@ public class ComponentController : MonoBehaviour
     [SerializeField] private TMP_Text title;
     [SerializeField] private GameObject ingredientPrefab;
     [SerializeField] private Toggle toggle;
+    [SerializeField] private GameObject ingredientsSpawner;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,5 +38,11 @@ public class ComponentController : MonoBehaviour
     {
         get => toggle;
         set => toggle = value;
+    }
+
+    public GameObject IngredientsSpawner
+    {
+        get => ingredientsSpawner;
+        set => ingredientsSpawner = value;
     }
 }
