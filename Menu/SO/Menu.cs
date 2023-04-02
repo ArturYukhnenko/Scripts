@@ -9,11 +9,13 @@ public class Menu : ScriptableObject
 {
     public List<Dish> dishes = new List<Dish>();
     [Serializable]
-    public class Dish : IIngredient
+    public class Dish : IItem
     {
         public string dishName;
         public bool activated;
         public List<string> ingredients;
+        public string Name { get; set; }
+        public Sprite Icon { get; set; }
     }
 
     

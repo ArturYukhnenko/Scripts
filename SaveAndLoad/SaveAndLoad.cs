@@ -1,14 +1,17 @@
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using Models;
 using Storage;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 namespace SaveAndLoad {
-    public class SaveAndLoad {
-        public static void Save(StorageDataSaver data, string dirPath, string fileName) {
+    public static class SaveAndLoad {
+        public static void Save(IModel data, string dirPath, string fileName) {
             string path = Path.Combine(dirPath, fileName);
             try {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                Directory.CreateDirectory(Path.GetDirectoryName(path) ?? string.Empty);
 
                 string dataToStore = JsonUtility.ToJson(data, true);
 
@@ -19,13 +22,13 @@ namespace SaveAndLoad {
                 }
             }
             catch (Exception e) {
-                Debug.Log("Data save failed");
+                Debug.Log("Data save failed" + e);
             }
         }
 
-        public static StorageDataSaver Load(string dirPath, string fileName) {
+        public static StorageModel Load(string dirPath, string fileName) {
             string path = Path.Combine(dirPath, fileName);
-            StorageDataSaver data = null;
+            StorageModel data = null;
             if (File.Exists(path)) {
                 try {
                     string dataToLoad = "";
@@ -35,11 +38,11 @@ namespace SaveAndLoad {
                         }
                     }
 
-                    data = JsonUtility.FromJson<StorageDataSaver>(dataToLoad);
+                    data = JsonUtility.FromJson<StorageModel>(dataToLoad);
 
                 }
                 catch (Exception e) {
-                    Debug.Log("Data load failed");
+                    Debug.Log("Data load failed" + e);
                 }
             }
 

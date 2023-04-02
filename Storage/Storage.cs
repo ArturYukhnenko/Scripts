@@ -1,32 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Storage {
     [Serializable]
     public class Storage {
-        public readonly Dictionary<RawComponents.RawIngredient, int> StoredItems;
+        
+        private Dictionary<IItem, int> _storedItems;
+
+        public ReadOnlyDictionary<IItem, int> StoredItems => _storedItems != null ? new ReadOnlyDictionary<IItem, int>(_storedItems) : null;
 
         private int _maxCapacity;
         private int _currentFilled;
-        
         private int _coins;
-    
-        public Storage(int maxCapacity, int coins) {
-            _maxCapacity = maxCapacity;
-            _coins = coins;
-            StoredItems = new Dictionary<RawComponents.RawIngredient, int>();
-            _currentFilled = 0;
-        }
-        
-        public Storage(int maxCapacity, int coins, Dictionary<RawComponents.RawIngredient,int> storedItems) {
-            _maxCapacity = maxCapacity;
-            _coins = coins;
-            StoredItems = storedItems;
-            foreach (KeyValuePair<RawComponents.RawIngredient,int> item in StoredItems) {
-                _currentFilled += storedItems[item.Key];
-            }
-        }
 
         //Getters|Setters area
         public int MaxCapacity {
@@ -34,80 +21,107 @@ namespace Storage {
             set => _maxCapacity += value;
         }
     
-        public int CurrentFilled {
-            get => _currentFilled;
-            set => _currentFilled = value;
-        }
-    
+        public int CurrentFilled => _currentFilled;
+
         public int Coins {
             get => _coins;
-            set => _coins += value;
+            set => _coins = _coins + value >= 0 ? + value : throw new Exception("Not enough money");
         }
 
-        public void AddItems(RawComponents.RawIngredient item, int amount) {
-            if (item == null) {
+        public Storage(int maxCapacity, int coins) { 
+            _maxCapacity = maxCapacity; 
+            _coins = coins;
+            _storedItems = new Dictionary<IItem, int>();
+             _currentFilled = 0;
+        }
+        
+        public Storage(int maxCapacity, int coins, Dictionary<IItem, int> storedItems) { 
+            _maxCapacity = maxCapacity; 
+            _coins = coins; 
+            _storedItems = storedItems; 
+            foreach (var item in _storedItems) { 
+                _currentFilled += storedItems[item.Key];
+            }
+        }
+
+        public void AddItems(IItem ingredient, int amount) {
+            if (ingredient == null) {
                 throw new Exception("You are trying to add nullable value of item");
             }
             if (amount <= 0) {
                 throw new Exception("Wrong amount of ingredients");
             }
 
-            if (StoredItems.ContainsKey(item)) {
-                StoredItems[item] += amount;
-            }else if (!StoredItems.ContainsKey(item)) {
-                StoredItems.Add(item, amount);
+            if (_storedItems.ContainsKey(ingredient)) {
+                if (_currentFilled + amount > _maxCapacity) { 
+                    throw new Exception("Not enough space in storage");
+                }
+                _storedItems[ingredient] += amount;
+            }else if (!_storedItems.ContainsKey(ingredient)) {
+                if (_currentFilled + amount > _maxCapacity) { 
+                    throw new Exception("Not enough space in storage");
+                }
+                _storedItems.Add(ingredient, amount);
             }
 
             _currentFilled += amount;
+            
+            StorageController.Instance.SetItemsInCells();
         }
 
-        public void GetItem(String itemName, int amount) {
-            RawComponents.RawIngredient item = StoredItems.Keys.First(i => i.ingredientName == itemName);
-            if (StoredItems[item] < amount) {
-                throw new Exception($"Not enough{item.ingredientName} in storage");
+        ///<summary>
+        /// This method is used to get a single item in any amount from storage
+        ///</summary>
+        public void UseItem(String itemName, int amount) {
+            IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
+            if (_storedItems[ingredient] < amount) {
+                throw new Exception($"Not enough{ingredient.Name} in storage");
             }else {
-                if (StoredItems[item] - amount == 0) {
-                    RemoveItems(item);
+                if (_storedItems[ingredient] - amount == 0) {
+                    RemoveItems(ingredient);
                 }else {
-                    StoredItems[item] -= amount;
+                    _storedItems[ingredient] -= amount;
                     _currentFilled -= amount;
                 }
             }
         }
         
-        public void GetItems(Dictionary<string,int> items) {
-            foreach (KeyValuePair<string,int> itemName in items) {
-                RawComponents.RawIngredient item = StoredItems.Keys.First(i => i.ingredientName == itemName.Key);
-                            if (StoredItems[item] < itemName.Value) {
-                                throw new Exception($"Not enough{item.ingredientName} in storage");
+        ///<summary>
+        /// This method is used to get a multiple items from storage
+        ///</summary>
+        public void UseItem(Dictionary<string,int> items) {
+            foreach (var itemName in items) {
+                IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key);
+                            if (_storedItems[ingredient] < itemName.Value) {
+                                throw new Exception($"Not enough{ingredient.Name} in storage");
                             }else {
-                                if (StoredItems[item] - itemName.Value == 0) {
-                                    RemoveItems(item);
+                                if (_storedItems[ingredient] - itemName.Value == 0) {
+                                    RemoveItems(ingredient);
                                 }else {
-                                    StoredItems[item] -= itemName.Value;
+                                    _storedItems[ingredient] -= itemName.Value;
                                     _currentFilled -= itemName.Value;
                                 }
                             }
             }
         }
 
-        public void RemoveItems(RawComponents.RawIngredient item) {
-            if (item == null) {
+        public void RemoveItems(IItem ingredient) {
+            if (ingredient == null) {
                 throw new Exception("You are trying to remove nullable value of item");
             }
-            if (!StoredItems.ContainsKey(item)) {
+            if (!_storedItems.ContainsKey(ingredient)) {
                 throw new Exception("Item not found");
             }
 
-            StorageController.Instance.ClearCellFromItems(item.ingredientName);
+            StorageController.Instance.ClearCellFromItems(ingredient.Name);
             
-            if (StoredItems[item] != 0) {
-                _currentFilled -= StoredItems[item];
-                StoredItems.Remove(item);
+            if (_storedItems[ingredient] > 0) {
+                _currentFilled -= _storedItems[ingredient];
+                _storedItems.Remove(ingredient);
             }else {
-                StoredItems.Remove(item);
+                _storedItems.Remove(ingredient);
             }
         }
-        
+
     }
 }

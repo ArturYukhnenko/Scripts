@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Models;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,11 +22,13 @@ namespace Storage {
         [SerializeField] 
         private GameObject placeForCells;
         [SerializeField]
+        private Sprite cellDefaultSprite;
+        [SerializeField]
         private int amountOfCells;
 
         //StorageItems
         [SerializeField] 
-        private DataBase storageData;
+        private StorageHolder storageData;
         private Storage _currentStorage;
         [SerializeField]
         private RawComponents componentsList;
@@ -39,16 +43,15 @@ namespace Storage {
                 Destroy(this.gameObject);
             } else {
                 _instance = this;
+                DontDestroyOnLoad(_instance);
             }
         }
 
-        public void Start() {
+        void Start() {
             if (_currentStorage == null) {
                 if (storageData.Storage.StoredItems == null || storageData.Storage == null) {
-                    Debug.Log(storageData.Storage.StoredItems);
-                    Load(SaveAndLoad.SaveAndLoad.Load(_dirPath, _fileName));
+                    Load(SaveAndLoad.SaveAndLoad.Load(_dirPath, _fileName) as StorageModel);
                     _currentStorage = storageData.Storage;
-                    Debug.Log(storageData.Storage.StoredItems);
                 }else {
                     _currentStorage = storageData.Storage;
                 }
@@ -59,7 +62,7 @@ namespace Storage {
             SetItemsInCells();
         }
 
-        private void OnDisable() {
+        void OnApplicationQuit() {
             Save();
         }
 
@@ -72,8 +75,12 @@ namespace Storage {
 
                StorageCell storageCell = new StorageCell {
                    ID = i,
+                   DefaultImg = cellDefaultSprite,
                    ItemGameObject = cell
                };
+
+               storageCell.ItemGameObject.GetComponent<Image>().sprite = cellDefaultSprite;
+               storageCell.ItemGameObject.GetComponentInChildren<TMP_Text>().text = "";
 
                RectTransform rt = cell.GetComponent<RectTransform>();
                rt.localPosition = new Vector3(0, 0, 0);
@@ -86,47 +93,49 @@ namespace Storage {
 
         public void SetItemsInCells() {
             int i = 0;
-            Debug.Log(_currentStorage.StoredItems);
-            foreach (KeyValuePair<RawComponents.RawIngredient, int> ingredient in _currentStorage.StoredItems) {
-                _cellsInStorage[i].ItemGameObject.GetComponent<Image>().sprite = ingredient.Key.icon;
-                _cellsInStorage[i].ItemName = ingredient.Key.ingredientName;
+            foreach (var ingredient in _currentStorage.StoredItems) {
+                _cellsInStorage[i].ItemGameObject.GetComponent<Image>().sprite = ingredient.Key.Icon;
+                _cellsInStorage[i].CellName = ingredient.Key.Name;
                 _cellsInStorage[i].ItemGameObject.GetComponentInChildren<TMP_Text>().text = ingredient.Value.ToString();
                 i++;
             }
         }
         
         public void ClearCellFromItems(string itemName) {
-                    StorageCell cell = _cellsInStorage.First(i => i.ItemName == itemName);
+                    StorageCell cell = _cellsInStorage.First(i => i.CellName == itemName);
                     cell.ItemGameObject.GetComponent<Image>().sprite = cell.DefaultImg;
+                    cell.ItemGameObject.GetComponentInChildren<TMP_Text>().text = "";
         }
         
         //StorageControl
         public void BuyItem(String itemName, int amount, int price) {
-            RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
-            _currentStorage.AddItems(ingredient,amount);
-            _currentStorage.Coins = -price;
-            SetItemsInCells();
+            try {
+                _currentStorage.Coins = -price;
+                RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
+                _currentStorage.AddItems(ingredient,amount);
+            }catch (Exception e) {
+                Debug.Log(e);
+            }
         }
 
-        public void Sell(RawComponents.RawIngredient ingredient) {
-            _currentStorage.RemoveItems(ingredient);
-            SetItemsInCells();
+        public void SpendMoney(int price) {
+            try {
+                _currentStorage.Coins = price;
+            }catch (Exception e) {
+                Debug.Log(e);
+            }
         }
         
-        public void TestAddItem(String itemName) {
-                    RawComponents.RawIngredient ingredient = componentsList.GetIngredient(itemName);
-                    _currentStorage.AddItems(ingredient,20);
-                    Debug.Log(_currentStorage.StoredItems[ingredient]);
-                    SetItemsInCells();
+        public void GetItemBasicPrice(string itemName) {
+            Debug.Log(_currentStorage.StoredItems.First(i => i.Key.Name == itemName));
         }
-        
-        
+
         //Save and load Data
-        private void Load(StorageDataSaver data) {
+        private void Load(StorageModel data) {
             Debug.Log(data);
             if (data != null) {
-                Dictionary<RawComponents.RawIngredient, int> ingredients =
-                    new Dictionary<RawComponents.RawIngredient, int>();
+                Dictionary<IItem, int> ingredients =
+                    new Dictionary<IItem, int>();
                 foreach (string key in data.Keys) {
                     ingredients.Add(componentsList.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
                 }
@@ -139,11 +148,16 @@ namespace Storage {
         private void Save() {
             List<string> keys = new List<string>();
             List<int> values = new List<int>();
-            foreach (RawComponents.RawIngredient key in _currentStorage.StoredItems.Keys) {
-                keys.Add(key.ingredientName);
-                values.Add(_currentStorage.StoredItems[key]);
-            }
-            StorageDataSaver data = new StorageDataSaver {
+            if (_currentStorage.StoredItems.Keys != null)
+                foreach (IItem item in _currentStorage.StoredItems.Keys) {
+                    var key = (RawComponents.RawIngredient)item;
+                    keys.Add(key.Name);
+                    values.Add(_currentStorage.StoredItems[key]);
+                }
+            else
+                throw new Exception("Storage is empty");
+
+            StorageModel data = new StorageModel {
                 Keys = keys,
                 Values = values,
                 maxCapacity = _currentStorage.MaxCapacity,
@@ -155,5 +169,4 @@ namespace Storage {
         
     
     }
-
 }

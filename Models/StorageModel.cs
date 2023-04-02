@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Storage {
+namespace Models {
     [Serializable]
-    public class StorageDataSaver {
+    public class StorageModel : IModel {
 
         public List<string> Keys;
         public List<int> Values;

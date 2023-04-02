@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
 namespace Storage {
-    public class StorageCell {
+    public class StorageCell{
         public int ID;
-        public string ItemName;
+        public string CellName;
         public Sprite DefaultImg;
         public GameObject ItemGameObject;
     }
