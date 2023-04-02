@@ -12,6 +12,7 @@ namespace Storage {
                 if (ingredient.Name.Equals(ingredientName)) {
                     return ingredient;
                 }
+                
             }
 
             throw new Exception("Ingredient not found");

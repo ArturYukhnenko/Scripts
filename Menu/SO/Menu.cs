@@ -8,6 +8,8 @@ using UnityEngine;
 public class Menu : ScriptableObject
 {
     public List<Dish> dishes = new List<Dish>();
+    //[Serializable]
+    //public Dictionary<string, Dish> dishes = new Dictionary<string, Dish>();
     [Serializable]
     public class Dish : IItem
     {

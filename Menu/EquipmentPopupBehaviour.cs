@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Storage;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EquipmentPopupBehaviour : popupBehavior
 {
@@ -11,25 +13,30 @@ public class EquipmentPopupBehaviour : popupBehavior
     public TMP_Text name;
     public GameObject variantPrefab;
     public GameObject ingredientPrefab;
-    
+    public Menu menu;
+    public RawComponents ingredients;
     void Start()
     {
         name.text = _equipmentPopup.toolName;
-        foreach (var dish in _equipmentPopup.dishes)
+        foreach (var dishName in _equipmentPopup.dishes)
         {
+            Menu.Dish dish = menu.dishes.Find(i => i.dishName == dishName);
             var dishVar = Instantiate(variantPrefab);
-            dishVar.transform.parent = GameObject.Find("menuVariants").transform;
+            dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);
             ComponentController cc = dishVar.GetComponent<ComponentController>();
-            cc.Title.text = dish;
-/*
+            cc.Title.text = dishName;
+            cc.IngredientsSpawner.name += "_" + dishName;
+            Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
             foreach (var ingredient in dish.ingredients)
             {
+                Debug.Log(ingredient);
                 var ingredientVar = Instantiate(ingredientPrefab);
-                ingredientVar.transform.parent = GameObject.Find("ingredients").transform;
-                ComponentDisplay cd = ingredientVar.GetComponent<ComponentDisplay>();
-                cd.name = ingredient;
+                ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);
+                var iconIngredient = ingredientVar.GetComponent<Image>();
+                iconIngredient.sprite = ingredients.GetIngredient(ingredient).Icon;
+                ingredientVar.GetComponentInChildren<TMP_Text>().text = " ";
             }
-         */   
+           
         }
     }
 
