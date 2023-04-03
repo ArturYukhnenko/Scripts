@@ -143,6 +143,35 @@ namespace Storage {
             }
         }
 
+        /// <summary>
+        /// Method is used to add item to the storage in single existance
+        /// </summary>
+        /// <param name="itemName"></param>
+        /// <exception cref="Exception">Throw exception if item not found in any list of existing items</exception>
+        public void AddItemToStorage(string itemName) {
+            if (dishes.IsDishExists(itemName)) {
+                _currentStorage.AddItem(dishes.GetDish(itemName), 1);
+            }else if (rawComponents.IsIngredientExists(itemName)) {
+                _currentStorage.AddItem(rawComponents.GetIngredient(itemName), 1);
+            }
+            throw new Exception("Item not found exception");
+        } 
+        
+        /// <summary>
+        /// Method is used to add item to the storage in any amount
+        /// </summary>
+        /// <param name="itemName"></param>
+        /// <param name="amount"></param>
+        /// <exception cref="Exception">Throw exception if item not found in any list of existing items</exception>
+        public void AddItemToStorage(string itemName, int amount) {
+            if (dishes.IsDishExists(itemName)) {
+                _currentStorage.AddItem(dishes.GetDish(itemName), amount);
+            }else if (rawComponents.IsIngredientExists(itemName)) {
+                _currentStorage.AddItem(rawComponents.GetIngredient(itemName), amount);
+            }
+            throw new Exception("Item not found exception");
+        }
+
         //Method to use items from storage
         /// <summary>
         /// Method is used to get only one dish
