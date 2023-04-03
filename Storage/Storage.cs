@@ -96,16 +96,17 @@ namespace Storage {
         public void UseItem(Dictionary<string,int> items) {
             foreach (var itemName in items) {
                 IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key);
-                            if (_storedItems[ingredient] < itemName.Value) {
-                                throw new Exception($"Not enough{ingredient.Name} in storage");
-                            }else {
-                                if (_storedItems[ingredient] - itemName.Value == 0) {
-                                    RemoveItem(ingredient);
-                                }else {
-                                    _storedItems[ingredient] -= itemName.Value;
-                                    _currentFilled -= itemName.Value;
-                                }
-                            }
+                if (_storedItems[ingredient] < itemName.Value) 
+                    throw new Exception($"Not enough{ingredient.Name} in storage");
+            }
+            foreach (var itemName in items) {
+                IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key); 
+                if (_storedItems[ingredient] - itemName.Value == 0) { 
+                    RemoveItem(ingredient);
+                }else { 
+                    _storedItems[ingredient] -= itemName.Value; 
+                    _currentFilled -= itemName.Value;
+                }
             }
         }
 

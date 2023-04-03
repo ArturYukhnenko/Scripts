@@ -121,26 +121,118 @@ namespace Storage {
                 Debug.Log(e);
             }
         }
-
+        
+        //Transferring SO to other different classes
         public Menu ReceiveActualDishes() {
             return dishes;
         }
-
         public RawComponents ReceiveActualComponents() {
             return rawComponents;
         }
+        
+        //Money managment
+        public void AddEarnedMoney(int income) {
+            _currentStorage.Coins = income;
+        }
 
-        public void UseItemFromStorage(string itemName, int value) {
-            if (itemName == null) {
-                throw new Exception("Items not set");
+        public void SpendMoney(int price) {
+            if (price < 0) {
+                _currentStorage.Coins = price;
+            }else {
+                _currentStorage.Coins = -price;
             }
-            try {
-                _currentStorage.UseItem(itemName, value);
+        }
+
+        //Method to use items from storage
+        /// <summary>
+        /// Method is used to get only one dish
+        /// </summary>
+        /// <param name="dishName"></param>
+        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
+        public void GetDishFromStorage(string dishName) {
+            if (dishes.IsDishExists(dishName)) {
+                _currentStorage.UseItem(dishName, 1);
             }
-            catch (Exception e) {
-                Console.WriteLine(e);
-                throw;
+            throw new Exception("Dish is not exists");
+        }
+        
+        /// <summary>
+        /// Method is used to get dish in bigger amount, than 1
+        /// </summary>
+        /// <param name="dishName"></param>
+        /// <param name="amount"></param>
+        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
+        public void GetDishFromStorage(string dishName, int amount) {
+            if (dishes.IsDishExists(dishName)) {
+                _currentStorage.UseItem(dishName, amount);
             }
+            throw new Exception("Dish is not exists");
+        }
+
+        /// <summary>
+        /// Method is used to get a few different dishes in any amount
+        /// </summary>
+        /// <param name="dishNames">List with Dish names, dish names can be duplicated in list</param>
+        /// <exception cref="Exception">Throw exception if dish is not exists in list of all dishes</exception>
+        public void GetDishFromStorage(List<string> dishNames) {
+            Dictionary<string, int> usedDishes = new Dictionary<string, int>();
+            foreach (string dish in dishNames) {
+                if (!dishes.IsDishExists(dish)) {
+                    throw new Exception("Dish is not exists");
+                }
+                if (usedDishes.ContainsKey(dish)) {
+                    usedDishes[dish] += 1;
+                }else {
+                   usedDishes.Add(dish, 1); 
+                }
+                
+            }
+            _currentStorage.UseItem(usedDishes);
+        }
+        
+        /// <summary>
+        /// Method is used to get only one ingredient
+        /// </summary>
+        /// <param name="ingredientName"></param>
+        /// <exception cref="Exception"> Throw exception if ingredient is not exists in list of all ingredients</exception>
+        public void GetIngredientFromStorage(string ingredientName) {
+            if (rawComponents.IsIngredientExists(ingredientName)) {
+                _currentStorage.UseItem(ingredientName, 1);
+            }
+            throw new Exception("Dish is not exists");
+        }
+        
+        /// <summary>
+        /// Method is used to get ingredient in bigger amount, than 1
+        /// </summary>
+        /// <param name="ingredientName"></param>
+        /// <param name="amount"></param>
+        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
+        public void GetIngredientFromStorage(string ingredientName, int amount) {
+            if (rawComponents.IsIngredientExists(ingredientName)) {
+                _currentStorage.UseItem(ingredientName, amount);
+            }
+            throw new Exception("Dish is not exists");
+        }
+
+        /// <summary>
+        /// Method is used to get a few different ingredients in any amount
+        /// </summary>
+        /// <param name="ingredientNames">Dictionary with Ingredient name key(string) and amount of ingredients as value(int)</param>
+        /// <exception cref="Exception">Throw exception if ingredient is not exists in list of all ingredients</exception>
+        public void GetIngredientFromStorage(List<string> ingredientNames) {
+            Dictionary<string, int> usedIngredients = new Dictionary<string, int>();
+            foreach (string ingredient in ingredientNames) {
+                if (!rawComponents.IsIngredientExists(ingredient)) {
+                    throw new Exception("Ingredient is not exists");
+                }
+                if (usedIngredients.ContainsKey(ingredient)) {
+                    usedIngredients[ingredient] += 1;
+                }else {
+                    usedIngredients.Add(ingredient, 1); 
+                }
+            }
+            _currentStorage.UseItem(usedIngredients);
         }
 
         //Save and load Data
