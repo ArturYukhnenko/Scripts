@@ -23,6 +23,8 @@ namespace Storage {
         [SerializeField] 
         private GameObject cellsSpawner;
         [SerializeField]
+        private Sprite cellDefaultSprite;
+        [SerializeField]
         private int amountOfCells;
 
         //StorageItems
@@ -69,16 +71,17 @@ namespace Storage {
 
         //Spawn and display cells in storage
         private void SpawnCells() {
+            StorageCell.DefaultImg = cellDefaultSprite;
             for (int i = 0; i < amountOfCells; i++) {
                GameObject cell = Instantiate(cellPrefab, cellsSpawner.transform);
 
                cell.name = i.ToString();
 
-               StorageCell storageCell = cell.AddComponent<StorageCell>();
+               StorageCell storageCell = new StorageCell {
+                   ID = i,
+                   ItemGameObject = cell
+               };
 
-               storageCell.ID = i;
-               storageCell.ItemGameObject = cell;
-               
                storageCell.ResetCell();
 
                RectTransform rt = cell.GetComponent<RectTransform>();
