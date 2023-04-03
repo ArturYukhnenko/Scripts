@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using MenuEquipment.SO;
 using Models;
 using Storage.SO;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using Image = UnityEngine.UIElements.Image;
 
 namespace Storage {
     public class StorageController {
@@ -26,9 +19,6 @@ namespace Storage {
 
         public ReadOnlyDictionary<IItem, int> StoredItems => _currentStorage.StoredItems;
 
-        //Manager
-        private StorageManager _storageManager;
-
         //Singleton
         private static readonly StorageController _instance = new StorageController();
         public static StorageController Instance => _instance;
@@ -39,8 +29,7 @@ namespace Storage {
         
         private StorageController() { }
 
-        public void SetFields(StorageManager storageManager,StorageHolder storageHolder, RawComponents rawComponents, Menu dishes) {
-            _storageManager = storageManager;
+        public void SetFields(StorageHolder storageHolder, RawComponents rawComponents, Menu dishes) {
             _storageHolder = storageHolder;
             _rawComponents = rawComponents;
             _dishes = dishes;
@@ -123,7 +112,6 @@ namespace Storage {
                 throw new Exception("Dish is not exists"); 
             }
             price = _currentStorage.UseItem(dishName, 1);
-            _storageManager.ClearCellFromItems(dishName);
             return price;
         }
         
@@ -139,7 +127,6 @@ namespace Storage {
                 throw new Exception("Dish is not exists");
             }
             price = _currentStorage.UseItem(dishName, amount);
-            _storageManager.ClearCellFromItems(dishName);
             return price;
         }
 
@@ -164,9 +151,6 @@ namespace Storage {
 
             try {
                 price = _currentStorage.UseItem(usedDishes);
-                foreach (string dish in dishNames) {
-                    _storageManager.ClearCellFromItems(dish);
-                }
             }catch (Exception e) {
                 Console.WriteLine(e);
                 throw;
@@ -186,7 +170,6 @@ namespace Storage {
                 throw new Exception("Dish is not exists");
             }
             price = _currentStorage.UseItem(ingredientName, 1);
-            _storageManager.ClearCellFromItems(ingredientName);
             return price;
         }
         
@@ -202,7 +185,6 @@ namespace Storage {
                 throw new Exception("Dish is not exists");
             }
             price = _currentStorage.UseItem(ingredientName, amount);
-            _storageManager.ClearCellFromItems(ingredientName);
             return price;
         }
 
@@ -227,9 +209,6 @@ namespace Storage {
             
             try {
                 price = _currentStorage.UseItem(usedIngredients);
-                foreach (string ingredient in ingredientNames) {
-                    _storageManager.ClearCellFromItems(ingredient);
-                }
             }catch (Exception e) {
                 Console.WriteLine(e);
                 throw;

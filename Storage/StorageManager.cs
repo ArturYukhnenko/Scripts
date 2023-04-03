@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using MenuEquipment.SO;
-using Storage.SO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Storage {
@@ -21,25 +17,12 @@ namespace Storage {
         private Sprite defaultStorageItemImage;
         [SerializeField]
         private int amountOfCells;
-        
-        //Stored Items
-        [SerializeField]
-        private StorageHolder storageHolder;
-        [SerializeField]
-        private RawComponents rawComponents;
-        [SerializeField]
-        private Menu dishes;
 
         public void Awake() {
             if (_cellsInStorage.Count == 0) {
                 SpawnCells();
             }
-            if (StorageController.Instance != null) {
-                if(!StorageController.Instance.IsSet){
-                    StorageController.Instance.SetFields(this,storageHolder,rawComponents,dishes);
-                }
-                SetItemsInCells();
-            }
+            SetItemsInCells();
         }
 
         //Spawn and display cells in storage
@@ -65,20 +48,18 @@ namespace Storage {
                 _cellsInStorage.Add(storageCell);
             }
         }
-        
-        public void SetItemsInCells() {
+
+        private void SetItemsInCells() {
             int i = 0;
+            foreach (var cell in _cellsInStorage.Where(cell => cell.CellItemName != "")) {
+                cell.ResetCell();
+            }
             foreach (var ingredient in StorageController.Instance.StoredItems) {
                 _cellsInStorage[i].ItemGameObject.GetComponent<Image>().sprite = ingredient.Key.Icon;
                 _cellsInStorage[i].CellItemName = ingredient.Key.Name;
                 _cellsInStorage[i].ItemGameObject.GetComponentInChildren<TMP_Text>().text = ingredient.Value.ToString();
                 i++;
             }
-        }
-
-        public void ClearCellFromItems(string itemName) {
-            StorageCell cell = _cellsInStorage.First(i => i.CellItemName == itemName);
-            cell.ResetCell();
         }
     }
 }
