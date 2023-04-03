@@ -44,11 +44,15 @@ namespace MenuEquipment {
 
         public void Cook()
         {
-            foreach (var ingredient in _ingredients)
+            foreach (var VARIABLE in _ingredients)
             {
-                StorageController.Instance.UseItemFromStorage(ingredient, 1);
-               // StorageController.Instance. add dish to storage
+                 Debug.Log(VARIABLE);
             }
+
+            Debug.Log(StorageController.Instance);
+            StorageController.Instance.GetIngredientFromStorage(_ingredients);
+            //StorageController.Instance.
+            
             
         }
     }
