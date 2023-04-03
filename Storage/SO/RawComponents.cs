@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Storage {
-    [CreateAssetMenu(fileName = "RawIngredients", menuName = "SO/Storage/Items/Ingredients", order = 51)]
+namespace Storage.SO {
+    [CreateAssetMenu(fileName = "RawIngredients", menuName = "SO/Storage/Items/Ingredients", order = 1)]
     public class RawComponents : ScriptableObject {
         public List<RawIngredient> rawComponents = new List<RawIngredient>();
 
@@ -12,9 +12,7 @@ namespace Storage {
                 if (ingredient.Name.Equals(ingredientName)) {
                     return ingredient;
                 }
-                
             }
-
             throw new Exception("Ingredient not found");
         }
 

@@ -16,8 +16,10 @@ namespace Storage {
         private int _coins;
 
         //Getters|Setters area
+        
         public int MaxCapacity {
             get => _maxCapacity;
+            // value how to set: _currentStorage.MaxCapacity = value; value is attribute
             set => _maxCapacity += value;
         }
     
@@ -28,6 +30,7 @@ namespace Storage {
             set => _coins = _coins + value >= 0 ? + value : throw new Exception("Not enough money");
         }
 
+        //For new game
         public Storage(int maxCapacity, int coins) { 
             _maxCapacity = maxCapacity; 
             _coins = coins;
@@ -35,6 +38,7 @@ namespace Storage {
              _currentFilled = 0;
         }
         
+        //For load from file
         public Storage(int maxCapacity, int coins, Dictionary<IItem, int> storedItems) { 
             _maxCapacity = maxCapacity; 
             _coins = coins; 
@@ -44,27 +48,27 @@ namespace Storage {
             }
         }
 
-        public void AddItems(IItem ingredient, int amount) {
+        public void AddItem(IItem ingredient, int amountOfItems) {
             if (ingredient == null) {
                 throw new Exception("You are trying to add nullable value of item");
             }
-            if (amount <= 0) {
+            if (amountOfItems <= 0) {
                 throw new Exception("Wrong amount of ingredients");
             }
 
             if (_storedItems.ContainsKey(ingredient)) {
-                if (_currentFilled + amount > _maxCapacity) { 
+                if (_currentFilled + amountOfItems > _maxCapacity) { 
                     throw new Exception("Not enough space in storage");
                 }
-                _storedItems[ingredient] += amount;
+                _storedItems[ingredient] += amountOfItems;
             }else if (!_storedItems.ContainsKey(ingredient)) {
-                if (_currentFilled + amount > _maxCapacity) { 
+                if (_currentFilled + amountOfItems > _maxCapacity) { 
                     throw new Exception("Not enough space in storage");
                 }
-                _storedItems.Add(ingredient, amount);
+                _storedItems.Add(ingredient, amountOfItems);
             }
 
-            _currentFilled += amount;
+            _currentFilled += amountOfItems;
             
             StorageController.Instance.SetItemsInCells();
         }
@@ -72,16 +76,16 @@ namespace Storage {
         ///<summary>
         /// This method is used to get a single item in any amount from storage
         ///</summary>
-        public void UseItem(String itemName, int amount) {
+        public void UseItem(String itemName, int amountOfItems) {
             IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
-            if (_storedItems[ingredient] < amount) {
+            if (_storedItems[ingredient] < amountOfItems) {
                 throw new Exception($"Not enough{ingredient.Name} in storage");
             }else {
-                if (_storedItems[ingredient] - amount == 0) {
-                    RemoveItems(ingredient);
+                if (_storedItems[ingredient] - amountOfItems == 0) {
+                    RemoveItem(ingredient);
                 }else {
-                    _storedItems[ingredient] -= amount;
-                    _currentFilled -= amount;
+                    _storedItems[ingredient] -= amountOfItems;
+                    _currentFilled -= amountOfItems;
                 }
             }
         }
@@ -96,7 +100,7 @@ namespace Storage {
                                 throw new Exception($"Not enough{ingredient.Name} in storage");
                             }else {
                                 if (_storedItems[ingredient] - itemName.Value == 0) {
-                                    RemoveItems(ingredient);
+                                    RemoveItem(ingredient);
                                 }else {
                                     _storedItems[ingredient] -= itemName.Value;
                                     _currentFilled -= itemName.Value;
@@ -105,7 +109,7 @@ namespace Storage {
             }
         }
 
-        public void RemoveItems(IItem ingredient) {
+        public void RemoveItem(IItem ingredient) {
             if (ingredient == null) {
                 throw new Exception("You are trying to remove nullable value of item");
             }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Storage {
+namespace Storage.SO {
     [CreateAssetMenu(fileName = "DataBase", menuName = "SO/Storage/DataBase", order = 2)]
     public class StorageHolder : ScriptableObject {
 
