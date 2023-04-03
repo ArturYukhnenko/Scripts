@@ -19,8 +19,7 @@ namespace MenuEquipment {
         void Start()
         {
             titlePopup.text = _equipmentData.toolName;
-            foreach (var dishName in _equipmentData.dishes)
-            {
+            foreach (var dishName in _equipmentData.dishes) {
                 Menu.Dish dish = menu.GetDish(dishName);
                 var dishVar = Instantiate(dishPrefab);
                 dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);

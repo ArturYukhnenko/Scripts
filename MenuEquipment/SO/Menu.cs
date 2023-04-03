@@ -11,9 +11,9 @@ namespace MenuEquipment.SO {
         public List<Dish> dishes = new List<Dish>();
         
         public Dish GetDish(string dishName) {
-            foreach(Dish ingredient in dishes) {
-                if (ingredient.Name.Equals(dishName)) {
-                    return ingredient;
+            foreach(Dish dish in dishes) {
+                if (dish.Name.Equals(dishName)) {
+                    return dish;
                 }
             }
             throw new Exception("Dish not found");
@@ -31,11 +31,14 @@ namespace MenuEquipment.SO {
         [Serializable]
         public class Dish : IItem
         {
-            public string dishName;
+            [SerializeField]
+            private string dishName;
+            [SerializeField]
+            private Sprite icon;
             public bool activated;
             public List<string> ingredients;
-            public string Name { get; set; }
-            public Sprite Icon { get; set; }
+            public string Name => dishName;
+            public Sprite Icon => icon;
         }
 
     
