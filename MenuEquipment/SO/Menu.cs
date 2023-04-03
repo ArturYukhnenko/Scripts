@@ -35,10 +35,14 @@ namespace MenuEquipment.SO {
             private string dishName;
             [SerializeField]
             private Sprite icon;
+            [SerializeField] 
+            private int price;
+            
             public bool activated;
             public List<string> ingredients;
             public string Name => dishName;
             public Sprite Icon => icon;
+            public int Price => price;
         }
 
     

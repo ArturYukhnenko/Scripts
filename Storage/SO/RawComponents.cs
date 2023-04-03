@@ -34,11 +34,11 @@ namespace Storage.SO {
             [SerializeField]
             private Sprite icon;
             [SerializeField]
-            private float price;
+            private int price;
 
             public string Name => ingredientName;
             public Sprite Icon => icon;
-            public float Price => price;
+            public int Price => price;
         }
     }
 }

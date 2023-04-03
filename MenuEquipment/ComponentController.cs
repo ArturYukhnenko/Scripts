@@ -44,9 +44,8 @@ namespace MenuEquipment {
 
         public void Cook()
         {
-            foreach (var ingredient in _ingredients)
-            {
-                StorageController.Instance.UseItemFromStorage(ingredient, 1);
+            foreach (var ingredient in _ingredients) {
+                StorageController.Instance.GetIngredientFromStorage(ingredient);
                // StorageController.Instance. add dish to storage
             }
             

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Models {
     [Serializable]
@@ -10,5 +11,8 @@ namespace Models {
         public int maxCapacity;
         public int coins;
 
+        public IModel Load(string data) {
+            return JsonUtility.FromJson<StorageModel>(data);
+        }
     }
 }

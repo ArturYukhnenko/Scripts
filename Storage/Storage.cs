@@ -69,31 +69,31 @@ namespace Storage {
             }
 
             _currentFilled += amountOfItems;
-            
-            StorageController.Instance.SetItemsInCells();
         }
 
         ///<summary>
         /// This method is used to get a single item in any amount from storage
         ///</summary>
-        public void UseItem(String itemName, int amountOfItems) {
+        public int UseItem(String itemName, int amountOfItems) {
             IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
             if (_storedItems[ingredient] < amountOfItems) {
                 throw new Exception($"Not enough{ingredient.Name} in storage");
-            }else {
-                if (_storedItems[ingredient] - amountOfItems == 0) {
-                    RemoveItem(ingredient);
-                }else {
-                    _storedItems[ingredient] -= amountOfItems;
-                    _currentFilled -= amountOfItems;
-                }
             }
+            if (_storedItems[ingredient] - amountOfItems == 0) {
+                RemoveItem(ingredient);
+            }else {
+                _storedItems[ingredient] -= amountOfItems;
+                _currentFilled -= amountOfItems;
+            }
+            int price = ingredient.Price + amountOfItems;
+            return price;
         }
         
         ///<summary>
         /// This method is used to get a multiple items from storage
         ///</summary>
-        public void UseItem(Dictionary<string,int> items) {
+        public int UseItem(Dictionary<string,int> items) {
+            int price = 0;
             foreach (var itemName in items) {
                 IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key);
                 if (_storedItems[ingredient] < itemName.Value) 
@@ -107,7 +107,11 @@ namespace Storage {
                     _storedItems[ingredient] -= itemName.Value; 
                     _currentFilled -= itemName.Value;
                 }
+
+                price += ingredient.Price + itemName.Value;
             }
+
+            return price;
         }
 
         public void RemoveItem(IItem ingredient) {
@@ -118,8 +122,6 @@ namespace Storage {
                 throw new Exception("Item not found");
             }
 
-            StorageController.Instance.ClearCellFromItems(ingredient.Name);
-            
             if (_storedItems[ingredient] > 0) {
                 _currentFilled -= _storedItems[ingredient];
                 _storedItems.Remove(ingredient);
