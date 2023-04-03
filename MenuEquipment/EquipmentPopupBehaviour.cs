@@ -29,6 +29,7 @@ namespace MenuEquipment {
                 Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
                 foreach (var ingredient in dish.ingredients)
                 {
+                    cc.AddIngerdient(ingredient);
                     Debug.Log(ingredient);
                     var ingredientVar = Instantiate(ingredientPrefab);
                     ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);
