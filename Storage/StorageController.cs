@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MenuEquipment.SO;
 using Models;
 using Storage.SO;
 using TMPro;
@@ -33,6 +34,8 @@ namespace Storage {
         private Storage _currentStorage;
         [SerializeField]
         private RawComponents rawComponents;
+        [SerializeField] 
+        private Menu dishes;
 
         //Singleton
         private static StorageController _instance;
@@ -119,16 +122,25 @@ namespace Storage {
             }
         }
 
-        public void SpendMoney(int price) {
-            try {
-                _currentStorage.Coins = price;
-            }catch (Exception e) {
-                Debug.Log(e);
-            }
+        public Menu ReceiveActualDishes() {
+            return dishes;
         }
-        
-        public void GetItemBasicPrice(string itemName) {
-            Debug.Log(_currentStorage.StoredItems.First(i => i.Key.Name == itemName));
+
+        public RawComponents ReceiveActualComponents() {
+            return rawComponents;
+        }
+
+        public void UseItemFromStorage(string itemName, int value) {
+            if (itemName == null) {
+                throw new Exception("Items not set");
+            }
+            try {
+                _currentStorage.UseItem(itemName, value);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         //Save and load Data
@@ -137,7 +149,10 @@ namespace Storage {
                 Dictionary<IItem, int> ingredients =
                     new Dictionary<IItem, int>();
                 foreach (string key in data.Keys) {
-                    ingredients.Add(rawComponents.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
+                    if (rawComponents.IsIngredientExists(key))
+                        ingredients.Add(rawComponents.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
+                    if(dishes.IsDishExists(key))
+                        ingredients.Add(dishes.GetDish(key), data.Values[data.Keys.IndexOf(key)]);
                 }
                 storageHolder.AssignStorage(data.maxCapacity,data.coins,ingredients);
             }else {
@@ -150,9 +165,8 @@ namespace Storage {
             List<int> values = new List<int>();
             if (_currentStorage.StoredItems.Keys != null)
                 foreach (IItem item in _currentStorage.StoredItems.Keys) {
-                    var key = (RawComponents.RawIngredient)item;
-                    keys.Add(key.Name);
-                    values.Add(_currentStorage.StoredItems[key]);
+                    keys.Add(item.Name);
+                    values.Add(_currentStorage.StoredItems[item]);
                 }
             else
                 throw new Exception("Storage is empty");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Storage;
 using UnityEngine;
 
@@ -9,6 +10,24 @@ namespace MenuEquipment.SO {
     {
         public List<Dish> dishes = new List<Dish>();
         
+        public Dish GetDish(string dishName) {
+            foreach(Dish ingredient in dishes) {
+                if (ingredient.Name.Equals(dishName)) {
+                    return ingredient;
+                }
+            }
+            throw new Exception("Dish not found");
+        }
+        
+        public bool IsDishExists(string dishName) {
+            foreach(Dish ingredient in dishes) {
+                if (ingredient.Name.Equals(dishName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         [Serializable]
         public class Dish : IItem
         {

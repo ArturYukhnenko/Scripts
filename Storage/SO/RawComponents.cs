@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace Storage.SO {
@@ -14,6 +15,15 @@ namespace Storage.SO {
                 }
             }
             throw new Exception("Ingredient not found");
+        }
+        
+        public bool IsIngredientExists(string ingredientName) {
+            foreach(RawIngredient ingredient in rawComponents) {
+                if (ingredient.Name.Equals(ingredientName)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         [Serializable]
