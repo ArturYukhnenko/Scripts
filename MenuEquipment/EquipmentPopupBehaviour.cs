@@ -19,9 +19,8 @@ namespace MenuEquipment {
         void Start()
         {
             titlePopup.text = _equipmentData.toolName;
-            foreach (var dishName in _equipmentData.dishes)
-            {
-                Menu.Dish dish = menu.dishes.Find(i => i.dishName == dishName);
+            foreach (var dishName in _equipmentData.dishes) {
+                Menu.Dish dish = menu.GetDish(dishName);
                 var dishVar = Instantiate(dishPrefab);
                 dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);
                 ComponentController cc = dishVar.GetComponent<ComponentController>();
@@ -30,6 +29,7 @@ namespace MenuEquipment {
                 Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
                 foreach (var ingredient in dish.ingredients)
                 {
+                    cc.AddIngerdient(ingredient);
                     Debug.Log(ingredient);
                     var ingredientVar = Instantiate(ingredientPrefab);
                     ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);

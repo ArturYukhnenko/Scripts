@@ -48,7 +48,7 @@ namespace MenuEquipment {
                 foreach (var dish in menu.dishes)
                 {
                     //Too heave method. Make it on Exit/Destroy
-                    _cc = _dishVariants[dish.dishName].GetComponent<ComponentController>();
+                    _cc = _dishVariants[dish.Name].GetComponent<ComponentController>();
                     dish.activated = _cc.Toggle.isOn;
                 }
                                  
@@ -64,10 +64,10 @@ namespace MenuEquipment {
         {
             GameObject dishVar = Instantiate(dishPrefab, spawner.transform, true);
             _cc = dishVar.GetComponent<ComponentController>();
-            _cc.Title.text = dish.dishName;
+            _cc.Title.text = dish.Name;
             if(EditableMode)
-                _dishVariants.Add(dish.dishName, dishVar);
-            _cc.IngredientsSpawner.name += "_" + dish.dishName;
+                _dishVariants.Add(dish.Name, dishVar);
+            _cc.IngredientsSpawner.name += "_" + dish.Name;
             foreach (var ingredient in dish.ingredients)
             {
                 Debug.Log(ingredient);

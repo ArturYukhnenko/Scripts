@@ -9,13 +9,6 @@ namespace Storage {
         public static Sprite DefaultImg;
         private GameObject _itemGameObject;
 
-        public void SetSpriteForCell(Sprite sprite) {
-            if (sprite == null) {
-                throw new Exception("Spite is empty");
-            }
-            _itemGameObject.GetComponent<Image>().sprite = sprite;
-        }
-        
         public void ResetCell() {
             if (DefaultImg == null) {
                 throw new Exception("Default image for cell is not set");
@@ -27,6 +20,11 @@ namespace Storage {
         public int ID { get; set; }
 
         public string CellItemName { get; set; }
+
+        public Sprite DefaultImg {
+            get => _defaultImg;
+            set => _defaultImg = value;
+        }
 
         public GameObject ItemGameObject {
             get => _itemGameObject;

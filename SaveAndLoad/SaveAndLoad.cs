@@ -26,9 +26,10 @@ namespace SaveAndLoad {
             }
         }
 
-        public static StorageModel Load(string dirPath, string fileName) {
+        public static IModel Load(string dirPath, string fileName, ModelTypesEnums modelTypeEnums) {
+            //Do load method in every model
             string path = Path.Combine(dirPath, fileName);
-            StorageModel data = null;
+            IModel model = null;
             if (File.Exists(path)) {
                 try {
                     string dataToLoad = "";
@@ -37,16 +38,18 @@ namespace SaveAndLoad {
                             dataToLoad = reader.ReadToEnd();
                         }
                     }
-
-                    data = JsonUtility.FromJson<StorageModel>(dataToLoad);
-
+                    switch (modelTypeEnums) {
+                        case ModelTypesEnums.StorageModel:
+                            model = new StorageModel().Load(dataToLoad);
+                            break;
+                    }
                 }
                 catch (Exception e) {
                     Debug.Log("Data load failed" + e);
                 }
             }
 
-            return data;
+            return model;
         }
     }
 }

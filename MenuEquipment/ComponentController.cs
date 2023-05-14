@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +11,7 @@ namespace MenuEquipment {
         [SerializeField] private GameObject ingredientPrefab;
         [SerializeField] private Toggle toggle;
         [SerializeField] private GameObject ingredientsSpawner;
+        private List<string> _ingredients = new List<string>();
 
         public TMP_Text Title
         {
@@ -32,6 +35,20 @@ namespace MenuEquipment {
         {
             get => ingredientsSpawner;
             set => ingredientsSpawner = value;
+        }
+
+        public void AddIngerdient(string ingredient)
+        {
+            _ingredients.Add(ingredient);
+        }
+
+        public void Cook()
+        {
+            foreach (var ingredient in _ingredients) {
+                StorageController.Instance.GetIngredientFromStorage(ingredient);
+               // StorageController.Instance. add dish to storage
+            }
+            
         }
     }
 }
