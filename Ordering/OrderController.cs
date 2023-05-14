@@ -19,7 +19,7 @@ namespace Ordering {
         private Order _order;
 
         [SerializeField] 
-        private Button _button;
+        private GameObject button;
         
         //Timer
         [SerializeField] 
@@ -40,7 +40,6 @@ namespace Ordering {
                 RectTransform rt = item.GetComponent<RectTransform>();
                 rt.localPosition = new Vector3(0, 0, 0);
                 rt.localScale = new Vector3(1, 1, 1);
-                item.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
         }
@@ -49,19 +48,17 @@ namespace Ordering {
             CheckItemsForOrder();
 
             if (_status == Status.Ready) {
-                _button.gameObject.SetActive(true);
+                button.SetActive(true);
             }
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
-                if (_status != Status.Finished) {
-                    Destroy(this);
-                }
+                Destroy(this.gameObject);
             }
 
             if (_status == Status.Finished) {
                 StorageController.Instance.AddEarnedMoney(_order.Price);
-                Destroy(this);
+                Destroy(this.gameObject);
             }
             UpdateTimer();
         }
