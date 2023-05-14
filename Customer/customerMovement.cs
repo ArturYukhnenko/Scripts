@@ -11,6 +11,8 @@ public class customerMovement : MonoBehaviour
     string[] CoffeeList = { "Hot Coffee", "Cold Coffee", "Latte" };
     string[] BakeryListItem = { "Doughnut", "Muffin" };
 
+    public employeeOrder or;
+
     private Vector3 CashRegister;
     private bool MoveToCashRegister;
     private Vector3 FreeTable;
@@ -21,10 +23,12 @@ public class customerMovement : MonoBehaviour
     public Text coffeeInfo;
     public Text bakeryInfo;
     int orderNumber;
-    private bool allowOrder;
+    public bool allowOrder;
+    public bool all;
 
     private void Start()
     {
+        
         orderNumber = 0;
         bakeryInfo.enabled = false;
         coffeeInfo.enabled = false;
@@ -34,7 +38,15 @@ public class customerMovement : MonoBehaviour
 
     void Update()
     {
+
         MoveCustomer();
+
+        if (allowOrder == true)
+        {
+            or.orderAccepted = true;
+
+        }
+
 
     }
 
@@ -63,15 +75,16 @@ public class customerMovement : MonoBehaviour
                 Instantiate(coffeeInfo);
                 Instantiate(bakeryInfo);
 
+
             }
             
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (all==true)
             {
                 MoveToCashRegister = false;
                 Debug.Log("Order accepted");
                 MoveToFreeTable = true;
-                
+       
                 transform.position = Vector3.MoveTowards(transform.position, FreeTable, customerSpeed * Time.deltaTime);
             }
         }
@@ -112,7 +125,7 @@ public class customerMovement : MonoBehaviour
     public void generateOrder()
     {
         orderNumber++;  //todo is not working correctly, always shows 1
-        Debug.Log(orderNumber);
+        //Debug.Log(orderNumber);
         bakeryInfo.text = generateBakeryItem();
         bakeryInfo.enabled = true;
         coffeeInfo.text = generateCoffee();
