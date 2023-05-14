@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 namespace Storage {
     public class StorageCell {
-        
-        public static Sprite DefaultImg;
+        private static Sprite _defaultImg;
         private GameObject _itemGameObject;
 
         public void ResetCell() {
