@@ -20,7 +20,6 @@ namespace Ordering {
         public void CreateOrder(List<Menu.Dish> dishes) {
             GameObject order = Instantiate(orderPrefab, spawnPoint.transform);
             order.GetComponent<OrderController>().Initialize(dishes);
-
             RectTransform rt = order.GetComponent<RectTransform>();
             rt.localPosition = new Vector3(0, 0, 0); 
             rt.localScale = new Vector3(1, 1, 1); 
@@ -30,7 +29,7 @@ namespace Ordering {
 
         public void Test() {
             List<Menu.Dish> dish = new List<Menu.Dish>();
-            dish.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals("Latte")));
+            dish.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals("Espresso")));
             CreateOrder(dish);
         }
     }

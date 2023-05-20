@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MenuEquipment.SO;
 using Storage;
 using TMPro;
@@ -32,16 +33,20 @@ namespace Ordering {
         public void Initialize(List<Menu.Dish> dishes) {
             if (dishes.Count == 1) {
                 _order = new Order(dishes[0]);
-            } else {
+            } else { 
                 _order = new Order(dishes);
             }
             for (int i = 0; i < dishes.Count; i++) {
                 GameObject item = Instantiate(orderItem, orderItemSpawner.transform);
                 RectTransform rt = item.GetComponent<RectTransform>();
                 rt.localPosition = new Vector3(0, 0, 0);
-                rt.localScale = new Vector3(1, 1, 1);
+                rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
+        }
+
+        public Order Test() {
+            return _order;
         }
 
         private void Update() {
@@ -81,22 +86,24 @@ namespace Ordering {
 
         private void CheckItemsForOrder() {
             int i = 0;
-            foreach (var dish in _order.Dishes) {
-                if (StorageController.Instance.StoredItems.ContainsKey(dish.Key)) {
+            foreach (var dish in _order.Dishes.ToArray()) {
+                if (StorageController.Instance.StoredItems.Any(d => d.Key.Name == dish.Key.Name)) {
                     _order.Dishes[dish.Key] = true;
+                    Debug.Log("here");
+                    i++;
                 }else {
                     _order.Dishes[dish.Key] = false;
                 }
-                if (_order.Dishes[dish.Key]) {
-                    i++;
-                }
             }
+            Debug.Log(i);
             try {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
+                    Debug.Log(i + "In progress");
                 }
                 if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
+                    Debug.Log(i + "Ready");
                 }
             }
             catch (Exception e) {
