@@ -45,8 +45,19 @@ namespace Storage {
         }
 
         //Transferring SO to other different classes
-        public Menu ReceiveActualDishes() {
-            return _dishes;
+        public List<Menu.Dish> ReceiveActualDishes() {
+            List<Menu.Dish> actualDishes = new List<Menu.Dish>();
+            foreach (Menu.Dish dish in _dishes.dishes) {
+                if (dish.activated) {
+                    actualDishes.Add(dish);
+                }
+            }
+
+            if (actualDishes.Count == 0) {
+                throw new Exception("Actual menu doesn't contain any dishes");
+            }
+
+            return actualDishes;
         }
         public RawComponents ReceiveActualComponents() {
             return _rawComponents;

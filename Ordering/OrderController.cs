@@ -84,6 +84,8 @@ namespace Ordering {
             foreach (var dish in _order.Dishes) {
                 if (StorageController.Instance.StoredItems.ContainsKey(dish.Key)) {
                     _order.Dishes[dish.Key] = true;
+                }else {
+                    _order.Dishes[dish.Key] = false;
                 }
                 if (_order.Dishes[dish.Key]) {
                     i++;
@@ -92,7 +94,8 @@ namespace Ordering {
             try {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
-                }else if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
+                }
+                if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
                 }
             }

@@ -30,7 +30,7 @@ namespace Ordering {
 
         public void Test() {
             List<Menu.Dish> dish = new List<Menu.Dish>();
-            dish.Add(StorageController.Instance.ReceiveActualDishes().GetDish("Latte"));
+            dish.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals("Latte")));
             CreateOrder(dish);
         }
     }
