@@ -19,6 +19,7 @@ public class RoomGenerator : MonoBehaviour
     void Start()
     {
         generateWalls();
+        generateFloor();
     }
 
     // Update is called once per frame
@@ -76,6 +77,23 @@ public class RoomGenerator : MonoBehaviour
         
     }
 
+    private void generateFloor()
+    {
+        for (int i = 0; i < x; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                var floor = Instantiate(floorPrefab);
+                floor.transform.SetParent(GameObject.Find("floor").transform);
+                Vector3 floorVector3 = new Vector3(floorPrefab.transform.position.x + i, floorPrefab.transform.position.y,
+                    floorPrefab.transform.position.z + j);
+                floor.transform.SetPositionAndRotation(floorVector3, floorPrefab.transform.rotation);
+                generatedObjects.Add(floor);
+            }
+        }
+        
+    }
+
     public void addArea()
     {
         x += 1;
@@ -90,15 +108,13 @@ public class RoomGenerator : MonoBehaviour
             var pos = wall.transform.position;
             wall.transform.position = new Vector3(pos.x, pos.y, pos.z+1);
         }
-        deleteWalls();
-        generateWalls();
-    }
-
-    private void deleteWalls()
-    {
         foreach (var obj in generatedObjects)
         {
             Destroy(obj);
         }
+        generateWalls();
+        generateFloor();
     }
+
+
 }
