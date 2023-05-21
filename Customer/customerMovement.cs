@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Ordering;
+using Storage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,8 +71,9 @@ public class customerMovement : MonoBehaviour
 
             if (allowOrder == false)
             {
-              
-                generateOrder();
+                GameObject.Find("OrderManager").GetComponent<OrderManager>().CreateOrder(StorageController.Instance.ReceiveActualDishes());
+                Debug.Log(StorageController.Instance.ReceiveActualDishes().Count);
+                //generateOrder();dsa
                 allowOrder = true;
                 Instantiate(coffeeInfo);
                 Instantiate(bakeryInfo);
