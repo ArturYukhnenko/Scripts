@@ -87,23 +87,19 @@ namespace Ordering {
         private void CheckItemsForOrder() {
             int i = 0;
             foreach (var dish in _order.Dishes.ToArray()) {
-                if (StorageController.Instance.StoredItems.Any(d => d.Key.Name == dish.Key.Name)) {
+                if (StorageController.Instance.IfItemInStorage(dish.Key)) {
                     _order.Dishes[dish.Key] = true;
-                    Debug.Log("here");
                     i++;
                 }else {
                     _order.Dishes[dish.Key] = false;
                 }
             }
-            Debug.Log(i);
             try {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
-                    Debug.Log(i + "In progress");
                 }
                 if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
-                    Debug.Log(i + "Ready");
                 }
             }
             catch (Exception e) {
