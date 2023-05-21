@@ -231,6 +231,13 @@ namespace Storage {
             return price;
         }
 
+        public bool IfItemsInStorage(List<IItem> items) {
+            return _currentStorage.CheckItemsForExistence(items);
+        }
+        public bool IfItemInStorage(IItem item) {
+            return _currentStorage.CheckItemForExistence(item);
+        }
+
         //Save and load Data
         private void Load(StorageModel data) {
             if (data != null) {

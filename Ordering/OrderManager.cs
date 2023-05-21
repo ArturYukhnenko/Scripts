@@ -18,6 +18,9 @@ namespace Ordering {
         }
 
         public void CreateOrder(List<Menu.Dish> dishes) {
+            if (_existingOrders.Count >= 5) {
+                throw new Exception("Cannot accept more orders");
+            }
             GameObject order = Instantiate(orderPrefab, spawnPoint.transform);
             order.GetComponent<OrderController>().Initialize(dishes);
             RectTransform rt = order.GetComponent<RectTransform>();
@@ -27,10 +30,10 @@ namespace Ordering {
             _existingOrders.Add(order);
         }
 
-        public void Test() {
-            List<Menu.Dish> dish = new List<Menu.Dish>();
-            dish.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals("Espresso")));
-            CreateOrder(dish);
+        public void Test(string dish) {
+            List<Menu.Dish> dishes = new List<Menu.Dish>();
+            dishes.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals(dish)));
+            CreateOrder(dishes);
         }
     }
 }

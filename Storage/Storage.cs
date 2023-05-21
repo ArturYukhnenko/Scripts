@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MenuEquipment.SO;
 
 namespace Storage {
     [Serializable]
@@ -113,6 +114,31 @@ namespace Storage {
             }
 
             return price;
+        }
+
+        public bool CheckItemsForExistence(List<IItem> items) {
+            if (items == null) {
+                throw new Exception("List is empty");
+            }
+
+            foreach (IItem item in items) {
+                if (!_storedItems.ContainsKey(item)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        public bool CheckItemForExistence(IItem item) {
+            if (item == null) {
+                throw new Exception("List is empty");
+            }
+            
+            if (!_storedItems.Keys.Any(i => i.Name.Equals(item.Name))) {
+                return false;
+            }
+            
+            return true;
         }
 
         public void RemoveItem(IItem ingredient) {
