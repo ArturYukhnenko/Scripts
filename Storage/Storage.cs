@@ -75,6 +75,7 @@ namespace Storage {
         /// This method is used to get a single item in any amount from storage
         ///</summary>
         public int UseItem(String itemName, int amountOfItems) {
+            
             IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
             if (_storedItems[ingredient] < amountOfItems) {
                 throw new Exception($"Not enough{ingredient.Name} in storage");

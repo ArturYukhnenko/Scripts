@@ -21,22 +21,26 @@ namespace MenuEquipment {
             titlePopup.text = _equipmentData.toolName;
             foreach (var dishName in _equipmentData.dishes) {
                 Menu.Dish dish = menu.GetDish(dishName);
-                var dishVar = Instantiate(dishPrefab);
-                dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);
-                ComponentController cc = dishVar.GetComponent<ComponentController>();
-                cc.Title.text = dishName;
-                cc.IngredientsSpawner.name += "_" + dishName;
-                Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
-                foreach (var ingredient in dish.ingredients)
+                if (dish.activated)
                 {
-                    cc.AddIngerdient(ingredient);
-                    Debug.Log(ingredient);
-                    var ingredientVar = Instantiate(ingredientPrefab);
-                    ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);
-                    var iconIngredient = ingredientVar.GetComponent<Image>();
-                    iconIngredient.sprite = ingredients.GetIngredient(ingredient).Icon;
-                    ingredientVar.GetComponentInChildren<TMP_Text>().text = " ";
+                    var dishVar = Instantiate(dishPrefab);
+                                    dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);
+                                    ComponentController cc = dishVar.GetComponent<ComponentController>();
+                                    cc.Title.text = dishName;
+                                    cc.IngredientsSpawner.name += "_" + dishName;
+                                    Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
+                                    foreach (var ingredient in dish.ingredients)
+                                    {
+                                        cc.AddIngerdient(ingredient);
+                                        //Debug.Log(ingredient);
+                                        var ingredientVar = Instantiate(ingredientPrefab);
+                                        ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);
+                                        var iconIngredient = ingredientVar.GetComponent<Image>();
+                                        iconIngredient.sprite = ingredients.GetIngredient(ingredient).Icon;
+                                        ingredientVar.GetComponentInChildren<TMP_Text>().text = " ";
+                                    }
                 }
+                
            
             }
         }

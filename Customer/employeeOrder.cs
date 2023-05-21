@@ -36,7 +36,7 @@ public class employeeOrder : MonoBehaviour
     public void acceptOrder()
     {
         transform.position = Vector3.MoveTowards(employee.transform.position, FreeTable, employeeSpeed * Time.deltaTime);
-        Debug.Log("moving to table");
+//        Debug.Log("moving to table");
         StartCoroutine(timer());
         //transform.position = Vector3.MoveTowards(employee.transform.position, CashRegister, employeeSpeed * Time.deltaTime);
 
@@ -51,7 +51,7 @@ public class employeeOrder : MonoBehaviour
     public IEnumerator timer()
     {
         yield return new WaitForSeconds(5.0f);
-        Debug.Log("Preparing order");
+       // Debug.Log("Preparing order");
         
     }
 

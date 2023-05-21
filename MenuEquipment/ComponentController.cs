@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Storage;
 using TMPro;
@@ -11,6 +12,7 @@ namespace MenuEquipment {
         [SerializeField] private GameObject ingredientPrefab;
         [SerializeField] private Toggle toggle;
         [SerializeField] private GameObject ingredientsSpawner;
+        [SerializeField] private GameObject popupException; 
         private List<string> _ingredients = new List<string>();
 
         public TMP_Text Title
@@ -44,16 +46,28 @@ namespace MenuEquipment {
 
         public void Cook()
         {
-            foreach (var VARIABLE in _ingredients)
-            {
-                 Debug.Log(VARIABLE);
-            }
-
-            Debug.Log(StorageController.Instance);
-            StorageController.Instance.GetIngredientFromStorage(_ingredients);
-            //StorageController.Instance.
+            //StorageController.Instance.GetDishFromStorage(_ingredients);
+            
+                try
+                {
+                    foreach (var ingredient in _ingredients)
+                    {
+                        StorageController.Instance.GetIngredientFromStorage(ingredient);
+                    }
+                    StorageController.Instance.AddItemToStorage(title.text);
+                    Debug.Log("Cooked " + title.text);
+                }
+                catch (InvalidOperationException e)
+                {
+                    Instantiate(popupException);
+                }
+                                             
+                
+            
+            
             
             
         }
+    
     }
 }

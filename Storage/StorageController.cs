@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using MenuEquipment.SO;
 using Models;
 using Storage.SO;
+using UnityEngine;
 
 namespace Storage {
     public class StorageController {
@@ -15,6 +16,7 @@ namespace Storage {
         private StorageHolder _storageHolder;
         private static Storage _currentStorage;
         private RawComponents _rawComponents;
+        
         private Menu _dishes;
 
         public ReadOnlyDictionary<IItem, int> StoredItems => _currentStorage.StoredItems;
@@ -120,7 +122,8 @@ namespace Storage {
         public int GetDishFromStorage(string dishName) {
             int price = 0;
             if (!_dishes.IsDishExists(dishName)) {
-                throw new Exception("Dish is not exists"); 
+                
+                throw new Exception("Dish is not exists " + dishName); 
             }
             price = _currentStorage.UseItem(dishName, 1);
             return price;
@@ -151,7 +154,7 @@ namespace Storage {
             Dictionary<string, int> usedDishes = new Dictionary<string, int>();
             foreach (string dish in dishNames) {
                 if (!_dishes.IsDishExists(dish)) {
-                    throw new Exception("Dish is not exists");
+                    throw new Exception("Dish is not exists " + dish);
                 }
                 if (usedDishes.ContainsKey(dish)) {
                     usedDishes[dish] += 1;
