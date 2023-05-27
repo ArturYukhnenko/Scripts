@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Exceptions;
 using MenuEquipment.SO;
 using Models;
 using Storage.SO;
@@ -61,180 +62,68 @@ namespace Storage {
 
             return actualDishes;
         }
-        public RawComponents ReceiveActualComponents() {
-            return _rawComponents;
-        }
         
         //Money managment
         public void AddEarnedMoney(int income) {
-            _currentStorage.Coins = income;
+            if (income > 0)
+                _currentStorage.Coins = income;
+            else
+                throw new WrongValueException("Number cannot be less or equals to 0");
         }
 
         public void SpendMoney(int price) {
-            if (price < 0) {
-                _currentStorage.Coins = price;
-            }else {
+            if (price > 0)
                 _currentStorage.Coins = -price;
-            }
+            else
+                throw new WrongValueException("Number cannot be less or equals to 0");
         }
 
-        public int GetMoney() {
+        public int GetAmountOfMoney() {
             return _currentStorage.Coins;
         }
 
-        /// <summary>
-        /// Method is used to add item to the storage in single existance
-        /// </summary>
-        /// <param name="itemName"></param>
-        /// <exception cref="Exception">Throw exception if item not found in any list of existing items</exception>
-        public void AddItemToStorage(string itemName) {
+       public void AddItemToStorage(string itemName) {
             if (_dishes.IsDishExists(itemName)) {
                 _currentStorage.AddItem(_dishes.GetDish(itemName), 1);
             }else if (_rawComponents.IsIngredientExists(itemName)) {
                 _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), 1);
-            }else{
-                throw new Exception("Item not found exception");
+            }else {
+                throw new ElementNotFoundException("Item not found exception");
             }
-        } 
-        
-        /// <summary>
-        /// Method is used to add item to the storage in any amount
-        /// </summary>
-        /// <param name="itemName"></param>
-        /// <param name="amount"></param>
-        /// <exception cref="Exception">Throw exception if item not found in any list of existing items</exception>
-        public void AddItemToStorage(string itemName, int amount) {
+       }
+       public void AddItemToStorage(string itemName, int amount) {
             if (_dishes.IsDishExists(itemName)) {
                 _currentStorage.AddItem(_dishes.GetDish(itemName), amount);
             }else if (_rawComponents.IsIngredientExists(itemName)) {
                 _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), amount);
             }else {
-                throw new Exception("Item not found exception");
+                throw new ElementNotFoundException("Item not found exception");
             }
-        }
-
-        //Method to use items from storage
-        /// <summary>
-        /// Method is used to get only one dish
-        /// </summary>
-        /// <param name="dishName"></param>
-        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
-        public int GetDishFromStorage(string dishName) {
-            int price = 0;
-            if (!_dishes.IsDishExists(dishName)) {
-                
-                throw new Exception("Dish is not exists " + dishName); 
-            }
-            price = _currentStorage.UseItem(dishName, 1);
-            return price;
-        }
+       }
         
-        /// <summary>
-        /// Method is used to get dish in bigger amount, than 1
-        /// </summary>
-        /// <param name="dishName"></param>
-        /// <param name="amount"></param>
-        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
-        public int GetDishFromStorage(string dishName, int amount) {
-            int price = 0;
-            if (!_dishes.IsDishExists(dishName)) {
-                throw new Exception("Dish is not exists");
+        public void GetDishFromStorage(string dish) {
+            if (!_dishes.IsDishExists(dish)) { 
+                throw new ElementNotFoundException($"{dish} is not exists "); 
             }
-            price = _currentStorage.UseItem(dishName, amount);
-            return price;
-        }
-
-        /// <summary>
-        /// Method is used to get a few different dishes in any amount
-        /// </summary>
-        /// <param name="dishNames">List with Dish names, dish names can be duplicated in list</param>
-        /// <exception cref="Exception">Throw exception if dish is not exists in list of all dishes</exception>
-        public int GetDishFromStorage(List<string> dishNames) {
-            int price = 0;
-            Dictionary<string, int> usedDishes = new Dictionary<string, int>();
-            foreach (string dish in dishNames) {
-                if (!_dishes.IsDishExists(dish)) {
-                    throw new Exception("Dish is not exists " + dish);
-                }
-                if (usedDishes.ContainsKey(dish)) {
-                    usedDishes[dish] += 1;
-                }else {
-                   usedDishes.Add(dish, 1); 
-                }
-            }
-
-            try {
-                price = _currentStorage.UseItem(usedDishes);
-            }catch (Exception e) {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return price;
-        }
-        
-        /// <summary>
-        /// Method is used to get only one ingredient
-        /// </summary>
-        /// <param name="ingredientName"></param>
-        /// <exception cref="Exception"> Throw exception if ingredient is not exists in list of all ingredients</exception>
-        public int GetIngredientFromStorage(string ingredientName) {
-            int price = 0;
-            if (!_rawComponents.IsIngredientExists(ingredientName)) {
-                throw new Exception("Dish is not exists");
-            }
-            price = _currentStorage.UseItem(ingredientName, 1);
-            return price;
-        }
-        
-        /// <summary>
-        /// Method is used to get ingredient in bigger amount, than 1
-        /// </summary>
-        /// <param name="ingredientName"></param>
-        /// <param name="amount"></param>
-        /// <exception cref="Exception"> Throw exception if dish is not exists in list of all dishes</exception>
-        public int GetIngredientFromStorage(string ingredientName, int amount) {
-            int price = 0;
-            if (!_rawComponents.IsIngredientExists(ingredientName)) {
-                throw new Exception("Dish is not exists");
-            }
-            price = _currentStorage.UseItem(ingredientName, amount);
-            return price;
-        }
-
-        /// <summary>
-        /// Method is used to get a few different ingredients in any amount
-        /// </summary>
-        /// <param name="ingredientNames">Dictionary with Ingredient name key(string) and amount of ingredients as value(int)</param>
-        /// <exception cref="Exception">Throw exception if ingredient is not exists in list of all ingredients</exception>
-        public int GetIngredientFromStorage(List<string> ingredientNames) {
-            int price = 0;
-            Dictionary<string, int> usedIngredients = new Dictionary<string, int>();
-            foreach (string ingredient in ingredientNames) {
-                if (!_rawComponents.IsIngredientExists(ingredient)) {
-                    throw new Exception("Ingredient is not exists");
-                }
-                if (usedIngredients.ContainsKey(ingredient)) {
-                    usedIngredients[ingredient] += 1;
-                }else {
-                    usedIngredients.Add(ingredient, 1); 
-                }
+            if (!IfItemInStorage(dish)) { 
+                throw new NotEnoughItemsException($"There is not enough {dish} in storage");
             }
             
-            try {
-                price = _currentStorage.UseItem(usedIngredients);
-            }catch (Exception e) {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return price;
+            _currentStorage.GetItem(dish,1);
         }
+        
+       public void GetIngredientFromStorage(string ingredient) {
+           if (!_dishes.IsDishExists(ingredient)) { 
+               throw new ElementNotFoundException($"{ingredient} is not exists "); 
+           }
+           if (!IfItemInStorage(ingredient)) { 
+               throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
+           }
 
-        public bool IfItemsInStorage(List<IItem> items) {
-            return _currentStorage.CheckItemsForExistence(items);
-        }
-        public bool IfItemInStorage(IItem item) {
+           _currentStorage.GetItem(ingredient, 1);
+       }
+
+        public bool IfItemInStorage(string item) {
             return _currentStorage.CheckItemForExistence(item);
         }
 

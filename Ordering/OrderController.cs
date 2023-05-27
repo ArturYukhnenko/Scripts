@@ -87,7 +87,7 @@ namespace Ordering {
         private void CheckItemsForOrder() {
             int i = 0;
             foreach (var dish in _order.Dishes.ToArray()) {
-                if (StorageController.Instance.IfItemInStorage(dish.Key)) {
+                if (StorageController.Instance.IfItemInStorage(dish.Key.Name)) {
                     _order.Dishes[dish.Key] = true;
                     i++;
                 }else {

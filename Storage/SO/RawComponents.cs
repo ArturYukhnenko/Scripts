@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Exceptions;
 using UnityEngine;
 
 namespace Storage.SO {
@@ -14,7 +15,7 @@ namespace Storage.SO {
                     return ingredient;
                 }
             }
-            throw new Exception("Ingredient not found");
+            throw new ElementNotFoundException("Ingredient not found");
         }
         
         public bool IsIngredientExists(string ingredientName) {
