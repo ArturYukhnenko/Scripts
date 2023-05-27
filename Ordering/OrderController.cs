@@ -26,6 +26,8 @@ namespace Ordering {
         [SerializeField] 
         private TMP_Text timer;
 
+        public Status Status => _status;
+
         private void Start() {
             _status = Status.New;
         }
@@ -43,10 +45,6 @@ namespace Ordering {
                 rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
-        }
-
-        public Order Test() {
-            return _order;
         }
 
         private void Update() {

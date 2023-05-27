@@ -17,7 +17,7 @@ namespace Ordering {
             _existingOrders = new List<GameObject>();
         }
 
-        public void CreateOrder(List<Menu.Dish> dishes) {
+        public OrderController CreateOrder(List<Menu.Dish> dishes) {
             if (_existingOrders.Count >= 5) {
                 throw new Exception("Cannot accept more orders");
             }
@@ -28,6 +28,7 @@ namespace Ordering {
             rt.localScale = new Vector3(1, 1, 1); 
             order.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
             _existingOrders.Add(order);
+            return order.GetComponent<OrderController>();
         }
 
         public void Test(string dish) {
