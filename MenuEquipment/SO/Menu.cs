@@ -28,6 +28,14 @@ namespace MenuEquipment.SO {
             return false;
         }
 
+        public void calculatePrice(int benefit)
+        {
+            foreach (var dish in dishes)
+            {
+                // dish.ingredients
+            }
+        }
+
         [Serializable]
         public class Dish : IItem
         {
@@ -37,12 +45,15 @@ namespace MenuEquipment.SO {
             private Sprite icon;
             [SerializeField] 
             private int price;
+            [SerializeField]
+            private string instrument;
             
             public bool activated;
             public List<string> ingredients;
             public string Name => dishName;
             public Sprite Icon => icon;
             public int Price => price;
+            public string Instrument => "barTable" + instrument;
         }
 
     
