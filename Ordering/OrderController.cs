@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MenuEquipment.SO;
 using Storage;
@@ -18,6 +19,13 @@ namespace Ordering {
         [SerializeField]
         private float orderTimeLeft;
         private Order _order;
+        public ReadOnlyCollection<Menu.Dish> DishesList {
+            get {
+                List<Menu.Dish> d = new List<Menu.Dish>();
+                d.AddRange(_order.Dishes.Keys);
+                return new ReadOnlyCollection<Menu.Dish>(d);
+            }
+        }
 
         [SerializeField] 
         private GameObject button;

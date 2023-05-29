@@ -65,39 +65,60 @@ namespace Storage {
         
         //Money managment
         public void AddEarnedMoney(int income) {
-            if (income > 0)
+            if (income >= 0)
                 _currentStorage.Coins = income;
             else
                 throw new WrongValueException("Number cannot be less or equals to 0");
         }
 
-        public void SpendMoney(int price) {
-            if (price > 0)
-                _currentStorage.Coins = -price;
-            else
-                throw new WrongValueException("Number cannot be less or equals to 0");
+        public void BuyItem(string itemName,int price) {
+            try {
+                if (_rawComponents.IsIngredientExists(itemName)) {
+                    if (!(_currentStorage.Coins - price < 0)) {
+                        _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), 1);
+                        _currentStorage.Coins = -price;
+                    }else {
+                        throw new NotEnoughMoneyException("You don't have enough money to perform this action");
+                    }
+                }else { 
+                    throw new ElementNotFoundException("Item not found exception");
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public int GetAmountOfMoney() {
             return _currentStorage.Coins;
         }
 
-       public void AddItemToStorage(string itemName) {
-            if (_dishes.IsDishExists(itemName)) {
-                _currentStorage.AddItem(_dishes.GetDish(itemName), 1);
-            }else if (_rawComponents.IsIngredientExists(itemName)) {
-                _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), 1);
-            }else {
-                throw new ElementNotFoundException("Item not found exception");
-            }
+       public void AddDishToStorage(string itemName) {
+           try {
+                if (_dishes.IsDishExists(itemName)) { 
+                    _currentStorage.AddItem(_dishes.GetDish(itemName), 1);
+                }else { 
+                    throw new ElementNotFoundException("Item not found exception");
+                }
+           }
+           catch (Exception e) {
+               Console.WriteLine(e);
+               throw;
+           }
        }
-       public void AddItemToStorage(string itemName, int amount) {
-            if (_dishes.IsDishExists(itemName)) {
-                _currentStorage.AddItem(_dishes.GetDish(itemName), amount);
-            }else if (_rawComponents.IsIngredientExists(itemName)) {
-                _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), amount);
-            }else {
-                throw new ElementNotFoundException("Item not found exception");
+       
+       public void AddDishToStorage(string itemName, int amount) {
+           try {
+                if (_dishes.IsDishExists(itemName)) {
+                    _currentStorage.AddItem(_dishes.GetDish(itemName), amount);
+                }else { 
+                    throw new ElementNotFoundException("Item not found exception");
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
             }
        }
         
@@ -113,7 +134,7 @@ namespace Storage {
         }
         
        public void GetIngredientFromStorage(string ingredient) {
-           if (!_dishes.IsDishExists(ingredient)) { 
+           if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
            if (!IfItemInStorage(ingredient)) { 

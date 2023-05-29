@@ -26,7 +26,7 @@ public class CookingManager : MonoBehaviour
                 
             StorageController.Instance.GetIngredientFromStorage(ingredient);
         }
-        StorageController.Instance.AddItemToStorage(dish);
+        StorageController.Instance.AddDishToStorage(dish);
         Debug.Log("Cooked " + dish);
         
     }
