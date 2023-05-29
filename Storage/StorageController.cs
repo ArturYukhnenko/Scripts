@@ -65,7 +65,7 @@ namespace Storage {
         
         //Money managment
         public void AddEarnedMoney(int income) {
-            if (income > 0)
+            if (income >= 0)
                 _currentStorage.Coins = income;
             else
                 throw new WrongValueException("Number cannot be less or equals to 0");
@@ -134,7 +134,7 @@ namespace Storage {
         }
         
        public void GetIngredientFromStorage(string ingredient) {
-           if (!_dishes.IsDishExists(ingredient)) { 
+           if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
            if (!IfItemInStorage(ingredient)) { 
