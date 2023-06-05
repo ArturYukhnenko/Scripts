@@ -34,29 +34,8 @@ namespace Shop {
         private void SpawnCells() {
             foreach (var t in goods.rawComponents) {
                 GameObject good = Instantiate(shopCell, spawnPoint.transform);
-                good.GetComponentInChildren<Image>().sprite = t.Icon;
-                good.GetComponentInChildren<TMP_Text>().text = t.Price.ToString();
-                //good.GetComponentInChildren<TMP_Text>().text = availableItems.ToString();
-                good.GetComponentInChildren<Button>().onClick.AddListener(() => Buy(t.Name,t.Price,good));
+                good.GetComponent<ShopItem>().SetItems(t.Icon,t.Price.ToString(),availableItems.ToString(),t.Name);
             }
-        }
-
-        private void Buy(string goodName,int price,GameObject good) {
-            try {
-                //int amount = int.Parse(good.GetComponentInChildren<TMP_Text>().text)-1;
-                //if (amount == 0) 
-                    //good.GetComponentInChildren<Button>().GameObject().SetActive(false);
-                //else if(amount < 0)
-                    //throw new NotEnoughItemsException("Available items in store less than");
-                
-                StorageController.Instance.BuyItem(goodName,price);
-                //good.GetComponentInChildren<TMP_Text>().text = (int.Parse(good.GetComponentInChildren<TMP_Text>().text)-1).ToString();
-            }
-            catch (Exception e) {
-                Console.WriteLine(e);
-                throw;
-            }
-            
         }
 
     }
