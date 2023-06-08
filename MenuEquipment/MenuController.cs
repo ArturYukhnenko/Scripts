@@ -9,7 +9,6 @@ using UnityEngine.UI;
 namespace MenuEquipment {
     public class MenuController : MonoBehaviour
     {
-        public static bool EditableMode;
         [SerializeField]
         private GameObject dishPrefab, spawner, ingredientPrefab;
         [SerializeField] private Menu menu;
@@ -21,7 +20,7 @@ namespace MenuEquipment {
         void Start()
         {
             _dishVariants = new Dictionary<string, GameObject>();
-            if (EditableMode)
+            if (!CafeManager.IsDay)
             {Debug.Log("MenuController editable on");
                 foreach (var dish in menu.dishes)
                 {
@@ -43,7 +42,7 @@ namespace MenuEquipment {
             }
         }
         void Update()
-        {if (EditableMode)
+        {if (!CafeManager.IsDay)
             {
                 foreach (var dish in menu.dishes)
                 {
@@ -65,7 +64,7 @@ namespace MenuEquipment {
             GameObject dishVar = Instantiate(dishPrefab, spawner.transform, true);
             _cc = dishVar.GetComponent<ComponentController>();
             _cc.Title.text = dish.Name;
-            if(EditableMode)
+            if(!CafeManager.IsDay)
                 _dishVariants.Add(dish.Name, dishVar);
             _cc.IngredientsSpawner.name += "_" + dish.Name;
             foreach (var ingredient in dish.ingredients)

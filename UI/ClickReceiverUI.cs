@@ -12,13 +12,13 @@ namespace UI {
             if (eventData.pointerId == -1)
             {
                 Debug.Log("2d object left click received");
-                MenuController.EditableMode = false;
+               // MenuController.EditableMode = false;
             
             } 
             if (eventData.pointerId == -2)
             {
                 Debug.Log("2d object right click received");
-                MenuController.EditableMode = true;
+                //MenuController.EditableMode = true;
             }
             var popupObj = Instantiate(popup);
         }

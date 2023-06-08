@@ -3,7 +3,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Models;
 using Storage;
-using UnityEditor.Build.Content;
 using UnityEngine;
 
 namespace SaveAndLoad {
@@ -51,30 +50,6 @@ namespace SaveAndLoad {
 
             return model;
         }
-        public static IModel LoadNew(string dirPath, string fileName, ModelTypesEnums modelTypeEnums) {
-            //Do load method in every model
-            string path = Path.Combine(dirPath, fileName);
-            IModel model = null;
-            if (File.Exists(path)) {
-                try {
-                    string dataToLoad = "";
-                    using (FileStream stream = new FileStream(path,FileMode.Open)) {
-                        using (StreamReader reader = new StreamReader(stream)) {
-                            dataToLoad = reader.ReadToEnd();
-                        }
-                    }
-                    switch (modelTypeEnums) {
-                        case ModelTypesEnums.StorageModel:
-                            model = new StorageModel().Load(dataToLoad);
-                            break;
-                    }
-                }
-                catch (Exception e) {
-                    Debug.Log("Data load failed" + e);
-                }
-            }
-
-            return model;
-        }
+        
     }
 }

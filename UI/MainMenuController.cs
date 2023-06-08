@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    private string saveFile = @"Assets/Resourses/SavedData/Storage/StorageData";
+    private string saveFile = "Assets/Resourses/SavedData/Storage/StorageData";
     // Start is called before the first frame update
     void Start()
     {
@@ -28,12 +28,19 @@ public class MainMenuController : MonoBehaviour
     public void onLoad()
     {
         SaveAndLoad.SaveAndLoad.Load("Assets/Resourses/SavedData/Storage", "StorageData", ModelTypesEnums.StorageModel);
-        SceneManager.LoadScene(0);
+        CafeManager.Paused = false;
+        SceneManager.LoadScene(1);
     }
     public void onNew()
     {
-        SaveAndLoad.SaveAndLoad.LoadNew("Assets/Resourses/SavedData/Storage", "StorageData", ModelTypesEnums.StorageModel);
-        SceneManager.LoadScene(0);
-        Application.Quit(0);
+        File.Delete(saveFile + "StorageData");
+        CafeManager.Paused = false;
+        SceneManager.LoadScene(1);
+    }
+
+    public void onContinue()
+    {
+        CafeManager.pauseGame();
+        this.gameObject.SetActive(false);
     }
 }
