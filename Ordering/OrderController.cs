@@ -40,6 +40,11 @@ namespace Ordering {
             _status = Status.New;
         }
 
+        public void SetStatusReady()
+        {
+            _status = Status.Ready;
+        }
+
         public void Initialize(List<Menu.Dish> dishes) {
             if (dishes.Count == 1) {
                 _order = new Order(dishes[0]);

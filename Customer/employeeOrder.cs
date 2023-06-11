@@ -44,18 +44,34 @@ public class employeeOrder : MonoBehaviour
 
     public void Update()
     {
- 
-        if (orderAccepted == true)
+
+        //if (transform.position.x == CashRegister.x && transform.position.z == CashRegister.z)
+        //{
+        //    canMove = true;
+        //}
+
+
+        if (orderAccepted == false)
+            canMove = true;
+
+            if (orderAccepted == true)
         {
             acceptOrder();
+            orderAccepted = false;
             //Debug.Log("yyyyy");
         }
 
         if (moveBack == true)
         {
-            canMove = false;
+            //canMove = false;
             transform.position = Vector3.MoveTowards(employee.transform.position, CashRegister, employeeSpeed * Time.deltaTime);
-            StartCoroutine(timer());
+
+            if (transform.position.x == CashRegister.x && transform.position.z == CashRegister.z)
+            {
+                if (cm.transform.position.x == cm.CashRegister.x && cm.transform.position.z == cm.CashRegister.z)
+                passOrder = true;
+            }
+                StartCoroutine(timer());
             deliverOrder();
         }
 
@@ -66,9 +82,13 @@ public class employeeOrder : MonoBehaviour
     {
         if (canMove == true)
         {
-            transform.position = Vector3.MoveTowards(employee.transform.position, FreeTable, employeeSpeed * Time.deltaTime);
-            //Debug.Log("moving to table");
-            StartCoroutine(timer());
+            if (cm.MoveToCashRegister == true)
+            {
+
+                transform.position = Vector3.MoveTowards(employee.transform.position, FreeTable, employeeSpeed * Time.deltaTime);
+                //Debug.Log("moving to table");
+                StartCoroutine(timer());
+            }
         }
         //moveBack = true;
         //if (moveBack == true)  
@@ -78,34 +98,48 @@ public class employeeOrder : MonoBehaviour
 
     public void deliverOrder()
     {
-        StartCoroutine(timer1());
+        //StartCoroutine(timer1());
+        Debug.Log("pass order: "+passOrder);
         if (passOrder == true)
-            cm.all = true;
+        {
+            //cm.allowOrder = false;
+            cm.MoveToFreeTable = true;
+            cm.MoveToCashRegister = false;
+            passOrder = false;
+        }
         StartCoroutine(timer2());
     }
 
     public IEnumerator timer()
     {
         yield return new WaitForSeconds(5.0f);
-        moveBack = true;
-        canMove = false;
+        if (transform.position.x == FreeTable.x && transform.position.z == FreeTable.z)
+        {
+            moveBack = true;
+            canMove = false;
+        }
         // Debug.Log("Preparing order");
 
     }
 
-    public IEnumerator timer1()
-    {
-        yield return new WaitForSeconds(4.0f);
-        passOrder = true;
-        // Debug.Log("Preparing order");
+    //public IEnumerator timer1()
+    //{
+    //    yield return new WaitForSeconds(4.0f);
+    //    passOrder = true;
+    //    // Debug.Log("Preparing order");
 
-    }
+    //}
 
     public IEnumerator timer2()
     {
         yield return new WaitForSeconds(8.0f);
-        cm._moveToExit = true;
-        cm.all = false;
+
+
+        if (cm.transform.position.x == cm.FreeTable.x && cm.transform.position.z == cm.FreeTable.z)
+        {
+            cm.MoveToFreeTable = false;
+            cm.MoveToExit = true;
+        }
         // Debug.Log("Preparing order");
 
     }
@@ -113,6 +147,7 @@ public class employeeOrder : MonoBehaviour
     public void SetCustomer(GameObject _customer)
         {
 
+        moveBack = false;
         customer = _customer;
         cm = customer.GetComponent<customerMovement>();
 
