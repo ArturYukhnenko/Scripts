@@ -100,16 +100,23 @@ namespace Ordering {
                     _order.Dishes[dish.Key] = false;
                 }
             }
+
             try {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
                 }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e + " Current status is: " + _status);
+                throw;
+            }
+            try {
                 if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(e);
+                Console.WriteLine(e + " Current status is: " + _status);
                 throw;
             }
         }

@@ -20,7 +20,7 @@ namespace Storage {
                     StorageController.Instance.SetFields(storageHolder,rawComponents,dishes);
                 }
             }
-            Destroy(this.GameObject());
+            //Destroy(this.GameObject());
         }
     }
 }

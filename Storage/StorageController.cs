@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Storage {
     public class StorageController {
         //SaveFiles
-        private const string DirPath = "Assets/Resourses/SavedData/Storage";
+        private const string DirPath = "/Storage";
         private const string FileName = "StorageData";
 
         //StorageItems 
@@ -36,14 +36,21 @@ namespace Storage {
             _storageHolder = storageHolder;
             _rawComponents = rawComponents;
             _dishes = dishes;
-            if (_currentStorage == null) {
-                if (_storageHolder.Storage.StoredItems == null || _storageHolder.Storage == null) {
-                    Load((StorageModel)SaveAndLoad.SaveAndLoad.Load(DirPath, FileName, ModelTypesEnums.StorageModel));
-                    _currentStorage = _storageHolder.Storage;
-                }else {
-                    _currentStorage = _storageHolder.Storage;
+            if (MainMenuController.NewGame) {
+                _currentStorage = new Storage(1000, 1000);
+            }else {
+                if (_currentStorage == null) {
+                    if (_storageHolder.Storage.StoredItems == null || _storageHolder.Storage == null) {
+                        Load((StorageModel)SaveAndLoad.SaveAndLoad.Load(DirPath, FileName,
+                            ModelTypesEnums.StorageModel));
+                        _currentStorage = _storageHolder.Storage;
+                    }
+                    else {
+                        _currentStorage = _storageHolder.Storage;
+                    }
                 }
             }
+            
             _isSet = true;
         }
 
@@ -85,6 +92,24 @@ namespace Storage {
                 }
             }
             catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
+        public void BuyItem(string itemName,int amount,int price) {
+            try {
+                if(!(_currentStorage.Coins - price*amount < 0)){
+                    if (_rawComponents.IsIngredientExists(itemName)) {
+                        _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), amount);
+                        _currentStorage.Coins = -price;
+                    }else {
+                        throw new ElementNotFoundException("Item not found exception");
+                    }
+                }else {
+                    throw new NotEnoughMoneyException("You don't have enough money to perform this action");
+                }
+            }catch (Exception e) {
                 Console.WriteLine(e);
                 throw;
             }
