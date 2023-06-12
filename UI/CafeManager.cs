@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Storage;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,6 +13,9 @@ public class CafeManager : MonoBehaviour
 
     public static bool IsDay, Paused;
     // Start is called before the first frame update
+    
+    [SerializeField] private TMP_Text money;
+    
     void Start()
     {
         IsDay = false;
@@ -26,7 +31,7 @@ public class CafeManager : MonoBehaviour
             pausePopup.gameObject.SetActive(!Paused);
             pauseGame();
         }
-        
+        money.text = StorageController.Instance.GetAmountOfMoney().ToString();
     }
 
     public void turnOnDayMode()
