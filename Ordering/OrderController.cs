@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MenuEquipment.SO;
 using Storage;
@@ -18,6 +19,13 @@ namespace Ordering {
         [SerializeField]
         private float orderTimeLeft;
         private Order _order;
+        public ReadOnlyCollection<Menu.Dish> DishesList {
+            get {
+                List<Menu.Dish> d = new List<Menu.Dish>();
+                d.AddRange(_order.Dishes.Keys);
+                return new ReadOnlyCollection<Menu.Dish>(d);
+            }
+        }
 
         [SerializeField] 
         private GameObject button;
@@ -26,8 +34,15 @@ namespace Ordering {
         [SerializeField] 
         private TMP_Text timer;
 
+        public Status Status => _status;
+
         private void Start() {
             _status = Status.New;
+        }
+
+        public void SetStatusReady()
+        {
+            _status = Status.Ready;
         }
 
         public void Initialize(List<Menu.Dish> dishes) {
@@ -43,10 +58,6 @@ namespace Ordering {
                 rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
-        }
-
-        public Order Test() {
-            return _order;
         }
 
         private void Update() {
@@ -87,7 +98,7 @@ namespace Ordering {
         private void CheckItemsForOrder() {
             int i = 0;
             foreach (var dish in _order.Dishes.ToArray()) {
-                if (StorageController.Instance.IfItemInStorage(dish.Key)) {
+                if (StorageController.Instance.IfItemInStorage(dish.Key.Name)) {
                     _order.Dishes[dish.Key] = true;
                     i++;
                 }else {

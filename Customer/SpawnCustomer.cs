@@ -9,14 +9,24 @@ public class SpawnCustomer : MonoBehaviour
 
     private void Update()
     {
-        if (currentAmountOfCustomers <3 && Input.GetKeyDown(KeyCode.Space))
+        if (currentAmountOfCustomers < 3 && Input.GetKeyDown(KeyCode.Space))
         {
-            
-            customerPrefab.SetActive(true);
-            Instantiate(customerPrefab, transform.position, Quaternion.identity);
+
+            //customerPrefab.SetActive(true);
+            GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
             currentAmountOfCustomers++;
             customerPrefab.transform.Rotate(0f, 180f, 0f);
-           
+            customer.GetComponent<customerMovement>().MoveToExit = false;
+            
+            customer.GetComponent<customerMovement>().MoveToCashRegister = true;
+            customer.GetComponent<customerMovement>().MoveToFreeTable = false;
+            
+            customer.GetComponent<customerMovement>().customer = customer;
         }
+    }
+
+    public void DestroyCustomer(GameObject customer)
+    {
+        Destroy(customer); 
     }
 }

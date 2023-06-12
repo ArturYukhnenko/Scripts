@@ -40,8 +40,6 @@ namespace MenuEquipment {
                                         ingredientVar.GetComponentInChildren<TMP_Text>().text = " ";
                                     }
                 }
-                
-           
             }
         }
 

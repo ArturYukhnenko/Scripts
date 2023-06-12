@@ -46,26 +46,14 @@ namespace MenuEquipment {
 
         public void Cook()
         {
-            //StorageController.Instance.GetDishFromStorage(_ingredients);
-            
-                try
-                {
-                    foreach (var ingredient in _ingredients)
-                    {
-                        StorageController.Instance.GetIngredientFromStorage(ingredient);
-                    }
-                    StorageController.Instance.AddItemToStorage(title.text);
-                    Debug.Log("Cooked " + title.text);
-                }
-                catch (InvalidOperationException e)
-                {
-                    Instantiate(popupException);
-                }
-                                             
-                
-            
-            
-            
+            try
+            {
+                CookingManager.Cook(_ingredients, title.text);
+            }
+            catch (Exception e)
+            {
+                Instantiate(popupException);
+            }
             
         }
     
