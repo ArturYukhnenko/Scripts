@@ -12,7 +12,7 @@ namespace UI {
         private EquipmentData equipmentData;
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.pointerId == -1)
+            if (CafeManager.IsDay)
             {
                 Debug.Log("3d object left click received");
                 var popupObj = Instantiate(popup);

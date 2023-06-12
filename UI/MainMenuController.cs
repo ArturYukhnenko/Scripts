@@ -6,9 +6,8 @@ using Storage;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuController : MonoBehaviour
-{
-    private string saveFile = @"Assets/Resourses/SavedData/Storage/StorageData";
+public class MainMenuController : MonoBehaviour {
+    public static bool NewGame;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,17 +22,23 @@ public class MainMenuController : MonoBehaviour
     
     public void onExit()
     {
+        StorageController.Instance.Save();
         Application.Quit(0);
     }
-    public void onLoad()
-    {
-        SaveAndLoad.SaveAndLoad.Load("Assets/Resourses/SavedData/Storage", "StorageData", ModelTypesEnums.StorageModel);
-        SceneManager.LoadScene(0);
+    public void onLoad() {
+        NewGame = false;
+        CafeManager.Paused = false;
+        SceneManager.LoadScene(1);
     }
-    public void onNew()
+    public void onNew() {
+        NewGame = true;
+        CafeManager.Paused = false;
+        SceneManager.LoadScene(1);
+    }
+
+    public void onContinue()
     {
-        SaveAndLoad.SaveAndLoad.LoadNew("Assets/Resourses/SavedData/Storage", "StorageData", ModelTypesEnums.StorageModel);
-        SceneManager.LoadScene(0);
-        Application.Quit(0);
+        CafeManager.pauseGame();
+        this.gameObject.SetActive(false);
     }
 }

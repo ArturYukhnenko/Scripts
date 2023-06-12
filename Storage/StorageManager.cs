@@ -56,5 +56,9 @@ namespace Storage {
                 i++;
             }
         }
+
+        public void Save() {
+            StorageController.Instance.Save();
+        }
     }
 }

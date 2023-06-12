@@ -1,5 +1,5 @@
 namespace Models {
     public enum ModelTypesEnums {
-        StorageModel
+        StorageModel,ShopModel
     }
 }
