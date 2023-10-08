@@ -15,7 +15,7 @@ namespace Storage.SO {
                     return ingredient;
                 }
             }
-            throw new ElementNotFoundException("Ingredient not found");
+            throw new ElementNotFoundException("Furniture not found");
         }
         
         public bool IsIngredientExists(string ingredientName) {

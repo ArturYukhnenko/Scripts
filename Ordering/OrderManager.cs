@@ -36,5 +36,6 @@ namespace Ordering {
             dishes.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals(dish)));
             CreateOrder(dishes);
         }
+        
     }
 }

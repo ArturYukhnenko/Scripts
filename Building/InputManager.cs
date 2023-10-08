@@ -1,16 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera sceneCamera;
-
     private Vector3 lastPosition;
-
     [SerializeField] private LayerMask ground;
-
+    public event Action OnClicked, OnExit;
     
+
+    void Start()
+    {
+        sceneCamera = Camera.main;
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+            OnClicked?.Invoke();
+        if (Input.GetMouseButtonDown(1))
+            OnExit?.Invoke();
+    }
+
     public Vector3 GetSelectedMapPosition()
     {
         Vector3 mousePos = Input.mousePosition;
@@ -25,15 +39,6 @@ public class InputManager : MonoBehaviour
         return lastPosition;
     }
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        sceneCamera = Camera.main;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public bool IsPointerOverUI() => EventSystem.current.IsPointerOverGameObject();
 }

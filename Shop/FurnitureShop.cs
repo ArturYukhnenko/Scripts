@@ -49,9 +49,11 @@ namespace Shop {
                 //else if(amount < 0)
                     //throw new NotEnoughItemsException("Available items in store less than");
                 
-                //StorageController.Instance.BuyItem(goodName,price);
+                //
                 //good.GetComponentInChildren<TMP_Text>().text = (int.Parse(good.GetComponentInChildren<TMP_Text>().text)-1).ToString();
-                Instantiate(buildSystem);
+                GameObject ourBuildSystem = Instantiate(buildSystem);
+                ourBuildSystem.gameObject.GetComponent<PlacementSystem>().StartPlacement(goodName);
+                //StorageController.Instance.BuyItem(goodName,price);
                 Destroy(this.gameObject);
                 
             }
