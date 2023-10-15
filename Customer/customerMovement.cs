@@ -32,6 +32,7 @@ public class customerMovement : MonoBehaviour
     public GameObject customer;
     public OrderController oc;
 
+
     private void Awake()
     {
         MoveToFreeTable = false;
@@ -170,19 +171,20 @@ public class customerMovement : MonoBehaviour
 
             if (MoveToCashRegister == true)
             {
-                transform.position = Vector3.MoveTowards(transform.position, CashRegister, customerSpeed * Time.deltaTime);
+
+                //transform.position = Vector3.MoveTowards(transform.position, CashRegister, customerSpeed * Time.deltaTime);
             }
             //Debug.Log("x1");
             if (MoveToFreeTable == true)
             {
                // Debug.Log("x");
-                transform.position = Vector3.MoveTowards(transform.position, FreeTable, customerSpeed * Time.deltaTime);
+                //transform.position = Vector3.MoveTowards(transform.position, FreeTable, customerSpeed * Time.deltaTime);
             }
 
             if (MoveToExit == true)
             {
 
-                transform.position = Vector3.MoveTowards(transform.position, Exit, customerSpeed * Time.deltaTime);
+                //transform.position = Vector3.MoveTowards(transform.position, Exit, customerSpeed * Time.deltaTime);
             }
 
         }
