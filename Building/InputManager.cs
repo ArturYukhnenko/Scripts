@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class InputManager : MonoBehaviour
 {
@@ -20,7 +21,11 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("updateClick");
             OnClicked?.Invoke();
+        }
+            
         if (Input.GetMouseButtonDown(1))
             OnExit?.Invoke();
     }

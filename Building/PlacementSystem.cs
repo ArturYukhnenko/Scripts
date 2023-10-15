@@ -7,11 +7,12 @@ using UnityEngine.EventSystems;
 
 public class PlacementSystem : MonoBehaviour
 {
-    [SerializeField] private GameObject mouseIndicator, cellIndicator;
+    [SerializeField] private GameObject  cellIndicator;
     [SerializeField] private FurnitureSO _furnitureSo;
     [SerializeField] private InputManager _inputManager;
     [SerializeField] private Grid _grid;
     private string _selectedItem;
+    private GameObject flyingFurniture;
 
 
     void Start()
@@ -20,16 +21,16 @@ public class PlacementSystem : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("upd one item" + _selectedItem);
-        if (_selectedItem is null)
-            return;
-        Debug.Log("upd");
-        Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
-        Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
-        GameObject newFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
-        newFurniture.transform.position = _grid.CellToWorld(gridPosition);
-        
-        
+        //Debug.Log("upd one item" + _selectedItem);
+        if (_selectedItem != null )
+        {
+            Destroy(flyingFurniture);
+            Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
+            Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
+            flyingFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
+            flyingFurniture.transform.position =
+                        new Vector3(_grid.CellToWorld(gridPosition).x, 0, _grid.CellToWorld(gridPosition).z);
+        }
     }
     
     public void StartPlacement(string itemName)
@@ -44,12 +45,11 @@ public class PlacementSystem : MonoBehaviour
         _selectedItem = itemName;
         
         cellIndicator.SetActive(true);
-        PlaceStructure();
         _inputManager.OnClicked += PlaceStructure;
         _inputManager.OnExit += StopPlacement;
-       
-        Debug.Log(_selectedItem + " + " + itemName);
-            
+        
+        flyingFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
+        Debug.Log("startStucture log");
     }
 
     private void StopPlacement()
@@ -62,18 +62,19 @@ public class PlacementSystem : MonoBehaviour
         
        
         //mouseIndicator.transform.position = new Vector3(cellIndicator.transform.position.x + 0.4f, mouseIndicator.transform.position.y,
-          //  cellIndicator.transform.position.z + 0.55f) ;
+         //   cellIndicator.transform.position.z + 0.55f) ;
     }
 
     private void PlaceStructure()
     {
-        if (_inputManager.IsPointerOverUI()) 
-            return;
+       
         Debug.Log("placeStucture log");
         Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
-        GameObject newFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
-        newFurniture.transform.position = _grid.CellToWorld(gridPosition);
+        GameObject finalFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
+        finalFurniture.transform.position = new Vector3(_grid.CellToWorld(gridPosition).x, 0.1f, _grid.CellToWorld(gridPosition).z);
+        Destroy(flyingFurniture);
+        Destroy(GameObject.Find("BuildingSystem(Clone)"));
     }
     
     
