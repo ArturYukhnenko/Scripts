@@ -32,7 +32,7 @@ public class employeeOrder : MonoBehaviour
         if (orderAccepted == true)
         {
             acceptOrder();
-            Debug.Log("yyyyy");
+          //  Debug.Log("yyyyy");
         }
 
         if (moveBack == true)

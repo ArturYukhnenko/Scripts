@@ -24,12 +24,23 @@ public class PlacementSystem : MonoBehaviour
         //Debug.Log("upd one item" + _selectedItem);
         if (_selectedItem != null )
         {
-            Destroy(flyingFurniture);
+           // Destroy(flyingFurniture);
             Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
             Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
-            flyingFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
+           // flyingFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
             flyingFurniture.transform.position =
                         new Vector3(_grid.CellToWorld(gridPosition).x, 0, _grid.CellToWorld(gridPosition).z);
+            
+            if (Input.GetAxis("Mouse ScrollWheel") != 0)
+            {
+                if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                    flyingFurniture.transform.Rotate(0,90,0);
+                if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                    flyingFurniture.transform.Rotate(0,-90,0);
+
+            }
+            
+            
         }
     }
     
