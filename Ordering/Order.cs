@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MenuEquipment.SO;
+using UnityEngine;
 
 namespace Ordering {
     public class Order {
@@ -22,7 +23,7 @@ namespace Ordering {
         public Order(Menu.Dish dish) {
             _orderID += 1;
             _dishes = new Dictionary<Menu.Dish, bool>();
-            _dishes.Add(dish, false); 
+            _dishes.Add(dish, false);
             _price += dish.Price;
         }
 

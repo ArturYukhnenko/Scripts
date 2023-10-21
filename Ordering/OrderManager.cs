@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using MenuEquipment.SO;
+using Storage;
 using UnityEngine;
 
 namespace Ordering {
@@ -11,15 +13,28 @@ namespace Ordering {
         private GameObject orderPrefab;
         private List<GameObject> _existingOrders;
 
-        public void CreateOrder(List<Menu.Dish> dishes) {
+        private void Start() {
+            _existingOrders = new List<GameObject>();
+        }
+
+        public OrderController CreateOrder(List<Menu.Dish> dishes) {
+            if (_existingOrders.Count >= 5) {
+                throw new Exception("Cannot accept more orders");
+            }
             GameObject order = Instantiate(orderPrefab, spawnPoint.transform);
             order.GetComponent<OrderController>().Initialize(dishes);
-
             RectTransform rt = order.GetComponent<RectTransform>();
             rt.localPosition = new Vector3(0, 0, 0); 
             rt.localScale = new Vector3(1, 1, 1); 
             order.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
             _existingOrders.Add(order);
+            return order.GetComponent<OrderController>();
+        }
+
+        public void Test(string dish) {
+            List<Menu.Dish> dishes = new List<Menu.Dish>();
+            dishes.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals(dish)));
+            CreateOrder(dishes);
         }
     }
 }

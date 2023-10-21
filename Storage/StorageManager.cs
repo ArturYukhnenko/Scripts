@@ -39,12 +39,7 @@ namespace Storage {
                 };
 
                 storageCell.ResetCell();
-
-                RectTransform rt = cell.GetComponent<RectTransform>();
-                rt.localPosition = new Vector3(0, 0, 0);
-                rt.localScale = new Vector3(1, 1, 1);
-                cell.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
-
+                
                 _cellsInStorage.Add(storageCell);
             }
         }
@@ -60,6 +55,10 @@ namespace Storage {
                 _cellsInStorage[i].ItemGameObject.GetComponentInChildren<TMP_Text>().text = ingredient.Value.ToString();
                 i++;
             }
+        }
+
+        public void Save() {
+            StorageController.Instance.Save();
         }
     }
 }

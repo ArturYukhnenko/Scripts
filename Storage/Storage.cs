@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Exceptions;
+using MenuEquipment.SO;
+using UnityEngine;
 
 namespace Storage {
     [Serializable]
@@ -27,7 +30,7 @@ namespace Storage {
 
         public int Coins {
             get => _coins;
-            set => _coins = _coins + value >= 0 ? + value : throw new Exception("Not enough money");
+            set => _coins += value;
         }
 
         //For new game
@@ -50,20 +53,20 @@ namespace Storage {
 
         public void AddItem(IItem ingredient, int amountOfItems) {
             if (ingredient == null) {
-                throw new Exception("You are trying to add nullable value of item");
+                throw new NullReferenceException("You are trying to add nullable value of item");
             }
             if (amountOfItems <= 0) {
-                throw new Exception("Wrong amount of ingredients");
+                throw new WrongValueException("Wrong amount of ingredients");
             }
 
             if (_storedItems.ContainsKey(ingredient)) {
                 if (_currentFilled + amountOfItems > _maxCapacity) { 
-                    throw new Exception("Not enough space in storage");
+                    throw new NotEnoughSpaceException("Not enough space in storage");
                 }
                 _storedItems[ingredient] += amountOfItems;
             }else if (!_storedItems.ContainsKey(ingredient)) {
                 if (_currentFilled + amountOfItems > _maxCapacity) { 
-                    throw new Exception("Not enough space in storage");
+                    throw new NotEnoughSpaceException("Not enough space in storage");
                 }
                 _storedItems.Add(ingredient, amountOfItems);
             }
@@ -71,13 +74,11 @@ namespace Storage {
             _currentFilled += amountOfItems;
         }
 
-        ///<summary>
-        /// This method is used to get a single item in any amount from storage
-        ///</summary>
-        public int UseItem(String itemName, int amountOfItems) {
+        public int GetItem(string itemName, int amountOfItems) {
+            
             IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
             if (_storedItems[ingredient] < amountOfItems) {
-                throw new Exception($"Not enough{ingredient.Name} in storage");
+                throw new NotEnoughItemsException($"Not enough{ingredient.Name} in storage");
             }
             if (_storedItems[ingredient] - amountOfItems == 0) {
                 RemoveItem(ingredient);
@@ -89,29 +90,16 @@ namespace Storage {
             return price;
         }
         
-        ///<summary>
-        /// This method is used to get a multiple items from storage
-        ///</summary>
-        public int UseItem(Dictionary<string,int> items) {
-            int price = 0;
-            foreach (var itemName in items) {
-                IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key);
-                if (_storedItems[ingredient] < itemName.Value) 
-                    throw new Exception($"Not enough{ingredient.Name} in storage");
+        public bool CheckItemForExistence(string item) {
+            if (item == null) {
+                throw new NullReferenceException("List is empty");
             }
-            foreach (var itemName in items) {
-                IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName.Key); 
-                if (_storedItems[ingredient] - itemName.Value == 0) { 
-                    RemoveItem(ingredient);
-                }else { 
-                    _storedItems[ingredient] -= itemName.Value; 
-                    _currentFilled -= itemName.Value;
-                }
-
-                price += ingredient.Price + itemName.Value;
+            
+            if (!_storedItems.Keys.Any(i => i.Name.Equals(item))) {
+                return false;
             }
 
-            return price;
+            return true;
         }
 
         public void RemoveItem(IItem ingredient) {

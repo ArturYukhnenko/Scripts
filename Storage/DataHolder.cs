@@ -14,13 +14,13 @@ namespace Storage {
         [SerializeField]
         private Menu dishes;
 
-        private void Awake() {
+        private void Start() {
             if (StorageController.Instance != null) {
                 if(!StorageController.Instance.IsSet){
                     StorageController.Instance.SetFields(storageHolder,rawComponents,dishes);
                 }
             }
-            Destroy(this.GameObject());
+            //Destroy(this.GameObject());
         }
     }
 }

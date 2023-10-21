@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using MenuEquipment.SO;
 using Storage;
 using TMPro;
@@ -17,30 +19,43 @@ namespace Ordering {
         [SerializeField]
         private float orderTimeLeft;
         private Order _order;
+        public ReadOnlyCollection<Menu.Dish> DishesList {
+            get {
+                List<Menu.Dish> d = new List<Menu.Dish>();
+                d.AddRange(_order.Dishes.Keys);
+                return new ReadOnlyCollection<Menu.Dish>(d);
+            }
+        }
 
         [SerializeField] 
-        private Button _button;
+        private GameObject button;
         
         //Timer
         [SerializeField] 
         private TMP_Text timer;
 
+        public Status Status => _status;
+
         private void Start() {
             _status = Status.New;
+        }
+
+        public void SetStatusReady()
+        {
+            _status = Status.Ready;
         }
 
         public void Initialize(List<Menu.Dish> dishes) {
             if (dishes.Count == 1) {
                 _order = new Order(dishes[0]);
-            } else {
+            } else { 
                 _order = new Order(dishes);
             }
             for (int i = 0; i < dishes.Count; i++) {
                 GameObject item = Instantiate(orderItem, orderItemSpawner.transform);
                 RectTransform rt = item.GetComponent<RectTransform>();
                 rt.localPosition = new Vector3(0, 0, 0);
-                rt.localScale = new Vector3(1, 1, 1);
-                item.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
+                rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
         }
@@ -49,19 +64,17 @@ namespace Ordering {
             CheckItemsForOrder();
 
             if (_status == Status.Ready) {
-                _button.gameObject.SetActive(true);
+                button.SetActive(true);
             }
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
-                if (_status != Status.Finished) {
-                    Destroy(this);
-                }
+                Destroy(this.gameObject);
             }
 
             if (_status == Status.Finished) {
                 StorageController.Instance.AddEarnedMoney(_order.Price);
-                Destroy(this);
+                Destroy(this.gameObject);
             }
             UpdateTimer();
         }
@@ -84,23 +97,31 @@ namespace Ordering {
 
         private void CheckItemsForOrder() {
             int i = 0;
-            foreach (var dish in _order.Dishes) {
-                if (StorageController.Instance.StoredItems.ContainsKey(dish.Key)) {
+            foreach (var dish in _order.Dishes.ToArray()) {
+                if (StorageController.Instance.IfItemInStorage(dish.Key.Name)) {
                     _order.Dishes[dish.Key] = true;
-                }
-                if (_order.Dishes[dish.Key]) {
                     i++;
+                }else {
+                    _order.Dishes[dish.Key] = false;
                 }
             }
+
             try {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
-                }else if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e + " Current status is: " + _status);
+                throw;
+            }
+            try {
+                if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(e);
+                Console.WriteLine(e + " Current status is: " + _status);
                 throw;
             }
         }

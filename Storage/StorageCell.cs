@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 namespace Storage {
     public class StorageCell {
-         
-        private Sprite _defaultImg;
+        private static Sprite _defaultImg;
         private GameObject _itemGameObject;
 
         public void ResetCell() {
-            if (_defaultImg == null) {
+            if (DefaultImg == null) {
                 throw new Exception("Default image for cell is not set");
             }
-            _itemGameObject.GetComponent<Image>().sprite = _defaultImg;
+            _itemGameObject.GetComponent<Image>().sprite = DefaultImg;
             _itemGameObject.GetComponentInChildren<TMP_Text>().text = "";
         }
 

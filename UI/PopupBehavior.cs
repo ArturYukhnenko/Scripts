@@ -6,7 +6,7 @@ namespace UI {
         [SerializeField]
         private GameObject closeButton;
         [SerializeField]
-        private GameObject popup;
+        private GameObject currentPopup;
     
         void Start()
         {
@@ -21,7 +21,7 @@ namespace UI {
 
         public void DestroyPopup()
         {
-            Destroy(popup);
+            Destroy(currentPopup);
         }
     
     }
