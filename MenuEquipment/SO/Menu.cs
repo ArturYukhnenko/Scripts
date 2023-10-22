@@ -54,7 +54,13 @@ namespace MenuEquipment.SO {
             public string Name => dishName;
             public Sprite Icon => icon;
             public int Price => price;
-            public string Instrument => "barTable" + instrument;
+            public string Instrument()
+            {
+                Debug.Log("barTable" + instrument);
+                return "barTable" + instrument;
+            }
+
+            
         }
 
     
