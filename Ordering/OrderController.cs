@@ -11,7 +11,9 @@ using UnityEngine.UI;
 namespace Ordering {
     public class OrderController : MonoBehaviour {
 
-        private Status _status;
+        public event Action<Status> OnStatusChange;
+        
+        private Status _status = Status.New;
         [SerializeField]
         private GameObject orderItem;
         [SerializeField]
@@ -19,6 +21,8 @@ namespace Ordering {
         [SerializeField]
         private float orderTimeLeft;
         private Order _order;
+        public int OrderID => _order.ID;
+        
         public ReadOnlyCollection<Menu.Dish> DishesList {
             get {
                 List<Menu.Dish> d = new List<Menu.Dish>();
@@ -37,11 +41,11 @@ namespace Ordering {
         public Status Status => _status;
 
         private void Start() {
-            _status = Status.New;
+            StorageController.Instance.OnAddedItems += CheckItemsForOrder;
+            StorageController.Instance.OnRemovedItems += CheckItemsForOrder;
         }
 
-        public void SetStatusReady()
-        {
+        public void SetStatusReady() {
             _status = Status.Ready;
         }
 
@@ -58,22 +62,18 @@ namespace Ordering {
                 rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
+            CheckItemsForOrder();
         }
 
         private void Update() {
-            CheckItemsForOrder();
-
             if (_status == Status.Ready) {
                 button.SetActive(true);
+            }else {
+                button.SetActive(false);
             }
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
-                Destroy(this.gameObject);
-            }
-
-            if (_status == Status.Finished) {
-                StorageController.Instance.AddEarnedMoney(_order.Price);
                 Destroy(this.gameObject);
             }
             UpdateTimer();
@@ -110,8 +110,7 @@ namespace Ordering {
                 if (i > 0) {
                     UpdateStatus(Status.InProgress); 
                 }
-            }
-            catch (Exception e) {
+            }catch (Exception e) {
                 Console.WriteLine(e + " Current status is: " + _status);
                 throw;
             }
@@ -119,8 +118,7 @@ namespace Ordering {
                 if (i == _order.Dishes.Count && (_status != Status.New || _status != Status.Finished)) {
                     UpdateStatus(Status.Ready);
                 }
-            }
-            catch (Exception e) {
+            }catch (Exception e) {
                 Console.WriteLine(e + " Current status is: " + _status);
                 throw;
             }
@@ -131,11 +129,14 @@ namespace Ordering {
                 throw new Exception("Order cannot be accomplished");
             }
 
-            foreach (KeyValuePair<Menu.Dish,bool> dish in _order.Dishes) {
-                StorageController.Instance.GetDishFromStorage(dish.Key.Name);
+            foreach (Menu.Dish dish in _order.Dishes.Keys.ToList()) {
+                StorageController.Instance.GetDishFromStorage(dish.Name);
             }
             
             UpdateStatus(Status.Finished);
+            StorageController.Instance.AddEarnedMoney(_order.Price);
+            GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);
+            Destroy(this.gameObject);
         }
 
         private void UpdateStatus(Status status) {
@@ -166,6 +167,11 @@ namespace Ordering {
                 default:
                     throw new Exception("Status unknown");
             }
+            OnStatusChange?.Invoke(_status);
         }
+    }
+
+    public enum Status {
+        New, InProgress, Ready, Finished
     }
 }
