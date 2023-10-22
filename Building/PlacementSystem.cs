@@ -70,20 +70,13 @@ public class PlacementSystem : MonoBehaviour
         cellIndicator.SetActive(false);
         _inputManager.OnClicked -= PlaceStructure;
         _inputManager.OnExit -= StopPlacement;
-        
-       
-        //mouseIndicator.transform.position = new Vector3(cellIndicator.transform.position.x + 0.4f, mouseIndicator.transform.position.y,
-         //   cellIndicator.transform.position.z + 0.55f) ;
     }
 
     private void PlaceStructure()
     {
-       
-        Debug.Log("placeStucture log");
-        Vector3 mousePosition = _inputManager.GetSelectedMapPosition();
-        Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
         GameObject finalFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
-        finalFurniture.transform.position = new Vector3(_grid.CellToWorld(gridPosition).x, 0.1f, _grid.CellToWorld(gridPosition).z);
+        finalFurniture.transform.position = flyingFurniture.transform.position;
+        finalFurniture.transform.rotation = flyingFurniture.transform.rotation;
         Destroy(flyingFurniture);
         Destroy(GameObject.Find("BuildingSystem(Clone)"));
     }
