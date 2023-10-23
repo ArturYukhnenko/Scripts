@@ -122,6 +122,14 @@ namespace Ordering {
                 Console.WriteLine(e + " Current status is: " + _status);
                 throw;
             }
+            try {
+                if (i < _order.Dishes.Count && _status == Status.Ready) {
+                    UpdateStatus(Status.InProgress);
+                }
+            }catch (Exception e) {
+                Console.WriteLine(e + " Current status is: " + _status);
+                throw;
+            }
         }
 
         public void FinishOrder() {
@@ -129,14 +137,17 @@ namespace Ordering {
                 throw new Exception("Order cannot be accomplished");
             }
 
-            foreach (Menu.Dish dish in _order.Dishes.Keys.ToList()) {
-                StorageController.Instance.GetDishFromStorage(dish.Name);
+            try { 
+                UpdateStatus(Status.Finished);
+                foreach (Menu.Dish dish in _order.Dishes.Keys.ToList()) 
+                    StorageController.Instance.GetDishFromStorage(dish.Name);
+                StorageController.Instance.AddEarnedMoney(_order.Price);
+                GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
+                Destroy(this.gameObject);
+            }catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
             }
-            
-            UpdateStatus(Status.Finished);
-            StorageController.Instance.AddEarnedMoney(_order.Price);
-            GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);
-            Destroy(this.gameObject);
         }
 
         private void UpdateStatus(Status status) {

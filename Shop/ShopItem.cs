@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Shop {
-    public class ShopItem : MonoBehaviour, IPointerClickHandler{
+    public class ShopItem : MonoBehaviour{
         
         [SerializeField]
         private Image iconHolder;
@@ -21,10 +21,10 @@ namespace Shop {
 
         private String _goodName;
 
-        public void SetItem(Sprite icon, String price, String available,String goodName) {
+        public void SetItem(Sprite icon, String price,String goodName) {
             iconHolder.sprite = icon;
             priceHolder.text = price;
-            availableItems.text = available;
+            availableItems.text = "0";
             buyBtn.onClick.AddListener(() => Buy(goodName));
             _goodName = goodName;
         }
@@ -32,45 +32,14 @@ namespace Shop {
         private void Buy(string goodName) {
             try {
                 StorageController.Instance.BuyItem(goodName,int.Parse(priceHolder.text));
-                DecreaseAvailableItemsValue();
+                int amount = int.Parse(availableItems.text);
+                amount++;
+                availableItems.text = amount.ToString();
             }
             catch (Exception e) {
                 Console.WriteLine(e);
                 throw;
             }
-        }
-        
-        private void Buy(string goodName, int amount) {
-            try {
-                StorageController.Instance.BuyItem(goodName,amount,int.Parse(priceHolder.text));
-                DecreaseAvailableItemsValue();
-            }
-            catch (Exception e) {
-                Console.WriteLine(e);
-                throw;
-            }
-            
-        }
-        
-        public void SetAvailableItems(int available) {
-            if (available < 0) {
-                throw new WrongValueException("You are trying to set wrong available value, value: " + available);
-            }
-
-            availableItems.text = available.ToString();
-        }
-
-        private void DecreaseAvailableItemsValue() {
-            int tmp = int.Parse(availableItems.text);
-            if (tmp <= 0) {
-                buyBtn.gameObject.SetActive(false);
-                throw new Exception("There is not available items left");
-            }
-
-            if (tmp - 1 == 0) {
-                buyBtn.gameObject.SetActive(false);
-            }
-            availableItems.text = (tmp-1).ToString();
         }
 
         public void SetNewPrice(int price) {
@@ -91,13 +60,5 @@ namespace Shop {
 
         public string GoodName => _goodName;
         
-        public void OnPointerClick(PointerEventData eventData) {
-            if (eventData.pointerId == -1) {
-                Buy(_goodName);
-            }
-            if (eventData.pointerId == -2) {
-                
-            }
-        }
     }
 }

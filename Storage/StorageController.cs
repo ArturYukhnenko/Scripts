@@ -158,11 +158,12 @@ namespace Storage {
             if (!_dishes.IsDishExists(dish)) { 
                 throw new ElementNotFoundException($"{dish} is not exists "); 
             }
-            if (!_currentStorage.CheckItemForExistence(dish)) { 
+            try { 
+                _currentStorage.GetItem(dish,1);
+            }
+            catch (NotEnoughItemsException e) {
                 throw new NotEnoughItemsException($"There is not enough {dish} in storage");
             }
-            
-            _currentStorage.GetItem(dish,1);
             OnRemovedItems?.Invoke();
         }
         
@@ -170,11 +171,12 @@ namespace Storage {
            if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
-           if (!_currentStorage.CheckItemForExistence(ingredient)) { 
+           try { 
+               _currentStorage.GetItem(ingredient, 1); 
+           }catch (NotEnoughItemsException e) {
                throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
            }
-
-           _currentStorage.GetItem(ingredient, 1);
+           
            OnRemovedItems?.Invoke();
        }
 
