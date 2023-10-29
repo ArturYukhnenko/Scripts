@@ -84,7 +84,7 @@ public class customerMovement : MonoBehaviour
 
         if (transform.position.x == Exit.x && transform.position.z == Exit.z)
         {
-            Destroy(customer);
+            
             //or.canMove = true;
             oc.SetStatusReady();
             //Debug.Log("x");
