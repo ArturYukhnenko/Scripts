@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpawnCustomer : MonoBehaviour
 {
+    public globalCustomer gc;
     public GameObject customerPrefab;
     private int currentAmountOfCustomers;
 
@@ -22,6 +23,7 @@ public class SpawnCustomer : MonoBehaviour
             customer.GetComponent<customerMovement>().MoveToFreeTable = false;
             
             customer.GetComponent<customerMovement>().customer = customer;
+            customer.GetComponent<CashQueue>().gc = gc;
         }
     }
 

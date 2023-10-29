@@ -8,7 +8,7 @@ public class CashQueue : MonoBehaviour
 {
 
 
-    [SerializeField] globalCustomer gc;
+    [SerializeField] public globalCustomer gc;
     [SerializeField] public List<Transform> Positions = new List<Transform>();
     [SerializeField] float ObjectSpeed;
 
@@ -20,15 +20,19 @@ public class CashQueue : MonoBehaviour
 
 
     int NextPosIndex;
-    Transform NextPos;
+    Vector3 NextPos;
 
     public int posi;
 
 
     void Start()
     {
-        posi = gc.pos;
-        NextPos = Positions[gc.pos];
+        //posi = gc.pos;
+
+        posi = gc.AddCust(this);
+        //NextPos = Positions[0];
+        NextPos = gc.GetFreePos(posi);
+        //NextPos = Positions[gc.pos];
         //NextPos = gc.Positions[gc.pos];
 
 
@@ -116,7 +120,7 @@ public class CashQueue : MonoBehaviour
 
 
 
-        if (transform.position.x == NextPos.position.x) //)
+        if (transform.position.x == NextPos.x) //)
         {
 
             //if (Input.GetKeyDown(KeyCode.N))
@@ -136,7 +140,7 @@ public class CashQueue : MonoBehaviour
         }
         else
         {
-            transform.position = Vector3.MoveTowards(transform.position, NextPos.position, ObjectSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, NextPos, ObjectSpeed * Time.deltaTime);
         }
 
 

@@ -19,6 +19,7 @@ public class globalCustomer : MonoBehaviour
 
     [SerializeField] CashQueue cq;
     public List<GameObject> guestList =  new List<GameObject>();
+    public List<CashQueue> custList = new List<CashQueue>();
     GameObject[] gs;
 
     public int pos;
@@ -40,6 +41,17 @@ public class globalCustomer : MonoBehaviour
         //customer = GameObject.FindGameObjectWithTag("Customer");
         //Debug.Log("customer: " + customer);
 
+    }
+
+    public Vector3 GetFreePos(int index)
+    {
+        return Positions[index].position;
+    }
+
+    public int AddCust(CashQueue cust)
+    {
+        custList.Add(cust);
+        return custList.Count - 1;
     }
 
     // Update is called once per frame
