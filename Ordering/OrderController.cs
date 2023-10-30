@@ -13,6 +13,9 @@ namespace Ordering {
 
         public event Action<Status> OnStatusChange;
         
+        [SerializeField]
+        private GameObject errorPrefab;
+        
         private Status _status = Status.New;
         [SerializeField]
         private GameObject orderItem;
@@ -139,6 +142,9 @@ namespace Ordering {
 
             try { 
                 UpdateStatus(Status.Finished);
+                StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
+                StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
+                Debug.Log(this._order.ID);
                 foreach (Menu.Dish dish in _order.Dishes.Keys.ToList()) 
                     StorageController.Instance.GetDishFromStorage(dish.Name);
                 StorageController.Instance.AddEarnedMoney(_order.Price);
@@ -146,11 +152,14 @@ namespace Ordering {
                 Destroy(this.gameObject);
             }catch (Exception e) {
                 Console.WriteLine(e);
-                throw;
+                errorPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "Something went wrong \nTry Again";
+                Instantiate(errorPrefab);
+                CheckItemsForOrder();
             }
         }
 
         private void UpdateStatus(Status status) {
+            
             switch (_status) {
                 case Status.New:
                     if (status == Status.InProgress) {
@@ -185,4 +194,6 @@ namespace Ordering {
     public enum Status {
         New, InProgress, Ready, Finished
     }
+    
+
 }
