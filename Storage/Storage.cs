@@ -95,11 +95,11 @@ namespace Storage {
                 throw new NullReferenceException("List is empty");
             }
             
-            if (!_storedItems.Keys.Any(i => i.Name.Equals(item))) {
-                return false;
+            if (_storedItems.Keys.Any(i => i.Name.Equals(item))) {
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public void RemoveItem(IItem ingredient) {

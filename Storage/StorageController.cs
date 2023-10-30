@@ -6,6 +6,7 @@ using MenuEquipment.SO;
 using Models;
 using Storage.SO;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Storage {
     public class StorageController {
@@ -29,7 +30,9 @@ namespace Storage {
         
         private bool _isSet = false;
         public bool IsSet => _isSet;
-        
+
+        public event Action OnAddedItems, OnRemovedItems;
+
         private StorageController() { }
 
         public void SetFields(StorageHolder storageHolder, RawComponents rawComponents, Menu dishes) {
@@ -84,6 +87,7 @@ namespace Storage {
                     if (!(_currentStorage.Coins - price < 0)) {
                         _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), 1);
                         _currentStorage.Coins = -price;
+                        OnAddedItems?.Invoke();
                     }else {
                         throw new NotEnoughMoneyException("You don't have enough money to perform this action");
                     }
@@ -103,6 +107,7 @@ namespace Storage {
                     if (_rawComponents.IsIngredientExists(itemName)) {
                         _currentStorage.AddItem(_rawComponents.GetIngredient(itemName), amount);
                         _currentStorage.Coins = -price;
+                        OnAddedItems?.Invoke();
                     }else {
                         throw new ElementNotFoundException("Item not found exception");
                     }
@@ -123,6 +128,7 @@ namespace Storage {
            try {
                 if (_dishes.IsDishExists(itemName)) { 
                     _currentStorage.AddItem(_dishes.GetDish(itemName), 1);
+                    OnAddedItems?.Invoke();
                 }else { 
                     throw new ElementNotFoundException("Item not found exception");
                 }
@@ -137,6 +143,7 @@ namespace Storage {
            try {
                 if (_dishes.IsDishExists(itemName)) {
                     _currentStorage.AddItem(_dishes.GetDish(itemName), amount);
+                    OnAddedItems?.Invoke();
                 }else { 
                     throw new ElementNotFoundException("Item not found exception");
                 }
@@ -151,22 +158,26 @@ namespace Storage {
             if (!_dishes.IsDishExists(dish)) { 
                 throw new ElementNotFoundException($"{dish} is not exists "); 
             }
-            if (!IfItemInStorage(dish)) { 
+            try { 
+                _currentStorage.GetItem(dish,1);
+            }
+            catch (NotEnoughItemsException e) {
                 throw new NotEnoughItemsException($"There is not enough {dish} in storage");
             }
-            
-            _currentStorage.GetItem(dish,1);
+            OnRemovedItems?.Invoke();
         }
         
        public void GetIngredientFromStorage(string ingredient) {
            if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
-           if (!IfItemInStorage(ingredient)) { 
+           try { 
+               _currentStorage.GetItem(ingredient, 1); 
+           }catch (NotEnoughItemsException e) {
                throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
            }
-
-           _currentStorage.GetItem(ingredient, 1);
+           
+           OnRemovedItems?.Invoke();
        }
 
         public bool IfItemInStorage(string item) {
