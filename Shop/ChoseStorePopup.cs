@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class ChoseStorePopup : PopupBehavior
 {
     [SerializeField]
-    private GameObject onlineShoppingPopup;
+    private GameObject onlineShoppingPopup, furnitureShoppingPopup;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,14 +26,15 @@ public class ChoseStorePopup : PopupBehavior
         SceneManager.LoadScene(1);
     }
 
-    public void GoOnlineShopping()
+    public void OnlineShopping()
     {
         var popupObj = Instantiate(onlineShoppingPopup);
         base.DestroyPopup();
     }
 
-    public void Autobuy()
+    public void FurnitureShopping()
     {
-        onlineShoppingPopup = GameObject.Find("");
+        var popupObj = Instantiate(furnitureShoppingPopup);
+        base.DestroyPopup();
     }
 }

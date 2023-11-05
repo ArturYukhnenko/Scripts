@@ -77,6 +77,8 @@ public class PlacementSystem : MonoBehaviour
         GameObject finalFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
         finalFurniture.transform.position = flyingFurniture.transform.position;
         finalFurniture.transform.rotation = flyingFurniture.transform.rotation;
+        RoomGenerator.addNewFurniture(_selectedItem, finalFurniture);
+        
         Destroy(flyingFurniture);
         Destroy(GameObject.Find("BuildingSystem(Clone)"));
     }

@@ -1,33 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using Models;
+using Shop;
+using Storage.SO;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
 {
-    private int x = 18;
+    private static int x = 18;
 
-    private int y = 10;
+    private static int y = 10;
     [SerializeField]
     private GameObject wallPrefab;
     [SerializeField]
     private GameObject floorPrefab;
     private List<GameObject> generatedObjects = new List<GameObject>();
+    [SerializeField] private FurnitureSO _furnitureSo;
+    [SerializeField]private static List<CoordinatesSaver> _furnitures = new List<CoordinatesSaver>();
     [SerializeField]private List<GameObject> xWallsAdding = new List<GameObject>();
     [SerializeField]private List<GameObject> yWallsAdding = new List<GameObject>();
     
     // Start is called before the first frame update
     void Start()
     {
+        Load((FurnitureModel)SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
+            ModelTypesEnums.FurnitureModel));
         generateWalls();
         generateFloor();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void generateWalls()
     {
         //front side
@@ -115,6 +115,41 @@ public class RoomGenerator : MonoBehaviour
         generateWalls();
         generateFloor();
     }
+    public static void addNewFurniture(string item, GameObject furniture)
+    {
+        var position = furniture.transform.position;
+        var rotation = furniture.transform.rotation;
+        CoordinatesSaver obj = new CoordinatesSaver(item, position.x, position.y, position.z, rotation.x, rotation.y,
+            rotation.z, rotation.w);
+        _furnitures.Add(obj);
+        Save();
+    }
 
+    private void InstantiateFurniture()
+    {
+        foreach (var furniture in _furnitures)
+        {
+            GameObject obg = (GameObject) Instantiate(_furnitureSo.GetIngredient(furniture.type).Prefab);
+            obg.transform.position = new Vector3(furniture.pos_x, furniture.pos_y, furniture.pos_z);
+            obg.transform.rotation = new Quaternion(furniture.rot_x, furniture.rot_y, furniture.rot_z, furniture.rot_w);
+        }
+    }
 
+    public static void Save() {
+
+        FurnitureModel data = new FurnitureModel() {
+            roomSize_x = x,
+            roomSize_y = y,
+            CoordinatesFurniture = _furnitures
+        };
+
+        SaveAndLoad.SaveAndLoad.Save(data,"/Room", "RoomData");
+    }
+    private void Load(FurnitureModel data) {
+        if (data != null)
+        {
+            _furnitures = data.CoordinatesFurniture;
+        }
+        InstantiateFurniture();
+    }
 }

@@ -45,6 +45,9 @@ namespace SaveAndLoad {
                         case ModelTypesEnums.ShopModel:
                             model = new ShopModel().Load(dataToLoad);
                             break; 
+                        case ModelTypesEnums.FurnitureModel:
+                            model = new FurnitureModel().Load(dataToLoad);
+                            break; 
                     }
                 }
                 catch (Exception e) {

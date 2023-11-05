@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace Shop {
     public class FurnitureShop : MonoBehaviour {
         [SerializeField]
-        private GameObject shopCell;
+        private GameObject shopCell, notEnoughMoney;
         [SerializeField]
         private GameObject spawnPoint, buildSystem;
         [SerializeField]
@@ -51,10 +51,18 @@ namespace Shop {
                 
                 //
                 //good.GetComponentInChildren<TMP_Text>().text = (int.Parse(good.GetComponentInChildren<TMP_Text>().text)-1).ToString();
-                GameObject ourBuildSystem = Instantiate(buildSystem);
-                ourBuildSystem.gameObject.GetComponent<PlacementSystem>().StartPlacement(goodName);
-                //StorageController.Instance.BuyItem(goodName,price);
-                Destroy(this.gameObject);
+                try
+                {
+                    StorageController.Instance.BuyFurniture(goodName, price);
+                    GameObject ourBuildSystem = Instantiate(buildSystem);
+                    ourBuildSystem.gameObject.GetComponent<PlacementSystem>().StartPlacement(goodName);
+                    Destroy(this.gameObject);
+                }
+                catch (NotEnoughMoneyException e)
+                {
+                    Instantiate(notEnoughMoney);
+                }
+                
                 
             }
             catch (Exception e) {
