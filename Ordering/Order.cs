@@ -5,12 +5,14 @@ using UnityEngine;
 namespace Ordering {
     public class Order {
 
-        private static int _orderID;
-        private Dictionary<Menu.Dish, bool> _dishes;
+        private static int _orderIDHolder = 0;
+        private readonly int _id;
+        private readonly Dictionary<Menu.Dish, bool> _dishes;
         private int _price;
 
         public Order(List<Menu.Dish> dishes) {
-            _orderID += 1;
+            _id = _orderIDHolder;
+            _orderIDHolder += 1;
             _dishes = new Dictionary<Menu.Dish, bool>();
             foreach (var dish in dishes) {
                 _dishes.Add(dish, false);
@@ -21,13 +23,14 @@ namespace Ordering {
         }
 
         public Order(Menu.Dish dish) {
-            _orderID += 1;
+            _id = _orderIDHolder;
+            _orderIDHolder += 1;
             _dishes = new Dictionary<Menu.Dish, bool>();
             _dishes.Add(dish, false);
             _price += dish.Price;
         }
 
-        public static int OrderID => _orderID;
+        public int ID => _id;
 
         public Dictionary<Menu.Dish, bool> Dishes => _dishes;
 
@@ -35,7 +38,7 @@ namespace Ordering {
 
 
         public void ResetId() {
-            _orderID = 0;
+            _orderIDHolder = 0;
         }
 
     }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Exceptions;
 using MenuEquipment.SO;
 using Storage;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Ordering {
@@ -19,7 +21,7 @@ namespace Ordering {
 
         public OrderController CreateOrder(List<Menu.Dish> dishes) {
             if (_existingOrders.Count >= 5) {
-                throw new Exception("Cannot accept more orders");
+                throw new NotEnoughSpaceException("Cannot accept more orders");
             }
             GameObject order = Instantiate(orderPrefab, spawnPoint.transform);
             order.GetComponent<OrderController>().Initialize(dishes);
@@ -29,6 +31,16 @@ namespace Ordering {
             order.GetComponentInChildren<RectTransform>().localPosition = new Vector3(1, 1, 1);
             _existingOrders.Add(order);
             return order.GetComponent<OrderController>();
+        }
+
+        public void RemoveOrderFromList(GameObject order) {
+            if(_existingOrders.Contains(order))
+                _existingOrders.Remove(order);
+        }
+        
+        public void ClearOrdersList() {
+            if(_existingOrders.Count > 0)
+                _existingOrders.Clear();
         }
 
         public void Test(string dish) {
