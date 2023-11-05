@@ -28,7 +28,7 @@ public class CafeManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pausePopup.gameObject.SetActive(!Paused);
+          //  pausePopup.gameObject.SetActive(!Paused);
             pauseGame();
         }
         money.text = StorageController.Instance.GetAmountOfMoney().ToString();

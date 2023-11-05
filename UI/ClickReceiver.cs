@@ -22,8 +22,14 @@ namespace UI {
             if (eventData.pointerId == -2)
             {
                 Debug.Log("3d object right click received");
+                if (!CafeManager.IsDay)
+                {
+                    this.gameObject.GetComponent<Replacer>().ReplaceObj();
+                }
+                
             }
         
         }
+
     }
 }

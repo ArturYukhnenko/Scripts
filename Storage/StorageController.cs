@@ -100,6 +100,21 @@ namespace Storage {
                 throw;
             }
         }
+        public void BuyFurniture(string itemName,int price) {
+            try {
+                
+                    if (!(_currentStorage.Coins - price < 0)) {
+                        _currentStorage.Coins = -price;
+                    }else {
+                        throw new NotEnoughMoneyException("You don't have enough money to perform this action");
+                    }
+                
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
         
         public void BuyItem(string itemName,int amount,int price) {
             try {
