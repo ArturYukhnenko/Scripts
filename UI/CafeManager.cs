@@ -41,6 +41,7 @@ public class CafeManager : MonoBehaviour
         dayUI.gameObject.SetActive(true);
         dayLightSpot.gameObject.SetActive(true);
         nightLightSpot.gameObject.SetActive(false);
+        SaveGame();
         Debug.Log("Day Mode on");
     }
     public void turnOnNightMode()
@@ -50,6 +51,7 @@ public class CafeManager : MonoBehaviour
         dayUI.gameObject.SetActive(false);
         dayLightSpot.gameObject.SetActive(false);
         nightLightSpot.gameObject.SetActive(true);
+        SaveGame();
         Debug.Log("Night Mode on");
     }
 
@@ -58,6 +60,10 @@ public class CafeManager : MonoBehaviour
         
         Paused = !Paused;
         Time.timeScale = Paused ? 0f : 1f;
+    }
+
+    private void SaveGame() {
+        StorageController.Instance.Save();
     }
 
 }

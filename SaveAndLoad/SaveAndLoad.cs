@@ -42,9 +42,6 @@ namespace SaveAndLoad {
                         case ModelTypesEnums.StorageModel:
                             model = new StorageModel().Load(dataToLoad);
                             break;
-                        case ModelTypesEnums.ShopModel:
-                            model = new ShopModel().Load(dataToLoad);
-                            break; 
                         case ModelTypesEnums.FurnitureModel:
                             model = new FurnitureModel().Load(dataToLoad);
                             break; 
