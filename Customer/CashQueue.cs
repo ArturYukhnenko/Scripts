@@ -35,7 +35,7 @@ public class CashQueue : MonoBehaviour
         if (gc.pos0Free)
         {
             posi = 0;
-            
+
         }
         else
         {

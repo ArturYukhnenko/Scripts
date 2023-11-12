@@ -57,12 +57,12 @@ public class globalCustomer : MonoBehaviour
 
     void Update()
     {
-        
+
         PositionsOccupation();
-        Debug.Log("pos0free: " + pos0Free);
-        Debug.Log("pos1free: " + pos1Free);
-        Debug.Log("pos2free: " + pos2Free);
-        Debug.Log("amount: " + guestList.Count);
+        //Debug.Log("pos0free: " + pos0Free);
+        //Debug.Log("pos1free: " + pos1Free);
+        //Debug.Log("pos2free: " + pos2Free);
+        //Debug.Log("amount: " + guestList.Count);
         amountOfCustomers = custList.Count;
 
         gs = GameObject.FindGameObjectsWithTag("Customer");
@@ -88,7 +88,7 @@ public class globalCustomer : MonoBehaviour
 
             if (guestList[i].gameObject.GetComponent<CashQueue>().posi == cq.Positions[1].transform.position.x)
             {
-                pos1Free = false;      
+                pos1Free = false;
             }
 
             if (guestList[i].gameObject.GetComponent<CashQueue>().posi == cq.Positions[2].transform.position.x)
@@ -110,11 +110,15 @@ public class globalCustomer : MonoBehaviour
 
         for (int i = 0; i < guestList.Count; i++)
         {
+            Debug.Log(guestList[i].transform.position.x == cq.Positions[1].transform.position.x);
+            Debug.Log("pos0Freexxx: " + pos0Free);
+            Debug.Log("postablefreexxx:" + posTable);
+
             if (guestList[i].gameObject.transform.position.x == cq.Positions[1].transform.position.x && pos0Free && posTable == false)
             {
                 guestList[i].gameObject.GetComponent<CashQueue>().posi = 0;
                 pos1Free = true;
-                
+
             }
 
             if (guestList[i].gameObject.transform.position.x == cq.Positions[2].transform.position.x && pos1Free && pos0Free == false)
@@ -125,9 +129,10 @@ public class globalCustomer : MonoBehaviour
 
             if (Input.GetKeyDown("n") && guestList[i].gameObject.transform.position.x == cq.Positions[0].transform.position.x)
             {
-                
-                Debug.Log("lol wow a");
+
+                //Debug.Log("lol wow a");
                 guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
+                //posTable = false;
                 pos0Free = true;
             }
 
