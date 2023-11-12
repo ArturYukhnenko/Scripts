@@ -12,7 +12,8 @@ public class globalCustomer : MonoBehaviour
 
 
     [SerializeField] CashQueue cq;
-    public List<GameObject> guestList =  new List<GameObject>();
+    [SerializeField] SpawnCustomer sc;
+    public List<GameObject> guestList = new List<GameObject>();
     public List<CashQueue> custList = new List<CashQueue>();
     GameObject[] gs;
 
@@ -20,16 +21,25 @@ public class globalCustomer : MonoBehaviour
 
     public int amountOfCustomers;
 
+    public bool posExit;
+    public bool posTableExit;
+    public bool posTable;
+    public bool pos2Free;
+    public bool pos1Free;
+    public bool pos0Free;
+
 
 
     void Start()
     {
-        
+        pos2Free = true;
+        PositionsOccupation();
 
-        //Debug.Log("free pos1: "+GetFreePos(1));
-        //Debug.Log("free pos2: " + GetFreePos(2));
-        //Debug.Log("free pos0: " + GetFreePos(0));
+        posExit = true;
+        posTableExit = true;
+        posTable = true;
 
+        UpdatePos();
 
     }
 
@@ -47,122 +57,88 @@ public class globalCustomer : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log("pos0free: " + cq.pos0Free);
-        //Debug.Log("pos1free: " + cq.pos1Free);
-        //Debug.Log("pos2free: " + cq.pos2Free);
-        //Debug.Log("postablefree: " + cq.posTable);
-        //UpdatePos();
+        
+        PositionsOccupation();
+        Debug.Log("pos0free: " + pos0Free);
+        Debug.Log("pos1free: " + pos1Free);
+        Debug.Log("pos2free: " + pos2Free);
+        Debug.Log("amount: " + guestList.Count);
         amountOfCustomers = custList.Count;
-       //Debug.Log("amount of cust in list: " + amountOfCustomers);
-        //Debug.Log("xxx: " + guestList[0].gameObject.transform.position.x);
 
         gs = GameObject.FindGameObjectsWithTag("Customer");
 
         foreach (GameObject g in gs)
         {
-            //Debug.Log("length: " + gs.Length);
-            if(!guestList.Contains(g.gameObject))
-            guestList.Add(g.gameObject);
+            if (!guestList.Contains(g.gameObject))
+                guestList.Add(g.gameObject);
             pos = guestList.IndexOf(g.gameObject);
-            
-            //Debug.Log("pos: " + pos);
-
-
         }
 
-
-        //Debug.Log("cust1: " + guestList[0].transform.position.x);
-        //Debug.Log("cust2: " + guestList[1].transform.position.x);
-        //Debug.Log("cust3: " + guestList[2].transform.position.x);
     }
 
-
-
-    public void AddGuest(GameObject guest)
+    public void PositionsOccupation()
     {
-        
-        //cq.MoveGameObject(cqPositions[guestList.IndexOf(guest)]);
+        for (int i = 0; i < guestList.Count; i++)
+        {
+
+            if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == cq.Positions[0].transform.position.x)
+            {
+                pos0Free = false;
+            }
+
+            if (guestList[i].gameObject.GetComponent<CashQueue>().posi == cq.Positions[1].transform.position.x)
+            {
+                pos1Free = false;      
+            }
+
+            if (guestList[i].gameObject.GetComponent<CashQueue>().posi == cq.Positions[2].transform.position.x)
+            {
+                pos2Free = false;
+            }
+
+            if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == cq.Positions[3].transform.position.x)
+            {
+                posTable = false;
+            }
+
+        }
     }
 
 
     public void UpdatePos()
     {
-        //for (int i = 0; i < guestList.Count; i++)
-        //{
-        //    if (guestList[i].transform.position.x == Positions[0].transform.position.x)
-        //    {
-        //        cq.pos0Free = false;
-               
-        //    }
-        //    if (guestList[i].transform.position.x == Positions[1].transform.position.x)
-        //    {
-        //        cq.pos1Free = false;
-        //    }
-        //    if (guestList[i].transform.position.x == Positions[2].transform.position.x)
-        //    {
-        //        cq.pos2Free = false;
+
+        for (int i = 0; i < guestList.Count; i++)
+        {
+            if (guestList[i].gameObject.transform.position.x == cq.Positions[1].transform.position.x && pos0Free && posTable == false)
+            {
+                guestList[i].gameObject.GetComponent<CashQueue>().posi = 0;
+                pos1Free = true;
                 
-        //    }
-        //    if (guestList[i].transform.position.x == Positions[3].transform.position.x)
-        //    {
-        //        cq.posTable = false;
+            }
+
+            if (guestList[i].gameObject.transform.position.x == cq.Positions[2].transform.position.x && pos1Free && pos0Free == false)
+            {
+                guestList[i].gameObject.GetComponent<CashQueue>().posi = 1;
+                pos2Free = true;
+            }
+
+            if (Input.GetKeyDown("n") && guestList[i].gameObject.transform.position.x == cq.Positions[0].transform.position.x)
+            {
                 
-        //    }
-        //    if (guestList[i].transform.position.x == Positions[4].transform.position.x)
-        //    {
-        //        cq.posTableExit = false;
-                
-        //    }
-        //    if (guestList[i].transform.position.x == Positions[5].transform.position.x)
-        //    {
-        //        cq.posExit = false;
-                
-        //    }
+                Debug.Log("lol wow a");
+                guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
+                pos0Free = true;
+            }
 
-
-            //if (guestList[i].transform.position.x != Positions[0].transform.position.x)
-            //{
-            //    cq.pos0Free = true;
-            //}
-            //if (guestList[i].transform.position.x != Positions[1].transform.position.x)
-            //{
-            //    cq.pos1Free = true;
-
-            //}
-            //if (guestList[i].transform.position.x != Positions[2].transform.position.x)
-            //{
-            //    cq.pos2Free = true;
-            //}
-            //if (guestList[i].transform.position.x != Positions[3].transform.position.x)
-            //{
-            //    cq.posTable = true;
-            //}
-            //if (guestList[i].transform.position.x != Positions[4].transform.position.x)
-            //{
-            //    cq.posTableExit = true;
-            //}
-            //if (guestList[i].transform.position.x != Positions[5].transform.position.x)
-            //{
-            //    cq.posExit = true;
-            //}
-
-
-            //if (Input.GetKeyDown("l") && cq.posi == 2 && gameObject.transform.position.x == Positions[2].position.x && cq.pos1Free)
-            //{
-            //    Debug.Log("xwxwxw");
-            //    cq.posi = 1;
-            //}
-
-            //if (Input.GetKeyDown("k") && cq.posi == 1 && gameObject.transform.position.x == Positions[1].position.x && cq.pos0Free)
-            //{
-            //    cq.posi = 0;
-            //}
-
-            //if (Input.GetKeyDown("n") && cq.posi == 0 && gameObject.transform.position.x == Positions[0].position.x)
-            //{
-            //    Debug.Log("lol");
-            //    cq.posi = 3;
-            //}
+            if (Input.GetKeyDown("d") && guestList[i].gameObject.GetComponent<CashQueue>().posi == 3)
+            {
+                //sc.currentAmountOfCustomers--;
+                Destroy(guestList[i].gameObject);
+                guestList.Remove(guestList[i].gameObject);
+                posTable = true;
+            }
         }
-
     }
+
+}

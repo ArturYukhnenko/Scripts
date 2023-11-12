@@ -7,7 +7,7 @@ public class SpawnCustomer : MonoBehaviour
     public globalCustomer gc;
     public CashQueue cq;
     public GameObject customerPrefab;
-    private int currentAmountOfCustomers;
+    public int currentAmountOfCustomers;
 
     private void Update()
     {
