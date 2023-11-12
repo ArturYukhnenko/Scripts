@@ -12,7 +12,6 @@ namespace MenuEquipment {
         [SerializeField] private GameObject ingredientPrefab;
         [SerializeField] private Toggle toggle;
         [SerializeField] private GameObject ingredientsSpawner;
-        [SerializeField] private GameObject popupException; 
         private List<string> _ingredients = new List<string>();
 
         public TMP_Text Title
@@ -46,14 +45,8 @@ namespace MenuEquipment {
 
         public void Cook()
         {
-            try
-            {
-                CookingManager.Cook(_ingredients, title.text);
-            }
-            catch (Exception e)
-            {
-                Instantiate(popupException);
-            }
+            CookingManager.Cook(_ingredients, title.text);
+            
             
         }
     

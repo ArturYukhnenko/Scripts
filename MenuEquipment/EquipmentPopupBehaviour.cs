@@ -37,7 +37,6 @@ namespace MenuEquipment {
                                         ingredientVar.transform.SetParent(GameObject.Find(cc.IngredientsSpawner.name).transform);
                                         var iconIngredient = ingredientVar.GetComponent<Image>();
                                         iconIngredient.sprite = ingredients.GetIngredient(ingredient).Icon;
-                                        ingredientVar.GetComponentInChildren<TMP_Text>().text = " ";
                                     }
                 }
             }

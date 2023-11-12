@@ -1,33 +1,44 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Exceptions;
 using Storage;
 using UnityEngine;
 
 public class CookingManager : MonoBehaviour
-{
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+{
+
+    
+    [SerializeField] private GameObject popupException;
+    private static GameObject popupCurrentException;
+    private void Start()
     {
-        
+        popupCurrentException = popupException;
     }
 
     public static void Cook(List<string> ingredients, string dish)
     {
-        foreach (var ingredient in ingredients)
+        try
         {
-                
-            StorageController.Instance.GetIngredientFromStorage(ingredient);
+            foreach (var ingredient in ingredients)
+            {
+
+                StorageController.Instance.GetIngredientFromStorage(ingredient);
+            }
+
+            StorageController.Instance.AddDishToStorage(dish);
+            Debug.Log("Cooked " + dish);
         }
-        StorageController.Instance.AddDishToStorage(dish);
-        Debug.Log("Cooked " + dish);
-        
+        catch(NotEnoughItemsException ex)
+        {
+            Debug.LogWarning(ex);
+            Instantiate(popupCurrentException);
+        }
+        catch(ElementNotFoundException ex)
+        {
+            Debug.LogWarning(ex);
+            Instantiate(popupCurrentException);
+        }
     }
 }
