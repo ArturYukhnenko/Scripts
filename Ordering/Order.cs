@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MenuEquipment.SO;
 using UnityEngine;
@@ -15,7 +16,12 @@ namespace Ordering {
             _orderIDHolder += 1;
             _dishes = new Dictionary<Menu.Dish, bool>();
             foreach (var dish in dishes) {
-                _dishes.Add(dish, false);
+                try {
+                    _dishes.Add(dish, false);
+                }
+                catch (Exception e) {
+                    Console.WriteLine(e);
+                }
             }
             foreach (Menu.Dish dish in dishes) {
                 _price += dish.Price;

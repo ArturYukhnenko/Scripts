@@ -77,6 +77,9 @@ namespace Ordering {
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
+                StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
+                StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
+                GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);
                 Destroy(this.gameObject);
             }
             UpdateTimer();

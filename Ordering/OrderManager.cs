@@ -5,6 +5,7 @@ using MenuEquipment.SO;
 using Storage;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Ordering {
     public class OrderManager : MonoBehaviour {
@@ -43,9 +44,14 @@ namespace Ordering {
                 _existingOrders.Clear();
         }
 
-        public void Test(string dish) {
+        public void Test() {
             List<Menu.Dish> dishes = new List<Menu.Dish>();
-            dishes.Add(StorageController.Instance.ReceiveActualDishes().Find(i => i.Name.Equals(dish)));
+            List<Menu.Dish> availableDishes = new List<Menu.Dish>(StorageController.Instance.ReceiveActualDishes());
+            int randomAmount =  new Random().Next(1,availableDishes.Count);
+            for (int i = 0; i < randomAmount; i++) {
+                int randomDish =  new Random().Next(0,availableDishes.Count);
+                dishes.Add(availableDishes[randomDish]);
+            }
             CreateOrder(dishes);
         }
         
