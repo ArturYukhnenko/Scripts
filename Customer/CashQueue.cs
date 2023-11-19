@@ -12,8 +12,6 @@ public class CashQueue : MonoBehaviour
 
 
     [SerializeField] public globalCustomer gc;
-    [SerializeField] public List<Transform> Positions = new List<Transform>();
-    [SerializeField] public List<Transform> FreeTablePositions = new List<Transform>();
     [SerializeField] float ObjectSpeed;
     public SpawnCustomer sc;
 
@@ -61,16 +59,16 @@ public class CashQueue : MonoBehaviour
         if (transform.position.x == NextPos.x)
         {
 
-            if (NextPosIndex >= Positions.Count)
+            if (NextPosIndex >= gc.QueuePositions.Length)
             {
                 NextPosIndex = 0;
             }
 
-            if (transform.position.x == Positions[5].position.x)
-            {
-                gc.guestList.Remove(this.gameObject);
-                Destroy(this.gameObject);
-            }
+            //if (transform.position.x == gc.Positions[5].position.x)
+            //{
+            //    gc.guestList.Remove(this.gameObject);
+            //    Destroy(this.gameObject);
+            //}
         }
         else
         {
