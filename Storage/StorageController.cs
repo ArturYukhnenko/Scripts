@@ -182,7 +182,24 @@ namespace Storage {
             OnRemovedItems?.Invoke();
         }
         
-       public void GetIngredientFromStorage(string ingredient) {
+        public void GetDishFromStorage(List<string> dishes) {
+            foreach (var dish in dishes) {
+                if (!_dishes.IsDishExists(dish)) { 
+                    throw new ElementNotFoundException($"{dish} is not exists "); 
+                }
+            }
+            foreach (var dish in dishes) {
+                try { 
+                    _currentStorage.GetItem(dish,1);
+                }
+                catch (NotEnoughItemsException e) {
+                    throw new NotEnoughItemsException($"There is not enough {dish} in storage");
+                }
+            }
+            OnRemovedItems?.Invoke();
+        }
+
+        public void GetIngredientFromStorage(string ingredient) {
            if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
@@ -194,6 +211,23 @@ namespace Storage {
            
            OnRemovedItems?.Invoke();
        }
+        
+        public void GetIngredientFromStorage(List<string> ingredients) {
+            foreach (var ingredient in ingredients) {
+                if (!_rawComponents.IsIngredientExists(ingredient)) { 
+                    throw new ElementNotFoundException($"{ingredient} is not exists "); 
+                }
+            }
+            foreach (var ingredient in ingredients) {
+                try {
+                    _currentStorage.GetItem(ingredient, 1);
+                }
+                catch (NotEnoughItemsException e) {
+                    throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
+                }
+            }
+            OnRemovedItems?.Invoke();
+        }
 
         public bool IfItemInStorage(string item) {
             return _currentStorage.CheckItemForExistence(item);
@@ -205,10 +239,16 @@ namespace Storage {
                 Dictionary<IItem, int> ingredients =
                     new Dictionary<IItem, int>();
                 foreach (string key in data.Keys) {
-                    if (_rawComponents.IsIngredientExists(key))
-                        ingredients.Add(_rawComponents.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
+                    if(_rawComponents.IsIngredientExists(key))
+                        if (!ingredients.ContainsKey(_rawComponents.GetIngredient(key)))
+                            ingredients.Add(_rawComponents.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
+                        else
+                            ingredients[_rawComponents.GetIngredient(key)] += 1;
                     if(_dishes.IsDishExists(key))
-                        ingredients.Add(_dishes.GetDish(key), data.Values[data.Keys.IndexOf(key)]);
+                        if (!ingredients.ContainsKey(_dishes.GetDish(key)))
+                            ingredients.Add(_dishes.GetDish(key), data.Values[data.Keys.IndexOf(key)]);                        
+                        else
+                            ingredients[_dishes.GetDish(key)] += 1;
                 }
                 _storageHolder.AssignStorage(data.maxCapacity,data.coins,ingredients);
             }else {
@@ -236,7 +276,5 @@ namespace Storage {
 
             SaveAndLoad.SaveAndLoad.Save(data,DirPath,FileName);
         }
-
-
     }
 }

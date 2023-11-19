@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Ordering;
 using Storage;
 using TMPro;
 using Unity.VisualScripting;
@@ -51,6 +52,7 @@ public class CafeManager : MonoBehaviour
         dayUI.gameObject.SetActive(false);
         dayLightSpot.gameObject.SetActive(false);
         nightLightSpot.gameObject.SetActive(true);
+        this.gameObject.GetComponent<OrderManager>().CloseAllOrder();
         SaveGame();
         Debug.Log("Night Mode on");
     }
