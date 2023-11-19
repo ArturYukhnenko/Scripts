@@ -39,6 +39,12 @@ namespace Ordering {
                 _existingOrders.Remove(order);
         }
         
+        public void CloseAllOrder() {
+            foreach (var o in _existingOrders) {
+                o.gameObject.GetComponent<OrderController>().CloseOrder();
+            }
+        }
+        
         public void ClearOrdersList() {
             if(_existingOrders.Count > 0)
                 _existingOrders.Clear();

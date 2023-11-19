@@ -114,7 +114,9 @@ namespace Ordering {
 
             try {
                 if (i > 0) {
-                    UpdateStatus(Status.InProgress); 
+                    if (_status!= Status.InProgress) {
+                        UpdateStatus(Status.InProgress);
+                    }
                 }
             }catch (Exception e) {
                 Console.WriteLine(e + " Current status is: " + _status);
@@ -142,14 +144,14 @@ namespace Ordering {
             if (_status != Status.Ready) {
                 throw new Exception("Order cannot be accomplished");
             }
-
             try { 
                 UpdateStatus(Status.Finished);
                 StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
-                Debug.Log(this._order.ID);
-                foreach (Menu.Dish dish in _order.Dishes.Keys.ToList()) 
-                    StorageController.Instance.GetDishFromStorage(dish.Name);
+                List<string> tmp = new List<string>();
+                foreach (Menu.Dish dish in _order.Dishes.Keys.ToList())
+                    tmp.Add(dish.Name);
+                StorageController.Instance.GetDishFromStorage(tmp);
                 StorageController.Instance.AddEarnedMoney(_order.Price);
                 GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
                 Destroy(this.gameObject);
@@ -159,6 +161,13 @@ namespace Ordering {
                 Instantiate(errorPrefab);
                 CheckItemsForOrder();
             }
+        }
+
+        public void CloseOrder() {
+            StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
+            StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
+            GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
+            Destroy(this.gameObject);
         }
 
         private void UpdateStatus(Status status) {
