@@ -10,7 +10,6 @@ using static UnityEngine.ParticleSystem;
 public class CashQueue : MonoBehaviour
 {
 
-
     [SerializeField] public globalCustomer gc;
     [SerializeField] float ObjectSpeed;
     [SerializeField] public SpawnCustomer sc;
@@ -30,46 +29,20 @@ public class CashQueue : MonoBehaviour
     void Start()
     {
 
-        //if (gc.pos0Free)
-        //{
-        //    posi = 0;
-
-        //}
-        //else
-        //{
-        //    posi = gc.AddCust(this);
-        //}
-
-        if (gc.pos0Free)
+        if (gc.pos2Free && gc.pos1Free && gc.pos0Free)
         {
             posi = 0;
         }
 
-        if (gc.pos1Free)
+        if (gc.pos0Free == false && gc.pos1Free == true)
         {
             posi = 1;
         }
 
-        if (gc.pos2Free)
+        if(gc.pos0Free == false && gc.pos1Free == false && gc.pos2Free)
         {
             posi = 2;
         }
-
-
-        //if (gc.custList.IndexOf(this) == 0)
-        //{
-        //    posi = 0;
-        //}
-
-        //if (gc.custList.IndexOf(this) == 1)
-        //{
-        //    posi = 1;
-        //}
-
-        //if (gc.custList.IndexOf(this) == 2)
-        //{
-        //    posi = 2;
-        //}
 
     }
 
@@ -96,13 +69,11 @@ public class CashQueue : MonoBehaviour
             }
 
             if (this.gameObject.GetComponent<CashQueue>().transform.position.x == gc.QueuePositions[6].transform.position.x)
-            {
+            {        
                 gc.guestList.Remove(this.gameObject);
-                //Debug.Log("Index of the obejct: " + gc.guestList.IndexOf(this.gameObject));
-                //Debug.Log("Index of the obejct cust list: " + gc.custList.IndexOf(this));
                 Destroy(this.gameObject);
                 gc.posExit = true;
-                //sc.currentAmountOfCustomers--;
+                sc.currentAmountOfCustomers--;
             }
         }
         else
