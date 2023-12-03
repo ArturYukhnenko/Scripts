@@ -17,6 +17,8 @@ public class CashQueue : MonoBehaviour
 
     public bool canMove;
     public OrderController oc;
+    public bool orderNew;
+    public bool orderFinished;
 
 
     public bool tryToCreateOrder = true;
@@ -84,5 +86,31 @@ public class CashQueue : MonoBehaviour
 
 
     }
+
+
+    public void CreateOrder()
+    {
+        oc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OrderManager>().CreateOrder();
+        oc.OnStatusChange += OrderStatus;
+
+    }
+
+    void OrderStatus(Status status)
+    {
+        if (status == Status.Finished)
+        {
+            orderFinished = true;
+            oc.OnStatusChange -= OrderStatus;
+        }
+
+        if (status == Status.New)
+        {
+            orderNew = true;
+
+        }
+
+    }
+
+
 
 }

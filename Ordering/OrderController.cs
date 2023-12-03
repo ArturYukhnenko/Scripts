@@ -48,6 +48,7 @@ namespace Ordering {
             OnStatusChange?.Invoke(_status);
             StorageController.Instance.OnAddedItems += CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems += CheckItemsForOrder;
+            CheckItemsForOrder();
         }
 
         public void SetStatusReady() {
@@ -67,7 +68,6 @@ namespace Ordering {
                 rt.localScale = new Vector3(1, 1, 1); 
                 item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
             }
-            CheckItemsForOrder();
         }
 
         private void Update() {
@@ -167,10 +167,12 @@ namespace Ordering {
         }
 
         public void CloseOrder() {
+            OnStatusChange?.Invoke(Status.Finished);
             StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
             GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
             Destroy(this.gameObject);
+
         }
 
         private void UpdateStatus(Status status) {

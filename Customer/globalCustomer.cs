@@ -28,8 +28,6 @@ public class globalCustomer : MonoBehaviour
     public bool pos2Free;
     public bool pos1Free;
     public bool pos0Free;
-    public bool orderNew;
-    public bool orderFinished;
 
     public bool tryToCreateOrder = true;
     public OrderController oc;
@@ -92,10 +90,8 @@ public class globalCustomer : MonoBehaviour
             {
                 if (tryToCreateOrder)
                 {
-                    //guestList[i].gameObject.GetComponent<CashQueue>().
-                    oc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OrderManager>().CreateOrder();
-                    //guestList[i].gameObject.GetComponent<CashQueue>().
-                    oc.OnStatusChange += OrderStatus;
+                    guestList[i].gameObject.GetComponent<CashQueue>().CreateOrder();
+
                     tryToCreateOrder = false;
                 }
 
@@ -166,12 +162,12 @@ public class globalCustomer : MonoBehaviour
                 pos2Free = true;
             }
 
-            if (orderNew && guestList[i].gameObject.transform.position.x == QueuePositions[0].transform.position.x)
+            if (guestList[i].gameObject.GetComponent<CashQueue>().orderNew && guestList[i].gameObject.transform.position.x == QueuePositions[0].transform.position.x)
             {
 
                 if (posTable1 && moveToNextTable)
                 {
-                    orderNew = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderNew = false;
                     tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
                     pos0Free = true;
@@ -180,7 +176,7 @@ public class globalCustomer : MonoBehaviour
 
                 if (posTable2 && moveToNextTable)
                 {
-                    orderNew = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderNew = false;
                     tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 4;
                     pos0Free = true;
@@ -188,7 +184,7 @@ public class globalCustomer : MonoBehaviour
                 }
                 if (posTable3 && moveToNextTable)
                 {
-                    orderNew = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderNew = false;
                     tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 5;
                     pos0Free = true;
@@ -197,11 +193,11 @@ public class globalCustomer : MonoBehaviour
 
             }
 
-            if (orderFinished) //&& posExit == true)
+            if (guestList[i].gameObject.GetComponent<CashQueue>().orderFinished) //&& posExit == true)
             {
                 if(guestList[i].gameObject.GetComponent<CashQueue>().posi == 3)
                 {
-                    orderFinished = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable1 = true;
@@ -209,7 +205,7 @@ public class globalCustomer : MonoBehaviour
 
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 4)
                 {
-                    orderFinished = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable2 = true;
@@ -218,7 +214,7 @@ public class globalCustomer : MonoBehaviour
 
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 5)
                 {
-                    orderFinished = false;
+                    guestList[i].gameObject.GetComponent<CashQueue>().orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable3 = true;
@@ -228,21 +224,21 @@ public class globalCustomer : MonoBehaviour
         }
     }
 
-    void OrderStatus(Status status)
-    {
-        if(status == Status.Finished)
-        {
-            orderFinished = true;
-            oc.OnStatusChange -= OrderStatus;
-        }
+    //void OrderStatus(Status status)
+    //{
+    //    if(status == Status.Finished)
+    //    {
+    //        guestList[i].gameObject.GetComponent<CashQueue>().orderFinished = true;
+    //        oc.OnStatusChange -= OrderStatus;
+    //    }
 
-        if (status == Status.New)
-        {
-            orderNew = true;
+    //    if (status == Status.New)
+    //    {
+    //        guestList[i].gameObject.GetComponent<CashQueue>().orderNew = true;
             
-        }
+    //    }
 
-    }
+    //}
 
 
 }
