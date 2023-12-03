@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -52,8 +53,18 @@ public class CafeManager : MonoBehaviour
         dayUI.gameObject.SetActive(false);
         dayLightSpot.gameObject.SetActive(false);
         nightLightSpot.gameObject.SetActive(true);
-        //this.gameObject.GetComponent<OrderManager>().CloseAllOrder();
-        SaveGame();
+        try {
+            this.gameObject.GetComponent<OrderManager>().CloseAllOrder();
+        }
+        catch (Exception e) {
+            Debug.Log(e);
+        }
+        try {
+            SaveGame();
+        }
+        catch (Exception e) {
+            Debug.Log(e);
+        }
         Debug.Log("Night Mode on");
     }
 

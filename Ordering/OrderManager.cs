@@ -40,9 +40,11 @@ namespace Ordering {
         }
         
         public void CloseAllOrder() {
+            if (_existingOrders.Count <= 0) return;
             foreach (var o in _existingOrders) {
                 o.gameObject.GetComponent<OrderController>().CloseOrder();
             }
+
         }
         
         public void ClearOrdersList() {
