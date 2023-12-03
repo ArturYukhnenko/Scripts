@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Exceptions;
 using MenuEquipment.SO;
 using Storage;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = System.Random;
 
@@ -15,17 +13,19 @@ namespace Ordering {
         [SerializeField] 
         private GameObject orderPrefab;
         private List<GameObject> _existingOrders;
+        [SerializeField]
+        private int maxAmountOfDishes;
 
         private void Start() {
             _existingOrders = new List<GameObject>();
         }
 
-        public OrderController CreateOrder(List<Menu.Dish> dishes) {
-            if (_existingOrders.Count >= 5) {
+        public OrderController CreateOrder() {
+            if (_existingOrders.Count >= maxAmountOfDishes) {
                 throw new NotEnoughSpaceException("Cannot accept more orders");
             }
             GameObject order = Instantiate(orderPrefab, spawnPoint.transform);
-            order.GetComponent<OrderController>().Initialize(dishes);
+            order.GetComponent<OrderController>().Initialize(CreateRandomOrderList());
             RectTransform rt = order.GetComponent<RectTransform>();
             rt.localPosition = new Vector3(0, 0, 0); 
             rt.localScale = new Vector3(1, 1, 1); 
@@ -50,7 +50,7 @@ namespace Ordering {
                 _existingOrders.Clear();
         }
 
-        public void Test() {
+        private List<Menu.Dish> CreateRandomOrderList() {
             List<Menu.Dish> dishes = new List<Menu.Dish>();
             List<Menu.Dish> availableDishes = new List<Menu.Dish>(StorageController.Instance.ReceiveActualDishes());
             int randomAmount =  new Random().Next(1,availableDishes.Count);
@@ -58,7 +58,12 @@ namespace Ordering {
                 int randomDish =  new Random().Next(0,availableDishes.Count);
                 dishes.Add(availableDishes[randomDish]);
             }
-            CreateOrder(dishes);
+
+            return dishes;
+        }
+
+        public void TryOrder() {
+            CreateOrder();
         }
         
     }

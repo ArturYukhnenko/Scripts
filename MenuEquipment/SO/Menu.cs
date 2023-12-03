@@ -50,6 +50,7 @@ namespace MenuEquipment.SO {
             private string instrument;
             
             public bool activated;
+            public bool isIngredient;
             public List<string> ingredients;
             public string Name => dishName;
             public Sprite Icon => icon;

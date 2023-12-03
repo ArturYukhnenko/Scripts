@@ -90,7 +90,7 @@ public class globalCustomer : MonoBehaviour
             {
                 if (tryToCreateOrder)
                 {
-                    oc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OrderManager>().CreateOrder(StorageController.Instance.ReceiveActualDishes());
+                    oc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OrderManager>().CreateOrder();
                     oc.OnStatusChange += LeaveCafe;
                     tryToCreateOrder = false;
                 }

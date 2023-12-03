@@ -62,7 +62,8 @@ namespace Storage {
             List<Menu.Dish> actualDishes = new List<Menu.Dish>();
             foreach (Menu.Dish dish in _dishes.dishes) {
                 if (dish.activated) {
-                    actualDishes.Add(dish);
+                    if (!dish.isIngredient)
+                        actualDishes.Add(dish);
                 }
             }
 

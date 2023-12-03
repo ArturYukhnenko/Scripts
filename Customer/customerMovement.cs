@@ -117,7 +117,7 @@ public class customerMovement : MonoBehaviour
 
             if (allowOrder == false)
             {
-                oc = GameObject.Find("OrderManager").GetComponent<OrderManager>().CreateOrder(StorageController.Instance.ReceiveActualDishes());
+                oc = GameObject.Find("OrderManager").GetComponent<OrderManager>().CreateOrder();
                 Debug.Log(StorageController.Instance.ReceiveActualDishes().Count);
                 //generateOrder();dsa
                 allowOrder = true;
