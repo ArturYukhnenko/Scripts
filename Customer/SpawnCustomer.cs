@@ -5,34 +5,54 @@ using UnityEngine;
 public class SpawnCustomer : MonoBehaviour
 {
     public globalCustomer gc;
+    public SpawnCustomer sc;
     public CashQueue cq;
     public GameObject customerPrefab;
     public int currentAmountOfCustomers;
 
-    private void Update()
-    {
-        if (currentAmountOfCustomers < 3 && Input.GetKeyDown(KeyCode.Space))
-        {
 
-            //customerPrefab.SetActive(true);
-            GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
+    private float minSpawnTime = 7f;
+    private float maxSpawnTime = 10f;
+
+    private float timer;
+    private bool shouldCreateObject = false;
+
+    void Start()
+    {
+        ResetTimer();
+    }
+
+    void Update()
+    {
+        timer -= Time.deltaTime;
+        if (timer <= 0f && !shouldCreateObject && currentAmountOfCustomers<3)
+        {
             currentAmountOfCustomers++;
-            customerPrefab.transform.Rotate(0f, 180f, 0f);
-            customer.GetComponent<customerMovement>().MoveToExit = false;
-            
-            customer.GetComponent<customerMovement>().MoveToCashRegister = true;
-            customer.GetComponent<customerMovement>().MoveToFreeTable = false;
-            
-            customer.GetComponent<customerMovement>().customer = customer;
-            customer.GetComponent<CashQueue>().gc = gc;
-            //customer.GetComponent<CashQueue>().pos0Free = false;
-            //customer.GetComponent<CashQueue>().pos1Free = false;
-            //customer.GetComponent<globalCustomer>().UpdatePos();
+            shouldCreateObject = true;
+            CreateObject();
+            ResetTimer();
+        }
+
+        if(currentAmountOfCustomers == 3)
+        {
+            ResetTimer();
         }
     }
 
-    public void DestroyCustomer(GameObject customer)
+    void CreateObject()
     {
-        customer.SetActive(false); 
+        GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
+        customer.GetComponent<customerMovement>().customer = customer;
+        customer.GetComponent<CashQueue>().gc = gc;
+        customer.GetComponent<CashQueue>().sc = sc;
     }
+
+    void ResetTimer()
+    {
+        timer = Random.Range(minSpawnTime, maxSpawnTime);
+        shouldCreateObject = false;
+    }
+
 }
+
+

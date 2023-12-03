@@ -39,18 +39,15 @@ public class globalCustomer : MonoBehaviour
 
     void Start()
     {
-        //moveToNextTable = true;
-
-        pos2Free = true;
+        posExit = true;
+        pos0Free = true;
         QueuePositionsOccupation();
 
-        //posExit = true;
-        //posTableExit = true;
         posTable3 = true;
         posTable2 = true;
         posTable1 = true;
 
-        UpdatePos();
+        //UpdatePos();
 
     }
 
@@ -58,11 +55,6 @@ public class globalCustomer : MonoBehaviour
     {
         return QueuePositions[index].position;
     }
-
-    //public Vector3 GetTableFreePos(int index)
-    //{
-    //    return TablePositions[index].position;
-    //}
 
     public int AddCust(CashQueue cust)
     {
@@ -73,12 +65,10 @@ public class globalCustomer : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log("size: " + guestList.Count);
-        //Debug.Log("table1: " + posTable1);
-        //Debug.Log("table2: " + posTable2);
-        //Debug.Log("table3: " + posTable3);
-        //Debug.Log("move: " + moveToNextTable);
-        //Debug.Log("move: " + QueuePositions.Length);
+        Debug.Log("pos0: " + pos0Free);
+        Debug.Log("pos1: " + pos1Free);
+        Debug.Log("pos2: " + pos2Free);
+        Debug.Log("table: " + posTable1);
         QueuePositionsOccupation();
         FreeTablesOccupation();
         amountOfCustomers = custList.Count;
@@ -87,6 +77,7 @@ public class globalCustomer : MonoBehaviour
 
         foreach (GameObject g in gs)
         {
+            //Debug.Log("index of the object is: " + custList.IndexOf(this));
             if (!guestList.Contains(g.gameObject))
                 guestList.Add(g.gameObject);
             pos = guestList.IndexOf(g.gameObject);
@@ -109,22 +100,22 @@ public class globalCustomer : MonoBehaviour
                 }
                 moveToNextTable = true;
                 pos0Free = false;
+                pos1Free = true;
             }
+           
 
-            if (guestList[i].gameObject.GetComponent<CashQueue>().posi == QueuePositions[1].transform.position.x)
+            if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == QueuePositions[1].transform.position.x)
             {
                 pos1Free = false;
+                pos2Free = true;
             }
+            
 
-            if (guestList[i].gameObject.GetComponent<CashQueue>().posi == QueuePositions[2].transform.position.x)
+            if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == QueuePositions[2].transform.position.x)
             {
                 pos2Free = false;
             }
 
-            //if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == QueuePositions[3].transform.position.x)
-            //{
-            //    posTable1 = false;
-            //}
 
         }
     }
@@ -153,31 +144,6 @@ public class globalCustomer : MonoBehaviour
                 posTable3 = false;
             }
 
-            if (guestList[i].gameObject.GetComponent<CashQueue>().transform.position.x == QueuePositions[6].transform.position.x)
-            {
-                //guestList[i].gameObject.SetActive(false);
-                foreach (var x in guestList)
-                {
-                    Debug.Log("x1 "+x);
-                }
-
-
-
-                guestList.Remove(guestList[i]);
-                this.guestList[i].gameObject.SetActive(false);
-                //Destroy(guestList[i]);
-                foreach (var x in guestList)
-                {
-                    Debug.Log("x2 " + x);
-                }
-
-                //Debug.Log("x2"+guestList);
-                //guestList.Remove(this.guestList[0].gameObject);
-                
-                
-                //posExit = false;
-            }
-
         }
     }
 
@@ -187,7 +153,6 @@ public class globalCustomer : MonoBehaviour
 
         for (int i = 0; i < guestList.Count; i++)
         {
-            //Debug.Log(guestList[i].transform.position.x == QueuePositions[1].transform.position.x);
 
             if (guestList[i].gameObject.transform.position.x == QueuePositions[1].transform.position.x && pos0Free && posTable1 == false)
             {
@@ -201,61 +166,55 @@ public class globalCustomer : MonoBehaviour
                 guestList[i].gameObject.GetComponent<CashQueue>().posi = 1;
                 pos2Free = true;
             }
+
             if (Input.GetKeyDown("n") && guestList[i].gameObject.transform.position.x == QueuePositions[0].transform.position.x)
             {
-   
 
                 if (posTable1 && moveToNextTable)
                 {
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
                     pos0Free = true;
                     moveToNextTable = false;
-                    //this.gameObject.GetComponent<globalCustomer>().moveToNextTable = false;
-                    //break;
                 }
 
                 if (posTable2 && moveToNextTable)
                 {
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 4;
-                    //posTable2 = false;
-                    //if(posTable2 == false)
-                    //pos0Free = true;
                     moveToNextTable = false;
-                   //break;
                 }
                 if (posTable3 && moveToNextTable)
                 {
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 5;
-                    //pos0Free = true;
                     moveToNextTable = false;
                 }
 
-
-                //guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
-                //pos0Free = true;
             }
 
-            if (Input.GetKeyDown("d") && posTable1 == false)
+            if (Input.GetKeyDown("d") && posExit == true)
             {
                 if(guestList[i].gameObject.GetComponent<CashQueue>().posi == 3)
-                guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
-            }
+                {
+                    guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
+                    posExit = false;
+                }
+               ;
 
-            if (Input.GetKeyDown("f") && posTable2 == false)
-            {
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 4)
+                {
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
-            }
+                    posExit = false;
+                }
 
-            if (Input.GetKeyDown("g") && posTable2 == false)
-            {
+
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 5)
+                {
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
+                    posExit = false;
+                }
+
             }
         }
     }
-
-
 
     void LeaveCafe(Status status)
     {
