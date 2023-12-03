@@ -74,19 +74,18 @@ namespace Storage {
             _currentFilled += amountOfItems;
         }
 
-        public int GetItem(string itemName, int amountOfItems) {
-            
-            IItem ingredient = _storedItems.Keys.First(i => i.Name == itemName);
-            if (_storedItems[ingredient] < amountOfItems) {
-                throw new NotEnoughItemsException($"Not enough{ingredient.Name} in storage");
-            }
-            if (_storedItems[ingredient] - amountOfItems == 0) {
-                RemoveItem(ingredient);
+        public int GetItem(IItem item, int amountOfItems) {
+            if(!_storedItems.ContainsKey(item))
+                throw new NotEnoughItemsException($"There is no {item.Name} in storage");
+            if (_storedItems[item] < amountOfItems)
+                throw new NotEnoughItemsException($"Not enough{item.Name} in storage");
+            if (_storedItems[item] - amountOfItems == 0) {
+                RemoveItem(item);
             }else {
-                _storedItems[ingredient] -= amountOfItems;
+                _storedItems[item] -= amountOfItems;
                 _currentFilled -= amountOfItems;
             }
-            int price = ingredient.Price + amountOfItems;
+            int price = item.Price + amountOfItems;
             return price;
         }
         

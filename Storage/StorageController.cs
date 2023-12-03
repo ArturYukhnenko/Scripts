@@ -169,15 +169,16 @@ namespace Storage {
             }
        }
         
-        public void GetDishFromStorage(string dish) {
-            if (!_dishes.IsDishExists(dish)) { 
-                throw new ElementNotFoundException($"{dish} is not exists "); 
+        public void GetDishFromStorage(string dishName) {
+            if (!_dishes.IsDishExists(dishName)) { 
+                throw new ElementNotFoundException($"{dishName} is not exists "); 
             }
-            try { 
+            try {
+                Menu.Dish dish = _dishes.GetDish(dishName);
                 _currentStorage.GetItem(dish,1);
             }
             catch (NotEnoughItemsException e) {
-                throw new NotEnoughItemsException($"There is not enough {dish} in storage");
+                throw new NotEnoughItemsException($"There is not enough {dishName} in storage");
             }
             OnRemovedItems?.Invoke();
         }
@@ -188,12 +189,13 @@ namespace Storage {
                     throw new ElementNotFoundException($"{dish} is not exists "); 
                 }
             }
-            foreach (var dish in dishes) {
+            foreach (var dishName in dishes) {
                 try { 
+                    Menu.Dish dish = _dishes.GetDish(dishName);
                     _currentStorage.GetItem(dish,1);
                 }
                 catch (NotEnoughItemsException e) {
-                    throw new NotEnoughItemsException($"There is not enough {dish} in storage");
+                    throw new NotEnoughItemsException($"There is not enough {dishName} in storage");
                 }
             }
             OnRemovedItems?.Invoke();
@@ -203,9 +205,11 @@ namespace Storage {
            if (!_rawComponents.IsIngredientExists(ingredient)) { 
                throw new ElementNotFoundException($"{ingredient} is not exists "); 
            }
-           try { 
-               _currentStorage.GetItem(ingredient, 1); 
+           try {
+               RawComponents.RawIngredient ing = _rawComponents.GetIngredient(ingredient);
+               _currentStorage.GetItem(ing, 1); 
            }catch (NotEnoughItemsException e) {
+               Debug.LogError(e);
                throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
            }
            
@@ -220,7 +224,8 @@ namespace Storage {
             }
             foreach (var ingredient in ingredients) {
                 try {
-                    _currentStorage.GetItem(ingredient, 1);
+                    RawComponents.RawIngredient ing = _rawComponents.GetIngredient(ingredient);
+                    _currentStorage.GetItem(ing, 1);
                 }
                 catch (NotEnoughItemsException e) {
                     throw new NotEnoughItemsException($"There is not enough {ingredient} in storage");
@@ -239,16 +244,18 @@ namespace Storage {
                 Dictionary<IItem, int> ingredients =
                     new Dictionary<IItem, int>();
                 foreach (string key in data.Keys) {
-                    if(_rawComponents.IsIngredientExists(key))
-                        if (!ingredients.ContainsKey(_rawComponents.GetIngredient(key)))
+                    if (_rawComponents.IsIngredientExists(key)) {
+                        if (!ingredients.ContainsKey(_rawComponents.GetIngredient(key))) 
                             ingredients.Add(_rawComponents.GetIngredient(key), data.Values[data.Keys.IndexOf(key)]);
-                        else
+                        else 
                             ingredients[_rawComponents.GetIngredient(key)] += 1;
-                    if(_dishes.IsDishExists(key))
-                        if (!ingredients.ContainsKey(_dishes.GetDish(key)))
-                            ingredients.Add(_dishes.GetDish(key), data.Values[data.Keys.IndexOf(key)]);                        
-                        else
+                    }
+                    else if (_dishes.IsDishExists(key)) {
+                        if (!ingredients.ContainsKey(_dishes.GetDish(key))) 
+                            ingredients.Add(_dishes.GetDish(key), data.Values[data.Keys.IndexOf(key)]);
+                        else 
                             ingredients[_dishes.GetDish(key)] += 1;
+                    }
                 }
                 _storageHolder.AssignStorage(data.maxCapacity,data.coins,ingredients);
             }else {
