@@ -28,6 +28,8 @@ public class globalCustomer : MonoBehaviour
     public bool pos2Free;
     public bool pos1Free;
     public bool pos0Free;
+    public bool orderNew;
+    public bool orderFinished;
 
     public bool tryToCreateOrder = true;
     public OrderController oc;
@@ -63,7 +65,7 @@ public class globalCustomer : MonoBehaviour
 
     void Update()
     {
-
+        Debug.Log("try: " + tryToCreateOrder);
         QueuePositionsOccupation();
         FreeTablesOccupation();
         amountOfCustomers = custList.Count;
@@ -90,10 +92,13 @@ public class globalCustomer : MonoBehaviour
             {
                 if (tryToCreateOrder)
                 {
+                    //guestList[i].gameObject.GetComponent<CashQueue>().
                     oc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<OrderManager>().CreateOrder();
-                    oc.OnStatusChange += LeaveCafe;
+                    //guestList[i].gameObject.GetComponent<CashQueue>().
+                    oc.OnStatusChange += OrderStatus;
                     tryToCreateOrder = false;
                 }
+
                 moveToNextTable = true;
                 pos0Free = false;
             }
@@ -161,11 +166,13 @@ public class globalCustomer : MonoBehaviour
                 pos2Free = true;
             }
 
-            if (Input.GetKeyDown("n") && guestList[i].gameObject.transform.position.x == QueuePositions[0].transform.position.x)
+            if (orderNew && guestList[i].gameObject.transform.position.x == QueuePositions[0].transform.position.x)
             {
 
                 if (posTable1 && moveToNextTable)
                 {
+                    orderNew = false;
+                    tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 3;
                     pos0Free = true;
                     moveToNextTable = false;
@@ -173,12 +180,16 @@ public class globalCustomer : MonoBehaviour
 
                 if (posTable2 && moveToNextTable)
                 {
+                    orderNew = false;
+                    tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 4;
                     pos0Free = true;
                     moveToNextTable = false;
                 }
                 if (posTable3 && moveToNextTable)
                 {
+                    orderNew = false;
+                    tryToCreateOrder = true;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 5;
                     pos0Free = true;
                     moveToNextTable = false;
@@ -186,10 +197,11 @@ public class globalCustomer : MonoBehaviour
 
             }
 
-            if (Input.GetKeyDown("d") && posExit == true)
+            if (orderFinished) //&& posExit == true)
             {
                 if(guestList[i].gameObject.GetComponent<CashQueue>().posi == 3)
                 {
+                    orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable1 = true;
@@ -197,6 +209,7 @@ public class globalCustomer : MonoBehaviour
 
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 4)
                 {
+                    orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable2 = true;
@@ -205,6 +218,7 @@ public class globalCustomer : MonoBehaviour
 
                 if (guestList[i].gameObject.GetComponent<CashQueue>().posi == 5)
                 {
+                    orderFinished = false;
                     guestList[i].gameObject.GetComponent<CashQueue>().posi = 6;
                     posExit = false;
                     posTable3 = true;
@@ -214,13 +228,21 @@ public class globalCustomer : MonoBehaviour
         }
     }
 
-    void LeaveCafe(Status status)
+    void OrderStatus(Status status)
     {
-        if (status == Status.Finished)
+        if(status == Status.Finished)
         {
-            oc.OnStatusChange -= LeaveCafe;
-            pos1Free = true;
+            orderFinished = true;
+            oc.OnStatusChange -= OrderStatus;
         }
+
+        if (status == Status.New)
+        {
+            orderNew = true;
+            
+        }
+
     }
+
 
 }

@@ -11,8 +11,8 @@ public class SpawnCustomer : MonoBehaviour
     public int currentAmountOfCustomers;
 
 
-    private float minSpawnTime = 7f;
-    private float maxSpawnTime = 10f;
+    private float minSpawnTime = 10f;
+    private float maxSpawnTime = 15f;
 
     private float timer;
     private bool shouldCreateObject = false;

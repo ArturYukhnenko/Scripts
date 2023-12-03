@@ -16,7 +16,7 @@ namespace Ordering {
         [SerializeField]
         private GameObject errorPrefab;
         
-        private Status _status = Status.New;
+        private Status _status;
         [SerializeField]
         private GameObject orderItem;
         [SerializeField]
@@ -44,6 +44,8 @@ namespace Ordering {
         public Status Status => _status;
 
         private void Start() {
+            _status = Status.New;
+            OnStatusChange?.Invoke(_status);
             StorageController.Instance.OnAddedItems += CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems += CheckItemsForOrder;
         }
@@ -77,6 +79,7 @@ namespace Ordering {
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
+                OnStatusChange?.Invoke(Status.Finished);
                 StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
                 GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);

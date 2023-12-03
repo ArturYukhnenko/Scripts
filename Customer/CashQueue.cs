@@ -14,6 +14,7 @@ public class CashQueue : MonoBehaviour
     [SerializeField] float ObjectSpeed;
     [SerializeField] public SpawnCustomer sc;
 
+
     public bool canMove;
     public OrderController oc;
 
@@ -72,7 +73,7 @@ public class CashQueue : MonoBehaviour
             {        
                 gc.guestList.Remove(this.gameObject);
                 Destroy(this.gameObject);
-                gc.posExit = true;
+                //gc.posExit = true;
                 sc.currentAmountOfCustomers--;
             }
         }
