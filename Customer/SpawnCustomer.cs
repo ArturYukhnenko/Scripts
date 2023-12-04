@@ -24,19 +24,23 @@ public class SpawnCustomer : MonoBehaviour
 
     void Update()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0f && !shouldCreateObject && currentAmountOfCustomers<3)
+        if (CafeManager.IsDay)
         {
-            currentAmountOfCustomers++;
-            shouldCreateObject = true;
-            CreateObject();
-            ResetTimer();
+            timer -= Time.deltaTime;
+                    if (timer <= 0f && !shouldCreateObject && currentAmountOfCustomers<3)
+                    {
+                        currentAmountOfCustomers++;
+                        shouldCreateObject = true;
+                        CreateObject();
+                        ResetTimer();
+                    }
+            
+                    if(currentAmountOfCustomers == 3)
+                    {
+                        ResetTimer();
+                    }
         }
-
-        if(currentAmountOfCustomers == 3)
-        {
-            ResetTimer();
-        }
+        
     }
 
     void CreateObject()

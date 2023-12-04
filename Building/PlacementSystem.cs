@@ -75,6 +75,7 @@ public class PlacementSystem : MonoBehaviour
     private void PlaceStructure()
     {
         GameObject finalFurniture = Instantiate(_furnitureSo.GetIngredient(_selectedItem).Prefab);
+        finalFurniture.transform.SetParent(GameObject.FindWithTag("equipmentSpawner").transform);
         finalFurniture.transform.position = flyingFurniture.transform.position;
         finalFurniture.transform.rotation = flyingFurniture.transform.rotation;
         RoomGenerator.addNewFurniture(_selectedItem, finalFurniture);

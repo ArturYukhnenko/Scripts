@@ -18,7 +18,7 @@ namespace Shop {
         [SerializeField]
         private FurnitureSO furniture;
         [SerializeField]
-        private int availableItems;
+        private int availableItems, addAreaCost;
 
         private bool _isSomethingBought;
 
@@ -62,8 +62,6 @@ namespace Shop {
                 {
                     Instantiate(notEnoughMoney);
                 }
-                
-                
             }
             catch (Exception e) {
                 Console.WriteLine(e);
@@ -72,5 +70,19 @@ namespace Shop {
             
         }
 
+        public void BuyAddArea()
+        {
+            try
+            {
+                StorageController.Instance.SpendMoney(addAreaCost);
+                GameObject.FindGameObjectWithTag("RoomGenerator").GetComponent<RoomGenerator>().addArea();
+                //RoomGenerator.addArea();
+                Destroy(this.gameObject);
+            }
+            catch (NotEnoughMoneyException)
+            {
+                Instantiate(notEnoughMoney);
+            }
+        }
     }
 }

@@ -63,7 +63,7 @@ public class globalCustomer : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("try: " + tryToCreateOrder);
+//        Debug.Log("try: " + tryToCreateOrder);
         QueuePositionsOccupation();
         FreeTablesOccupation();
         amountOfCustomers = custList.Count;

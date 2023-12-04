@@ -17,8 +17,8 @@ public class RoomGenerator : MonoBehaviour
     private List<GameObject> generatedObjects = new List<GameObject>();
     [SerializeField] private FurnitureSO _furnitureSo;
     [SerializeField]private static List<CoordinatesSaver> _furnitures = new List<CoordinatesSaver>();
-    [SerializeField]private List<GameObject> xWallsAdding = new List<GameObject>();
-    [SerializeField]private List<GameObject> yWallsAdding = new List<GameObject>();
+    private List<GameObject> xWallsAdding = new List<GameObject>();
+    private List<GameObject> yWallsAdding = new List<GameObject>();
     
     // Start is called before the first frame update
     void Start()
@@ -39,6 +39,7 @@ public class RoomGenerator : MonoBehaviour
             Vector3 frontWallVector3 = new Vector3(frontFirstWall.transform.position.x + i, frontFirstWall.position.y,
                 frontFirstWall.position.z);
             wall.transform.SetPositionAndRotation(frontWallVector3, frontFirstWall.rotation);
+            wall.transform.localScale = new Vector3(1, 0.25f, 1);
             generatedObjects.Add(wall);
         }
         //back side

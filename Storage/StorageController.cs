@@ -82,6 +82,13 @@ namespace Storage {
                 throw new WrongValueException("Number cannot be less or equals to 0");
         }
 
+        public void SpendMoney(int amount)
+        {
+            if (_currentStorage.Coins < amount)
+                throw new NotEnoughMoneyException("Not enough money in SpendMoney");
+            _currentStorage.Coins = -amount;
+        }
+
         public void BuyItem(string itemName,int price) {
             try {
                 if (_rawComponents.IsIngredientExists(itemName)) {
