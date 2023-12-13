@@ -28,6 +28,19 @@ namespace MenuEquipment.SO {
             return false;
         }
 
+        public int ActiveDishCounter()
+        {
+            int counter = 0;
+            foreach(Dish dish in dishes) {
+                if (dish.activated)
+                {
+                    counter++;
+                }
+            }
+
+            return counter;
+        }
+
         public void calculatePrice(int benefit)
         {
             foreach (var dish in dishes)
@@ -57,7 +70,6 @@ namespace MenuEquipment.SO {
             public int Price => price;
             public string Instrument()
             {
-                Debug.Log("barTable" + instrument);
                 return "barTable" + instrument;
             }
 

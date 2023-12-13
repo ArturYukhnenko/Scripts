@@ -78,8 +78,9 @@ public class PlacementSystem : MonoBehaviour
         finalFurniture.transform.SetParent(GameObject.FindWithTag("equipmentSpawner").transform);
         finalFurniture.transform.position = flyingFurniture.transform.position;
         finalFurniture.transform.rotation = flyingFurniture.transform.rotation;
-        RoomGenerator.addNewFurniture(_selectedItem, finalFurniture);
-        
+        RoomGenerator.AddNewFurniture(_selectedItem, finalFurniture);
+        CafeManager.CleanActivatedTogglesOnDelete();
+        Debug.Log("Delete");
         Destroy(flyingFurniture);
         Destroy(GameObject.Find("BuildingSystem(Clone)"));
     }

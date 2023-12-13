@@ -1,28 +1,45 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+using MenuEquipment.SO;
 using Ordering;
 using Storage;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CafeManager : MonoBehaviour
 {
     [SerializeField]private GameObject dayUI, nightUI, dayLightSpot, nightLightSpot, pausePopup;
 
+    [SerializeField]
+    private RoomGenerator _roomGenerator;
+    [SerializeField]
+    private Menu menu;
+    private static Menu _menu;
     public static bool IsDay, Paused;
+    //prestige
+    public static float prestigeCoefficient;
+    [SerializeField] private float dishPrestige, furniturePrestige;
+    
     // Start is called before the first frame update
     
     [SerializeField] private TMP_Text money;
     
     void Start()
     {
+        try
+        {
+            //SerializeField
+            _roomGenerator.Load();
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         IsDay = false;
         turnOnNightMode();
         Paused = false;
+        _menu = menu;
     }
 
     // Update is called once per frame
@@ -38,6 +55,7 @@ public class CafeManager : MonoBehaviour
 
     public void turnOnDayMode()
     {
+        prestigeCoefficient = CountPrestige();
         IsDay = true;
         nightUI.gameObject.SetActive(false);
         dayUI.gameObject.SetActive(true);
@@ -77,6 +95,30 @@ public class CafeManager : MonoBehaviour
 
     private void SaveGame() {
         StorageController.Instance.Save();
+        
+        _roomGenerator.Save();
+    }
+    public static void CleanActivatedTogglesOnDelete()
+    {
+        if (_menu == null)
+        {
+            throw new NullReferenceException("SerializeField menu may be lost");
+        }
+        foreach (var dish in _menu.dishes)
+        {
+            if (!RoomGenerator.FurnitureExist(dish.Instrument()))
+            {
+                dish.activated = false;
+            }
+        }
     }
 
+    private float CountPrestige()
+    {
+        
+        float roomCoefficient = _roomGenerator.FurnitureCounter() * furniturePrestige;
+        float dishCoefficient = _menu.ActiveDishCounter() * dishPrestige;
+        Debug.Log($"roomCoef{roomCoefficient}, dishCoef {dishCoefficient}, furnitureCount {_roomGenerator.FurnitureCounter()}, dishCounter {_menu.ActiveDishCounter()}");
+        return 1 + roomCoefficient + dishCoefficient;
+    }
 }

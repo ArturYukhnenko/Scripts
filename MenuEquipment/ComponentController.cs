@@ -9,7 +9,7 @@ namespace MenuEquipment {
     public class ComponentController : MonoBehaviour
     {
         [SerializeField] private TMP_Text title;
-        [SerializeField] private GameObject ingredientPrefab;
+        [SerializeField] private Image image;
         [SerializeField] private Toggle toggle;
         [SerializeField] private GameObject ingredientsSpawner;
         private List<string> _ingredients = new List<string>();
@@ -19,11 +19,10 @@ namespace MenuEquipment {
             get => title;
             set => title = value;
         }
-
-        public GameObject IngredientPrefab
+        public Image Image
         {
-            get => ingredientPrefab;
-            set => ingredientPrefab = value;
+            get => image;
+            set => image = value;
         }
 
         public Toggle Toggle

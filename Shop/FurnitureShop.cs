@@ -4,9 +4,7 @@ using Exceptions;
 using Storage;
 using Storage.SO;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Shop {
@@ -75,7 +73,7 @@ namespace Shop {
             try
             {
                 StorageController.Instance.SpendMoney(addAreaCost);
-                GameObject.FindGameObjectWithTag("RoomGenerator").GetComponent<RoomGenerator>().addArea();
+                GameObject.FindGameObjectWithTag("RoomGenerator").GetComponent<RoomGenerator>().AddArea();
                 //RoomGenerator.addArea();
                 Destroy(this.gameObject);
             }

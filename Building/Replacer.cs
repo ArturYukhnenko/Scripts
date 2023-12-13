@@ -13,6 +13,7 @@ public class Replacer : MonoBehaviour
     {
         GameObject ourBuildSystem = Instantiate(buildSystem);
         ourBuildSystem.gameObject.GetComponent<PlacementSystem>().StartPlacement(name);
+        RoomGenerator.DeleteFurniture(name, this.gameObject);
         Destroy(this.gameObject);
     }
 }

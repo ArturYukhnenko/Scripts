@@ -27,6 +27,7 @@ namespace MenuEquipment {
                                     dishVar.transform.SetParent(GameObject.Find("menuVariants").transform);
                                     ComponentController cc = dishVar.GetComponent<ComponentController>();
                                     cc.Title.text = dishName;
+                                    cc.Image.sprite = dish.Icon;
                                     cc.IngredientsSpawner.name += "_" + dishName;
                                     Debug.Log(dishName + "ingredients: " + dish.ingredients.ToString());
                                     foreach (var ingredient in dish.ingredients)

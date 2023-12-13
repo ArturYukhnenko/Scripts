@@ -17,18 +17,19 @@ public class RoomGenerator : MonoBehaviour
     private List<GameObject> generatedObjects = new List<GameObject>();
     [SerializeField] private FurnitureSO _furnitureSo;
     [SerializeField]private static List<CoordinatesSaver> _furnitures = new List<CoordinatesSaver>();
-    private List<GameObject> xWallsAdding = new List<GameObject>();
-    private List<GameObject> yWallsAdding = new List<GameObject>();
+    //objects of wall(2,3,4,5), (8,7,6,5,4)
+    [SerializeField]private List<GameObject> xWallsAdding = new List<GameObject>();
+    [SerializeField]private List<GameObject> yWallsAdding = new List<GameObject>();
     
     // Start is called before the first frame update
     void Start()
     {
         Load((FurnitureModel)SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
             ModelTypesEnums.FurnitureModel));
-        generateWalls();
-        generateFloor();
+        GenerateWalls();
+        GenerateFloor();
     }
-    private void generateWalls()
+    private void GenerateWalls()
     {
         //front side
         var frontFirstWall = GameObject.Find("WallPart (1)").transform;
@@ -78,7 +79,7 @@ public class RoomGenerator : MonoBehaviour
         
     }
 
-    private void generateFloor()
+    private void GenerateFloor()
     {
         for (int i = 0; i < x; i++)
         {
@@ -95,7 +96,7 @@ public class RoomGenerator : MonoBehaviour
         
     }
 
-    public void addArea()
+    public void AddArea()
     {
         x += 1;
         y += 1;
@@ -113,19 +114,35 @@ public class RoomGenerator : MonoBehaviour
         {
             Destroy(obj);
         }
-        generateWalls();
-        generateFloor();
+        GenerateWalls();
+        GenerateFloor();
     }
-    public static void addNewFurniture(string item, GameObject furniture)
+    public static void AddNewFurniture(string item, GameObject furniture)
     {
         var position = furniture.transform.position;
         var rotation = furniture.transform.rotation;
         CoordinatesSaver obj = new CoordinatesSaver(item, position.x, position.y, position.z, rotation.x, rotation.y,
             rotation.z, rotation.w);
         _furnitures.Add(obj);
-        Save();
     }
-
+    public static void DeleteFurniture(string item, GameObject furniture)
+    {
+        var position = furniture.transform.position;
+        var rotation = furniture.transform.rotation;
+        CoordinatesSaver obj1 = new CoordinatesSaver(item, position.x, position.y, position.z, rotation.x, rotation.y,
+            rotation.z, rotation.w);
+        foreach (var fur in _furnitures)
+        {
+            if (obj1 == fur)
+            {
+                _furnitures.Remove(fur);
+                Debug.Log(fur + "deleted from list");
+            }
+        }
+        CoordinatesSaver obj = new CoordinatesSaver(item, position.x, position.y, position.z, rotation.x, rotation.y,
+            rotation.z, rotation.w);
+        _furnitures.Remove(obj);
+    }
     private void InstantiateFurniture()
     {
         foreach (var furniture in _furnitures)
@@ -136,7 +153,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    public static void Save() {
+    public void Save() {
 
         FurnitureModel data = new FurnitureModel() {
             roomSize_x = x,
@@ -152,5 +169,43 @@ public class RoomGenerator : MonoBehaviour
             _furnitures = data.CoordinatesFurniture;
         }
         InstantiateFurniture();
+    }
+    public void Load()
+    {
+        FurnitureModel data = (FurnitureModel) SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
+            ModelTypesEnums.FurnitureModel);
+        if (data != null)
+        {
+            _furnitures = data.CoordinatesFurniture;
+        }
+        InstantiateFurniture();
+    }
+
+    public static bool FurnitureExist(string furniture)
+    {
+        foreach (var obj in _furnitures)
+        {
+            var tmp = "barTable" + obj.type;
+            if (tmp == furniture)
+            {
+                return true;
+            }
+        }
+        return false;
+        
+    }
+
+    public int FurnitureCounter()
+    {
+        int counter = 0;
+        foreach (var obj in _furnitures)
+        {
+            if (obj.type == "Table")
+            {
+                counter++;
+            }
+        }
+
+        return counter;
     }
 }

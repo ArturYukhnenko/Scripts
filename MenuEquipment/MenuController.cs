@@ -12,7 +12,6 @@ namespace MenuEquipment {
         [SerializeField]
         private GameObject dishPrefab, spawner, ingredientPrefab;
         [SerializeField] private Menu menu;
-        //wtrfack
         private Dictionary<string, GameObject> _dishVariants;
         private ComponentController _cc;
         public RawComponents ingredients;
@@ -20,43 +19,61 @@ namespace MenuEquipment {
         void Start()
         {
             _dishVariants = new Dictionary<string, GameObject>();
-            if (!CafeManager.IsDay)
-            {Debug.Log("MenuController editable on");
+            if (!CafeManager.IsDay) 
+            {
+                Debug.Log("MenuController editable on");
                 foreach (var dish in menu.dishes)
                 {
-                    ShowDish(dish);
-                    _cc.Toggle.isOn = dish.activated;
+                    if (RoomGenerator.FurnitureExist(dish.Instrument()))
+                    {
+                        ShowDish(dish);
+                        _cc.Toggle.isOn = dish.activated;
+                    }
+                    else
+                    {
+                        Debug.Log(dish.Instrument());
+                        dish.activated = false;
+                    }
+                    //Debug.Log("Instrument "+dish.Instrument());
+
                 }
             }
             else
-            {Debug.Log("MenuController editable off");
+            {
+                Debug.Log("MenuController editable off");
                 foreach (var dish in menu.dishes)
                 {
                     if (dish.activated)
                     {
-                        ShowDish(dish);
-                        Destroy(_cc.Toggle.gameObject);
+                        if (RoomGenerator.FurnitureExist(dish.Instrument()))
+                        {
+                            ShowDish(dish);
+                            Destroy(_cc.Toggle.gameObject);
+                        }
                     }
                                         
                 }
             }
         }
         void Update()
-        {if (!CafeManager.IsDay)
-            {
-                foreach (var dish in menu.dishes)
-                {
-                    //Too heave method. Make it on Exit/Destroy
-                    _cc = _dishVariants[dish.Name].GetComponent<ComponentController>();
-                    dish.activated = _cc.Toggle.isOn;
-                }
-                                 
-            }
+        {
         }
 
         private void OnDestroy()
         {
-        
+            {if (!CafeManager.IsDay)
+                {
+                    foreach (var dish in menu.dishes)
+                    {
+                        if (RoomGenerator.FurnitureExist(dish.Instrument()))
+                        {
+                            _cc = _dishVariants[dish.Name].GetComponent<ComponentController>();
+                            dish.activated = _cc.Toggle.isOn;
+                        }
+                    }
+                                 
+                }
+            }
         }
 
         private void ShowDish(Menu.Dish dish)
@@ -64,17 +81,17 @@ namespace MenuEquipment {
             GameObject dishVar = Instantiate(dishPrefab, spawner.transform, true);
             _cc = dishVar.GetComponent<ComponentController>();
             _cc.Title.text = dish.Name;
+            _cc.Image.sprite = dish.Icon;
             if(!CafeManager.IsDay)
                 _dishVariants.Add(dish.Name, dishVar);
             _cc.IngredientsSpawner.name += "_" + dish.Name;
             foreach (var ingredient in dish.ingredients)
             {
-                Debug.Log(ingredient);
                 var ingredientVar = Instantiate(ingredientPrefab);
                 ingredientVar.transform.SetParent(GameObject.Find(_cc.IngredientsSpawner.name).transform);
                 var iconIngredient = ingredientVar.GetComponent<Image>();
                 iconIngredient.sprite = ingredients.GetIngredient(ingredient).Icon;
-                ingredientVar.GetComponentInChildren<TMP_Text>().text = "";
+                Destroy(ingredientVar.GetComponentInChildren<TMP_Text>());
             }
         }
     }
