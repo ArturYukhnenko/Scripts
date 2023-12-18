@@ -21,11 +21,7 @@ public class CookingManager : MonoBehaviour
     {
         try
         {
-            foreach (var ingredient in ingredients)
-            {
-
-                StorageController.Instance.GetIngredientFromStorage(ingredient);
-            }
+            StorageController.Instance.GetIngredientFromStorage(ingredients);
 
             StorageController.Instance.AddDishToStorage(dish);
             Debug.Log("Cooked " + dish);

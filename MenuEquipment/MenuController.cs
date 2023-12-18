@@ -15,9 +15,12 @@ namespace MenuEquipment {
         private Dictionary<string, GameObject> _dishVariants;
         private ComponentController _cc;
         public RawComponents ingredients;
+        [SerializeField] private RectTransform contentArea;
+        private int menuComponentHeight= 200;
     
         void Start()
         {
+            int counter = 1;
             _dishVariants = new Dictionary<string, GameObject>();
             if (!CafeManager.IsDay) 
             {
@@ -28,6 +31,7 @@ namespace MenuEquipment {
                     {
                         ShowDish(dish);
                         _cc.Toggle.isOn = dish.activated;
+                        counter++;
                     }
                     else
                     {
@@ -47,6 +51,7 @@ namespace MenuEquipment {
                     {
                         if (RoomGenerator.FurnitureExist(dish.Instrument()))
                         {
+                            counter++;
                             ShowDish(dish);
                             Destroy(_cc.Toggle.gameObject);
                         }
@@ -54,6 +59,12 @@ namespace MenuEquipment {
                                         
                 }
             }
+
+            Debug.Log("counter: " + counter);
+            Debug.Log("value: " + contentArea.rect.height);
+            contentArea.sizeDelta = new Vector2(contentArea.rect.width, counter*menuComponentHeight);
+            //contentArea.rect.Set(contentArea.rect.x, contentArea.rect.y, contentArea.rect.width, 3300);
+            Debug.Log("value2: " + contentArea.rect.height);
         }
         void Update()
         {

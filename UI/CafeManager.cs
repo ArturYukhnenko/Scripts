@@ -8,7 +8,7 @@ using UnityEngine;
 public class CafeManager : MonoBehaviour
 {
     [SerializeField]private GameObject dayUI, nightUI, dayLightSpot, nightLightSpot, pausePopup;
-
+    public static GameObject _pausePopup;
     [SerializeField]
     private RoomGenerator _roomGenerator;
     [SerializeField]
@@ -38,8 +38,11 @@ public class CafeManager : MonoBehaviour
 
         IsDay = false;
         turnOnNightMode();
+        //IsDay = true;
+        //turnOnDayMode();
         Paused = false;
         _menu = menu;
+        _pausePopup = pausePopup;
     }
 
     // Update is called once per frame
@@ -91,6 +94,7 @@ public class CafeManager : MonoBehaviour
         
         Paused = !Paused;
         Time.timeScale = Paused ? 0f : 1f;
+        _pausePopup.gameObject.SetActive(true);
     }
 
     private void SaveGame() {
