@@ -8,9 +8,8 @@ using UnityEngine;
 public class CookingManager : MonoBehaviour
 
 {
-
-    
     [SerializeField] private GameObject popupException;
+    [SerializeField] private static GameObject plus1Popup;
     private static GameObject popupCurrentException;
     private void Start()
     {
@@ -36,5 +35,7 @@ public class CookingManager : MonoBehaviour
             Debug.LogWarning(ex);
             Instantiate(popupCurrentException);
         }
+        //var infoPopup = Instantiate(plus1Popup);
+       
     }
 }

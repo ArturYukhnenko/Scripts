@@ -11,6 +11,7 @@ public class CafeManager : MonoBehaviour
     public static GameObject _pausePopup;
     [SerializeField]
     private RoomGenerator _roomGenerator;
+    
     [SerializeField]
     private Menu menu;
     private static Menu _menu;
@@ -28,7 +29,7 @@ public class CafeManager : MonoBehaviour
         try
         {
             //SerializeField
-            _roomGenerator.Load();
+            //_roomGenerator.Load();
         }
         catch (NullReferenceException e)
         {
@@ -43,6 +44,7 @@ public class CafeManager : MonoBehaviour
         Paused = false;
         _menu = menu;
         _pausePopup = pausePopup;
+        LoadGame();
     }
 
     // Update is called once per frame
@@ -101,6 +103,13 @@ public class CafeManager : MonoBehaviour
         StorageController.Instance.Save();
         
         _roomGenerator.Save();
+    }
+
+    public void LoadGame() {
+        if (!MainMenuController.NewGame) {
+            StorageController.Instance.Load();
+            _roomGenerator.Load();
+        }
     }
     public static void CleanActivatedTogglesOnDelete()
     {

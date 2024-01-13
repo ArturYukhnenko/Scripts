@@ -26,6 +26,7 @@ public class RoomGenerator : MonoBehaviour
     {
         Load((FurnitureModel)SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
             ModelTypesEnums.FurnitureModel));
+        
         GenerateWalls();
         GenerateFloor();
     }
@@ -36,6 +37,7 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 1; i < x-1; i++)
         {
             var wall = Instantiate(wallPrefab);
+            wall.name = "WallPartFront" + i;
             wall.transform.SetParent(GameObject.Find("walls").transform);
             Vector3 frontWallVector3 = new Vector3(frontFirstWall.transform.position.x + i, frontFirstWall.position.y,
                 frontFirstWall.position.z);
@@ -48,6 +50,7 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 1; i < x-1; i++)
         {
             var wall = Instantiate(wallPrefab);
+            wall.name = "WallPartBack" + i;
             wall.transform.SetParent(GameObject.Find("walls").transform);
             Vector3 backWallVector3 = new Vector3(backFirstWall.transform.position.x + i, backFirstWall.position.y,
                 backFirstWall.position.z);
@@ -59,6 +62,7 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 1; i < y-1; i++)
         {
             var wall = Instantiate(wallPrefab);
+            wall.name = "WallPartLeft" + i;
             wall.transform.SetParent(GameObject.Find("walls").transform);
             Vector3 leftWallVector3 = new Vector3(leftFirstWall.transform.position.x , leftFirstWall.position.y ,
                 leftFirstWall.position.z+ i);
@@ -70,13 +74,15 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 1; i < y-1; i++)
         {
             var wall = Instantiate(wallPrefab);
+            wall.name = "WallPartRight" + i;
             wall.transform.SetParent(GameObject.Find("walls").transform);
             Vector3 rightWallVector3 = new Vector3(rightFirstWall.transform.position.x , rightFirstWall.position.y ,
                 rightFirstWall.position.z+ i);
             wall.transform.SetPositionAndRotation(rightWallVector3, rightFirstWall.rotation);
             generatedObjects.Add(wall);
         }
-        
+        Destroy(GameObject.Find("WallPartLeft3"));
+        Destroy(GameObject.Find("WallPartLeft4"));
     }
 
     private void GenerateFloor()

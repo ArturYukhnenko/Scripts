@@ -35,6 +35,7 @@ namespace Shop {
                 good.GetComponent<ShopItem>().SetItem(t.Icon,t.Price.ToString(),t.Name);
                 _shopItems.Add(good);
             }
+            
         }
 
     }

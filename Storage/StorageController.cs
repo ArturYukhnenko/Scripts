@@ -44,8 +44,7 @@ namespace Storage {
             }else {
                 if (_currentStorage == null) {
                     if (_storageHolder.Storage.StoredItems == null || _storageHolder.Storage == null) {
-                        Load((StorageModel)SaveAndLoad.SaveAndLoad.Load(DirPath, FileName,
-                            ModelTypesEnums.StorageModel));
+                        Load();
                         _currentStorage = _storageHolder.Storage;
                     }
                     else {
@@ -247,7 +246,8 @@ namespace Storage {
         }
 
         //Save and load Data
-        private void Load(StorageModel data) {
+        public void Load() {
+            StorageModel data = (StorageModel) SaveAndLoad.SaveAndLoad.Load(DirPath, FileName, ModelTypesEnums.StorageModel);
             if (data != null) {
                 Dictionary<IItem, int> ingredients =
                     new Dictionary<IItem, int>();

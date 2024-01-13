@@ -33,13 +33,13 @@ public class customerMovement : MonoBehaviour
     public OrderController oc;
 
 
+
     private void Awake()
     {
         MoveToFreeTable = false;
         order = GameObject.Find("Employee");
         or = order.GetComponent<employeeOrder>();
         or.SetCustomer(this.gameObject);
-
     }
 
     private void Start()
@@ -77,7 +77,6 @@ public class customerMovement : MonoBehaviour
     {
 
 
-
         CashRegister = new Vector3(315f, 1.52f, 165.79f);
         FreeTable = new Vector3(307f, 1.52f, 164.53f);
         Exit = new Vector3(300f, 1.52f, 165.49f);
@@ -103,10 +102,8 @@ public class customerMovement : MonoBehaviour
         if (transform.position.x == FreeTable.x && transform.position.z == FreeTable.z)
         {
             MoveToFreeTable = false;
-
             if (MoveToExit == true)
             {
-
                 transform.position = Vector3.MoveTowards(transform.position, Exit, customerSpeed * Time.deltaTime);
             }
         }
@@ -171,7 +168,6 @@ public class customerMovement : MonoBehaviour
 
             if (MoveToCashRegister == true)
             {
-
                 //transform.position = Vector3.MoveTowards(transform.position, CashRegister, customerSpeed * Time.deltaTime);
             }
             //Debug.Log("x1");
@@ -183,7 +179,6 @@ public class customerMovement : MonoBehaviour
 
             if (MoveToExit == true)
             {
-
                 //transform.position = Vector3.MoveTowards(transform.position, Exit, customerSpeed * Time.deltaTime);
             }
 

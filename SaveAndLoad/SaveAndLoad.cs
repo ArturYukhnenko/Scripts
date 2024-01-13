@@ -6,54 +6,71 @@ using Storage;
 using UnityEngine;
 
 namespace SaveAndLoad {
-    public static class SaveAndLoad {
-        public static void Save(IModel data, string dirPath, string fileName) {
+    public static class SaveAndLoad
+    {
+        public static void Save(IModel data, string dirPath, string fileName)
+        {
             dirPath = Application.persistentDataPath + dirPath;
             string path = Path.Combine(dirPath, fileName);
-            try {
+            try
+            {
                 Directory.CreateDirectory(Path.GetDirectoryName(path) ?? string.Empty);
 
                 string dataToStore = JsonUtility.ToJson(data, true);
-                using (FileStream stream = new FileStream(path,FileMode.Create)) {
-                    using (StreamWriter writer = new StreamWriter(stream)) {
+                using (FileStream stream = new FileStream(path, FileMode.Create))
+                {
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
                         writer.Write(dataToStore);
                     }
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Debug.Log("Data save failed" + e);
             }
         }
 
-        public static IModel Load(string dirPath, string fileName, ModelTypesEnums modelTypeEnums) {
+        public static IModel Load(string dirPath, string fileName, ModelTypesEnums modelTypeEnums)
+        {
             //Do load method in every model
             dirPath = Application.persistentDataPath + dirPath;
             string path = Path.Combine(dirPath, fileName);
             IModel model = null;
-            if (File.Exists(path)) {
-                try {
+            if (File.Exists(path))
+            {
+                try
+                {
                     string dataToLoad = "";
-                    using (FileStream stream = new FileStream(path,FileMode.Open)) {
-                        using (StreamReader reader = new StreamReader(stream)) {
+                    using (FileStream stream = new FileStream(path, FileMode.Open))
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
                             dataToLoad = reader.ReadToEnd();
                         }
                     }
-                    switch (modelTypeEnums) {
+
+                    switch (modelTypeEnums)
+                    {
                         case ModelTypesEnums.StorageModel:
                             model = new StorageModel().Load(dataToLoad);
                             break;
                         case ModelTypesEnums.FurnitureModel:
                             model = new FurnitureModel().Load(dataToLoad);
-                            break; 
+                            break;
                     }
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Debug.Log("Data load failed" + e);
                 }
             }
 
             return model;
         }
-        
+
+        public static bool IfLoadAvailable() {
+            return Directory.GetDirectories(Application.persistentDataPath).Length > 0;
+        }
     }
 }

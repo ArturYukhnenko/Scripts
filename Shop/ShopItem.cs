@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using Exceptions;
+using MenuEquipment.SO;
 using Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 namespace Shop {
     public class ShopItem : MonoBehaviour{
@@ -19,7 +23,12 @@ namespace Shop {
         [SerializeField]
         private Button buyBtn;
 
+        [SerializeField] private Menu dishList;
+        [SerializeField]private GameObject dishImagePrefab, dishSpawner;
+
         private String _goodName;
+        private List<Menu.Dish> dishesToCook = new List<Menu.Dish>();
+        
 
         public void SetItem(Sprite icon, String price,String goodName) {
             iconHolder.sprite = icon;
@@ -27,6 +36,7 @@ namespace Shop {
             availableItems.text = "0";
             buyBtn.onClick.AddListener(() => Buy(goodName));
             _goodName = goodName;
+            SetDishes();
         }
 
         private void Buy(string goodName) {
@@ -49,6 +59,31 @@ namespace Shop {
 
             priceHolder.text = price.ToString();
         }
+
+        private List<Menu.Dish> SetDishes()
+        {
+            foreach (var dish in dishList.dishes)
+            {
+                foreach (var dishIngredient in dish.ingredients)
+                {
+                    if (_goodName == dishIngredient)
+                    {
+                        dishesToCook.Add(dish);
+                    }
+                }
+
+            }
+
+            Debug.Log(dishesToCook.Count);
+            foreach (var dish in dishesToCook)
+            {
+                var newPrefab = Instantiate(dishImagePrefab, dishSpawner.transform);
+                newPrefab.GetComponent<Image>().sprite = dish.Icon;
+                newPrefab.name = dish.Name + "Image";
+            }
+            return dishesToCook;
+        }
+
 
         public Image IconHolder => iconHolder;
 
