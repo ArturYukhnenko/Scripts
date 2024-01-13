@@ -55,7 +55,7 @@ namespace Ordering {
         private List<Menu.Dish> CreateRandomOrderList() {
             List<Menu.Dish> dishes = new List<Menu.Dish>();
             List<Menu.Dish> availableDishes = new List<Menu.Dish>(StorageController.Instance.ReceiveActualDishes());
-            int randomAmount =  new Random().Next(1,availableDishes.Count);
+            int randomAmount =  new Random().Next(1,5);
             for (int i = 0; i < randomAmount; i++) {
                 int randomDish =  new Random().Next(0,availableDishes.Count);
                 dishes.Add(availableDishes[randomDish]);

@@ -27,7 +27,7 @@ namespace Storage {
 
         //Spawn and display cells in storage
         private void SpawnCells() {
-            for (int i = 0; i < amountOfCells; i++) {
+            for (int i = 0; i < StorageController.Instance.StoredItems.Keys.Count; i++) {
                 GameObject cell = Instantiate(cellPrefab, cellsSpawner.transform);
 
                 cell.name = i.ToString();

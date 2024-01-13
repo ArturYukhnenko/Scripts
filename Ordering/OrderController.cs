@@ -79,10 +79,10 @@ namespace Ordering {
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
-                OnStatusChange?.Invoke(Status.Finished);
                 StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
                 GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);
+                OnStatusChange?.Invoke(Status.Finished);
                 Destroy(this.gameObject);
             }
             UpdateTimer();
@@ -148,7 +148,6 @@ namespace Ordering {
                 throw new Exception("Order cannot be accomplished");
             }
             try { 
-                UpdateStatus(Status.Finished);
                 StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
                 List<string> tmp = new List<string>();
@@ -157,20 +156,23 @@ namespace Ordering {
                 StorageController.Instance.GetDishFromStorage(tmp);
                 StorageController.Instance.AddEarnedMoney(_order.Price);
                 GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
+                UpdateStatus(Status.Finished);
                 Destroy(this.gameObject);
             }catch (Exception e) {
                 Console.WriteLine(e);
                 errorPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "Something went wrong \nTry Again";
                 Instantiate(errorPrefab);
+                StorageController.Instance.OnAddedItems += CheckItemsForOrder;
+                StorageController.Instance.OnRemovedItems += CheckItemsForOrder;
                 CheckItemsForOrder();
             }
         }
 
         public void CloseOrder() {
-            OnStatusChange?.Invoke(Status.Finished);
             StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
             GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
+            OnStatusChange?.Invoke(Status.Finished);
             Destroy(this.gameObject);
 
         }
@@ -182,25 +184,29 @@ namespace Ordering {
                     if (status == Status.InProgress) {
                         _status = status;
                     } else {
-                        throw new Exception("Status cannot be set");
+                        throw new Exception($"Status cannot be set current status: {_status}, Expected Status: {status}");
                     }
                     break;
                 case Status.InProgress:
                     if (status == Status.Ready) {
                         _status = status;
                     } else {
-                        throw new Exception("Status cannot be set");
+                        throw new Exception($"Status cannot be set current status: {_status}, Expected Status: {status}");
                     }
                     break;
                 case Status.Ready:
                     if (status == Status.InProgress || status == Status.Finished) {
                         _status = status;
                     } else {
-                        throw new Exception("Status cannot be set");
+                        throw new Exception($"Status cannot be set current status: {_status}, Expected Status: {status}");
                     }
                     break;
                 case Status.Finished:
-                    throw new Exception("Status cannot be set");
+                    if (status == Status.Finished) {
+                        _status = status;
+                    }else 
+                        throw new Exception($"Status cannot be set current status: {_status}, Expected Status: {status}");
+                    break;
                 default:
                     throw new Exception("Status unknown");
             }
