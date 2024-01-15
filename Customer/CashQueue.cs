@@ -62,7 +62,7 @@ public class CashQueue : MonoBehaviour
 
     public void MoveGameObject()
     {
-
+        
         if (transform.position.x == NextPos.x)
         {
 
@@ -82,8 +82,22 @@ public class CashQueue : MonoBehaviour
         else
         {
             transform.position = Vector3.MoveTowards(transform.position, NextPos, ObjectSpeed * Time.deltaTime);
+            
         }
 
+        
+        //moving to exit
+        if (NextPos == gc.QueuePositions[6].transform.position)
+        {
+            transform.rotation = new Quaternion(0, -90 , 0, 0);
+        }
+        else
+        {
+            if (NextPos != gc.QueuePositions[0].transform.position)
+            {
+                this.transform.rotation = new Quaternion(0, 90 , 0, 0);
+            }
+        }
 
     }
 

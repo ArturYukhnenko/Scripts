@@ -32,6 +32,7 @@ public class customerMovement : MonoBehaviour
     public GameObject customer;
     public OrderController oc;
 
+    public float rotation;
 
 
     private void Awake()
