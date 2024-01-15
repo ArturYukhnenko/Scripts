@@ -30,7 +30,9 @@ public class SpawnCustomer : MonoBehaviour
         {
             if (firstSpawn) {
                 CreateObject();
+                currentAmountOfCustomers++;
                 firstSpawn = false;
+                ResetTimer();
             }
             timer -= Time.deltaTime;
                     if (timer <= 0f && !shouldCreateObject && currentAmountOfCustomers<3)
