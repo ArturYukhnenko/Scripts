@@ -81,8 +81,9 @@ public class RoomGenerator : MonoBehaviour
             wall.transform.SetPositionAndRotation(rightWallVector3, rightFirstWall.rotation);
             generatedObjects.Add(wall);
         }
-        Destroy(GameObject.Find("WallPartLeft3"));
         Destroy(GameObject.Find("WallPartLeft4"));
+        Destroy(GameObject.Find("WallPartLeft5"));
+        Destroy(GameObject.Find("WallPartLeft6"));
     }
 
     private void GenerateFloor()
