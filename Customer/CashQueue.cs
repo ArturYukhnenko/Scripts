@@ -13,6 +13,7 @@ public class CashQueue : MonoBehaviour
     [SerializeField] public globalCustomer gc;
     [SerializeField] float ObjectSpeed;
     [SerializeField] public SpawnCustomer sc;
+    [SerializeField] private Animator _animator;
 
 
     public bool canMove;
@@ -55,7 +56,12 @@ public class CashQueue : MonoBehaviour
 
         gc.UpdatePos();
         NextPos = gc.GetFreePos(posi);
-
+        
+        if (transform.position.x == NextPos.x)
+            _animator.SetBool("Running", false);
+        else
+            _animator.SetBool("Running", true);
+        
         MoveGameObject();
     }
 
@@ -69,8 +75,8 @@ public class CashQueue : MonoBehaviour
             if (NextPosIndex >= gc.QueuePositions.Length)
             {
                 NextPosIndex = 0;
-            }
-
+            } 
+            
             if (this.gameObject.GetComponent<CashQueue>().transform.position.x == gc.QueuePositions[6].transform.position.x)
             {        
                 gc.guestList.Remove(this.gameObject);
@@ -82,20 +88,19 @@ public class CashQueue : MonoBehaviour
         else
         {
             transform.position = Vector3.MoveTowards(transform.position, NextPos, ObjectSpeed * Time.deltaTime);
-            
         }
 
         
         //moving to exit
         if (NextPos == gc.QueuePositions[6].transform.position)
         {
-            transform.rotation = new Quaternion(0, -90 , 0, 0);
+            transform.rotation = Quaternion.Euler(0, 180 , 0);
         }
         else
         {
             if (NextPos != gc.QueuePositions[0].transform.position)
             {
-                this.transform.rotation = new Quaternion(0, 90 , 0, 0);
+                this.transform.rotation = Quaternion.Euler(0, 90 , 0);
             }
         }
 

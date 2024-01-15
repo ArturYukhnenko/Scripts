@@ -10,6 +10,8 @@ public class SpawnCustomer : MonoBehaviour
     public GameObject customerPrefab;
     public int currentAmountOfCustomers;
 
+    private bool firstSpawn;
+
 
     private float minSpawnTime = 10f;
     private float maxSpawnTime = 15f;
@@ -17,8 +19,8 @@ public class SpawnCustomer : MonoBehaviour
     private float timer;
     private bool shouldCreateObject = false;
 
-    void Start()
-    {
+    void Start() {
+        firstSpawn = true;
         ResetTimer();
     }
 
@@ -26,6 +28,10 @@ public class SpawnCustomer : MonoBehaviour
     {
         if (CafeManager.IsDay)
         {
+            if (firstSpawn) {
+                CreateObject();
+                firstSpawn = false;
+            }
             timer -= Time.deltaTime;
                     if (timer <= 0f && !shouldCreateObject && currentAmountOfCustomers<3)
                     {
@@ -39,6 +45,9 @@ public class SpawnCustomer : MonoBehaviour
                     {
                         ResetTimer();
                     }
+        }
+        else {
+            firstSpawn = true;
         }
         
     }
