@@ -24,9 +24,8 @@ public class RoomGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Load((FurnitureModel)SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
-            ModelTypesEnums.FurnitureModel));
-        
+       // Load((FurnitureModel)SaveAndLoad.SaveAndLoad.Load("/Room", "RoomData",
+       //     ModelTypesEnums.FurnitureModel));
         GenerateWalls();
         GenerateFloor();
     }

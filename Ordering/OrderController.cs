@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using MenuEquipment.SO;
 using Storage;
 using TMPro;
@@ -61,12 +62,13 @@ namespace Ordering {
             } else { 
                 _order = new Order(dishes);
             }
-            for (int i = 0; i < dishes.Count; i++) {
+            List<Menu.Dish> d = new List<Menu.Dish>(_order.Dishes.Keys);
+            for (int i = 0; i < _order.Dishes.Count; i++) {
                 GameObject item = Instantiate(orderItem, orderItemSpawner.transform);
                 RectTransform rt = item.GetComponent<RectTransform>();
                 rt.localPosition = new Vector3(0, 0, 0);
-                rt.localScale = new Vector3(1, 1, 1); 
-                item.GetComponentInChildren<Image>().sprite = dishes[i].Icon;
+                rt.localScale = new Vector3(1, 1, 1);
+                item.GetComponentInChildren<Image>().sprite = d[i].Icon;
             }
         }
 
@@ -160,7 +162,7 @@ namespace Ordering {
                 Destroy(this.gameObject);
             }catch (Exception e) {
                 Console.WriteLine(e);
-                errorPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "Something went wrong \nTry Again";
+                errorPrefab.GetComponentInChildren<TextMeshProUGUI>().text = $"{e.Message} \nTry Again";
                 Instantiate(errorPrefab);
                 StorageController.Instance.OnAddedItems += CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems += CheckItemsForOrder;

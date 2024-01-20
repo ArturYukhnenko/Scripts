@@ -19,7 +19,12 @@ public class CafeManager : MonoBehaviour
     //prestige
     public static float prestigeCoefficient;
     [SerializeField] private float dishPrestige, furniturePrestige;
-    
+
+    public float DishPrestige {
+        get => dishPrestige;
+        set => dishPrestige = value;
+    }
+
     // Start is called before the first frame update
     
     [SerializeField] private TMP_Text money;

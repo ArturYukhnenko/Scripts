@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Exceptions;
 using MenuEquipment.SO;
 using Models;
@@ -18,7 +19,9 @@ namespace Storage {
         private StorageHolder _storageHolder;
         private static Storage _currentStorage;
         private RawComponents _rawComponents;
-        
+
+        public RawComponents GetRawComponentsList => _rawComponents;
+
         private Menu _dishes;
 
         public ReadOnlyDictionary<IItem, int> StoredItems => _currentStorage.StoredItems;

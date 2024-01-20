@@ -41,15 +41,6 @@ namespace MenuEquipment.SO {
             return counter;
         }
 
-        public void calculatePrice(int benefit)
-        {
-            foreach (var dish in dishes)
-            {
-                
-                // dish.ingredients
-            }
-        }
-
         [Serializable]
         public class Dish : IItem
         {
@@ -57,20 +48,26 @@ namespace MenuEquipment.SO {
             private string dishName;
             [SerializeField]
             private Sprite icon;
-            [SerializeField] 
-            private int price;
             [SerializeField]
             private string instrument;
-            
+
             public bool activated;
             public bool isIngredient;
             public List<string> ingredients;
             public string Name => dishName;
             public Sprite Icon => icon;
-            public int Price => price;
+            public int Price => CalculatePrice();
             public string Instrument()
             {
                 return "barTable" + instrument;
+            }
+            public int CalculatePrice() {
+                int price = 0;
+                foreach (var ingredient in ingredients) {
+                    price += StorageController.Instance.GetRawComponentsList.GetIngredient(ingredient).Price * 2;
+                }
+
+                return price;
             }
 
             

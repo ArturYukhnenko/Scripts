@@ -39,6 +39,7 @@ public class MainMenuController : MonoBehaviour {
     public void onLoad() {
         NewGame = false;
         CafeManager.Paused = false;
+        SceneManager.LoadScene(0);
         SceneManager.LoadScene(1);
     }
     public void onContinue()
