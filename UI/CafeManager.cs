@@ -3,6 +3,7 @@ using MenuEquipment.SO;
 using Ordering;
 using Storage;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,6 +13,8 @@ public class CafeManager : MonoBehaviour
     public event Action OnNightStart;
     [SerializeField]private GameObject dayUI, nightUI, dayLightSpot, nightLightSpot, pausePopup;
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private Tutorial tutorial;
+    [SerializeField] private GameObject tutorialPopup;
     public static GameObject _pausePopup;
     [SerializeField]
     private RoomGenerator _roomGenerator;
@@ -53,6 +56,10 @@ public class CafeManager : MonoBehaviour
         Paused = false;
         _menu = menu;
         _pausePopup = pausePopup;
+        if (MainMenuController.NewGame) {
+            Instantiate(tutorialPopup);
+            //tutorial.StartTutorial();
+        }
         
         LoadGame();
     }
@@ -66,6 +73,7 @@ public class CafeManager : MonoBehaviour
             pauseGame();
         }
         money.text = StorageController.Instance.GetAmountOfMoney().ToString();
+        
     }
 
     public void turnOnDayMode()
