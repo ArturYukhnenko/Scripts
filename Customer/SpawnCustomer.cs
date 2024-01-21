@@ -7,7 +7,7 @@ public class SpawnCustomer : MonoBehaviour
     public globalCustomer gc;
     public SpawnCustomer sc;
     public CashQueue cq;
-    public GameObject customerPrefab;
+    public GameObject[] customerPrefab;
     public int currentAmountOfCustomers;
 
     private bool firstSpawn;
@@ -18,6 +18,7 @@ public class SpawnCustomer : MonoBehaviour
 
     private float timer;
     private bool shouldCreateObject = false;
+    private int randomIndex;
 
     void Start() {
         firstSpawn = true;
@@ -56,7 +57,8 @@ public class SpawnCustomer : MonoBehaviour
 
     void CreateObject()
     {
-        GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
+        //randomIndex = Random.Range(0, customerPrefab.Length);
+        GameObject customer = Instantiate(customerPrefab[Random.RandomRange(0, customerPrefab.Length)] , transform.position, Quaternion.identity);
         customer.GetComponent<customerMovement>().customer = customer;
         customer.GetComponent<CashQueue>().gc = gc;
         customer.GetComponent<CashQueue>().sc = sc;
