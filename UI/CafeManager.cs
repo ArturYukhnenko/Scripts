@@ -4,9 +4,12 @@ using Ordering;
 using Storage;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CafeManager : MonoBehaviour
 {
+
+    public event Action OnNightStart;
     [SerializeField]private GameObject dayUI, nightUI, dayLightSpot, nightLightSpot, pausePopup;
     public static GameObject _pausePopup;
     [SerializeField]
@@ -82,17 +85,12 @@ public class CafeManager : MonoBehaviour
         dayLightSpot.gameObject.SetActive(false);
         nightLightSpot.gameObject.SetActive(true);
         try {
-            this.gameObject.GetComponent<OrderManager>().CloseAllOrder();
-        }
-        catch (Exception e) {
-            Debug.Log(e);
-        }
-        try {
             SaveGame();
         }
         catch (Exception e) {
             Debug.Log(e);
         }
+        OnNightStart?.Invoke();
         Debug.Log("Night Mode on");
     }
 

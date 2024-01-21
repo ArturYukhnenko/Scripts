@@ -33,6 +33,8 @@ public class CashQueue : MonoBehaviour
     void Start()
     {
 
+        GameObject.FindWithTag("GameManager").GetComponent<CafeManager>().OnNightStart += MoveToExitImmediately;
+        
         if (gc.pos2Free && gc.pos1Free && gc.pos0Free)
         {
             posi = 0;
@@ -130,6 +132,25 @@ public class CashQueue : MonoBehaviour
 
     }
 
+    void MoveToExitImmediately()
+    {
+        if (oc == null) {
+            NextPos = gc.QueuePositions[6].position;
+            NextPosIndex = 6;
+            orderFinished = true;
+            posi = 6;
+            gc.pos0Free = true;
+            gc.pos1Free = true;
+            gc.pos2Free = true;
+            gc.posTable1 = true;
+            gc.posTable2 = true;
+            gc.posTable3 = true;
+        }
+        
+    }
 
-
+    private void OnDestroy()
+    {
+        GameObject.FindWithTag("GameManager").GetComponent<CafeManager>().OnNightStart -= MoveToExitImmediately;
+    }
 }

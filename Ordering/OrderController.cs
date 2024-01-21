@@ -49,6 +49,7 @@ namespace Ordering {
             OnStatusChange?.Invoke(_status);
             StorageController.Instance.OnAddedItems += CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems += CheckItemsForOrder;
+            GameObject.FindWithTag("GameManager").GetComponent<CafeManager>().OnNightStart += CloseOrder;
             CheckItemsForOrder();
         }
 
@@ -81,11 +82,7 @@ namespace Ordering {
             if (!TimeFinished()) {
                 orderTimeLeft -= Time.deltaTime;
             }else {
-                StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
-                StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
-                GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject);
-                OnStatusChange?.Invoke(Status.Finished);
-                Destroy(this.gameObject);
+                CloseOrder();
             }
             UpdateTimer();
         }
@@ -152,6 +149,7 @@ namespace Ordering {
             try { 
                 StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
                 StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
+                GameObject.FindWithTag("GameManager").GetComponent<CafeManager>().OnNightStart -= CloseOrder;
                 List<string> tmp = new List<string>();
                 foreach (Menu.Dish dish in _order.Dishes.Keys.ToList())
                     tmp.Add(dish.Name);
@@ -170,10 +168,10 @@ namespace Ordering {
             }
         }
 
-        public void CloseOrder() {
+        private void CloseOrder() {
             StorageController.Instance.OnAddedItems -= CheckItemsForOrder;
             StorageController.Instance.OnRemovedItems -= CheckItemsForOrder;
-            GameObject.FindWithTag("GameManager").GetComponent<OrderManager>().RemoveOrderFromList(this.gameObject); 
+            GameObject.FindWithTag("GameManager").GetComponent<CafeManager>().OnNightStart -= CloseOrder;
             OnStatusChange?.Invoke(Status.Finished);
             Destroy(this.gameObject);
 

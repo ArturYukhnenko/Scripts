@@ -38,15 +38,7 @@ namespace Ordering {
             if(_existingOrders.Contains(order))
                 _existingOrders.Remove(order);
         }
-        
-        public void CloseAllOrder() {
-            if (_existingOrders.Count <= 0) return;
-            foreach (var o in _existingOrders) {
-                o.gameObject.GetComponent<OrderController>().CloseOrder();
-            }
 
-        }
-        
         public void ClearOrdersList() {
             if(_existingOrders.Count > 0)
                 _existingOrders.Clear();
