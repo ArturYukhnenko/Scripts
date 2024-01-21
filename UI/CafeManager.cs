@@ -11,6 +11,7 @@ public class CafeManager : MonoBehaviour
 
     public event Action OnNightStart;
     [SerializeField]private GameObject dayUI, nightUI, dayLightSpot, nightLightSpot, pausePopup;
+    [SerializeField] private DataHolder dataHolder;
     public static GameObject _pausePopup;
     [SerializeField]
     private RoomGenerator _roomGenerator;
@@ -52,6 +53,7 @@ public class CafeManager : MonoBehaviour
         Paused = false;
         _menu = menu;
         _pausePopup = pausePopup;
+        
         LoadGame();
     }
 
@@ -109,8 +111,8 @@ public class CafeManager : MonoBehaviour
     }
 
     public void LoadGame() {
+        dataHolder.InvokeStartLoading();
         if (!MainMenuController.NewGame) {
-            StorageController.Instance.Load();
             _roomGenerator.Load();
         }
     }

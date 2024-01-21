@@ -14,7 +14,7 @@ namespace Storage {
         [SerializeField]
         private Menu dishes;
 
-        private void Start() {
+        public void InvokeStartLoading() {
             if (StorageController.Instance != null) {
                 if(!StorageController.Instance.IsSet){
                     StorageController.Instance.SetFields(storageHolder,rawComponents,dishes);

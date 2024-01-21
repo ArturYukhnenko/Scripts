@@ -37,8 +37,7 @@ namespace SaveAndLoad {
             dirPath = Application.persistentDataPath + dirPath;
             string path = Path.Combine(dirPath, fileName);
             IModel model = null;
-            if (File.Exists(path))
-            {
+            if (File.Exists(path)) {
                 try
                 {
                     string dataToLoad = "";
