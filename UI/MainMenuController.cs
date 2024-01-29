@@ -47,4 +47,8 @@ public class MainMenuController : MonoBehaviour {
         CafeManager.pauseGame();
         this.gameObject.SetActive(false);
     }
+    public void onMainMenu() {
+        CafeManager.Paused = true;
+        SceneManager.LoadScene(0);
+    }
 }
